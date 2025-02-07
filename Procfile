@@ -1,1 +1,1 @@
-web: gunicorn clothinglending.wsgi
+web: gunicorn ***REMOVED***.wsgi
