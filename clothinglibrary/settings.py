@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '***REMOVED***-cc94fce6e5b5.herokuapp.com',
+    '127.0.0.1', 
+    'localhost'
 ]
 
 
@@ -39,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    '***REMOVED***'
 ]
 
 MIDDLEWARE = [
