@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
-<body>
+{% extends "base.html" %}
+
+{% block content %}
     <p>This is the homepage.</p>
     <a href="{% url 'account_login' %}">Sign in</a>
-</body>
-</html>
+{% endblock %}
