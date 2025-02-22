@@ -2,4 +2,9 @@
 
 {% block content %}
     <h1>Welcome to Clothing Library</h1>
+    {% if user.is_librarian %}
+    <p>Ready to lend a new item?</p>
+    {% else %}
+    <p>Ready to borrow an item?</p>
+    {% endif %}
 {% endblock %}

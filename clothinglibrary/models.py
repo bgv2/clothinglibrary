@@ -2,6 +2,10 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
+def is_librarian(self):
+    return self.groups.filter(name='librarians').exists()
+User.add_to_class('is_librarian', is_librarian)
+
 class Category(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField(blank=True)
