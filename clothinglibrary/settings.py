@@ -162,4 +162,5 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 LOGIN_REDIRECT_URL = '/'
+SOCIALACCOUNT_LOGIN_ON_GET = True # log in via Google without showing confirmation screen
 

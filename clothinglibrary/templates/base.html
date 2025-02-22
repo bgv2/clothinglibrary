@@ -1,3 +1,4 @@
+{% load socialaccount %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,27 +18,24 @@
             <ul class="navbar-nav">
                 {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href=""><i class="bi bi-person"></i>{{ user.username }}</a>
+                    <a class="nav-link" href=""><i class="bi bi-person"></i>{{ user.get_full_name }}</a>
                 </li>                
                 <li class="nav-item">
                     <a class="nav-link" href="{% url 'account_logout' %}">Log out</a>
                 </li>                
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'account_login' %}">Login</a>
+                    <a class="nav-link" href="{% provider_login_url 'google' %}">Sign in with Google</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'account_signup' %}">Sign up</a>
+                    <a class="nav-link" href="{% provider_login_url 'google' process='signup' %}">Sign up with Google</a>
                 </li>
                 {% endif %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'account_reset_password' %}">Forgot Password</a>
-                </li>
             </ul>
         </nav>
     </header>
     <main>
-        <div class="container">
+        <div class="container pt-4">
             {% block content %}
             {% endblock %}
         </div>
