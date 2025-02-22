@@ -1,10 +1,14 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.utils import timezone
 
 def is_librarian(self):
-    return self.groups.filter(name='librarians').exists()
+    return self.groups.filter(name='Librarians').exists()
 User.add_to_class('is_librarian', is_librarian)
+
+def is_patron(self):
+    return self.groups.filter(name='Patrons').exists()
+User.add_to_class('is_patron', is_patron)
 
 class Category(models.Model):
     name = models.CharField(max_length=100)
