@@ -4,7 +4,7 @@
     <h1>Welcome to Clothing Library</h1>
         {% if user.is_librarian %}
     <p>Welcome, Librarian! Ready to lend a new item?</p>
-        {% elif user.is_patron%}
+        {% elif user.is_authenticated %}
     <p>Welcome, Patron! Ready to borrow an item?</p>
         {% else %}
     <p>Welcome to our website!</p>
