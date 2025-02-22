@@ -26,7 +26,10 @@ IS_HEROKU_APP = "DYNO" in os.environ and "CI" not in os.environ
 SECRET_KEY = '***REMOVED***'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+if IS_HEROKU_APP and not 'DJ_DEBUG' in os.environ:
+    DEBUG = False
+else:
+    DEBUG = True
 
 ALLOWED_HOSTS = [
     '***REMOVED***-cc94fce6e5b5.herokuapp.com',
