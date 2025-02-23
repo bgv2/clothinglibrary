@@ -180,6 +180,8 @@ ACCOUNT_LOGIN_METHODS = {'email'}
 ACCOUNT_EMAIL_VERIFICATION = 'optional'
 LOGIN_REDIRECT_URL = '/'
 SOCIALACCOUNT_LOGIN_ON_GET = True # log in via Google without showing confirmation screen
+ACCOUNT_LOGOUT_ON_GET = True
+ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
 try:
     if 'HEROKU' in os.environ:
