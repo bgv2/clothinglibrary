@@ -23,4 +23,6 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('accounts/', include('allauth.urls')),
     path('accounts/', include('allauth.socialaccount.urls')),
+    path('add-item/', views.add_item, name='add_item'),
+
 ]
