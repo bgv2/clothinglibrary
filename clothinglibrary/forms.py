@@ -1,7 +1,7 @@
-from django import forms
-from .models import Item
+from django.forms import ModelForm
+from ***REMOVED***.models import Item
 
-class ItemForm(forms.ModelForm):
+class ItemForm(ModelForm):
     class Meta:
         model = Item
         fields = [

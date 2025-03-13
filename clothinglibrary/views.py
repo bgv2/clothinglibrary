@@ -24,4 +24,4 @@ def add_item(request):
     else:
         form = ItemForm()
 
-    return render(request, 'add_item.html', {'form': form})
+    return render(request, '***REMOVED***/add_item.html', {'form': form})
