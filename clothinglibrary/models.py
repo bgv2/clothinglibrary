@@ -10,13 +10,6 @@ def is_patron(self):
     return self.groups.filter(name='Patrons').exists()
 User.add_to_class('is_patron', is_patron)
 
-class Category(models.Model):
-    name = models.CharField(max_length=100)
-    description = models.TextField(blank=True)
-    slug = models.SlugField(unique=True)
-
-    def __str__(self):
-        return self.name
 
 class ContentPage(models.Model):
     title = models.CharField(max_length=200)
@@ -37,6 +30,18 @@ class Item(models.Model):
         ('GC', 'Good Condition'),
         ('FR', 'Fair/Visible Wear'),
     ]
+    CATEGORY_CHOICES = [
+        ('formal', 'Formal Wear'),
+        ('casual', 'Casual Wear'),
+        ('sports', 'Sportswear'),
+        ('vintage', 'Vintage'),
+        ('street', 'Streetwear'),
+        ('active', 'Activewear'),
+        ('denim', 'Denim'),
+        ('outerwear', 'Outerwear'),
+        ('accessories', 'Accessories'),
+        ('other', 'Other'),
+    ]
 
     lender = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=200)
@@ -49,7 +54,7 @@ class Item(models.Model):
     times_worn = models.PositiveIntegerField(default=0)
     max_rental_duration = models.PositiveIntegerField(help_text="Maximum rental duration in days")
     protection_info = models.TextField(help_text="Insurance/Protection details")
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     @property
