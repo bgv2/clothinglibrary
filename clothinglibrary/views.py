@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import Category, ContentPage, Item, ItemPhoto, Rental, Review, ReviewPhoto
+from .models import ContentPage, Item, ItemPhoto, Rental, Review, ReviewPhoto
 from .forms import ItemForm
 
 def home(request):
