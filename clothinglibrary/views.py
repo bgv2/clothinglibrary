@@ -6,6 +6,11 @@ from .forms import ItemForm
 def home(request):
     return render(request, '***REMOVED***/homepage.html')
 
+def catalog(request):
+    return render(request, '***REMOVED***/catalog.html')
+
+def profile(request):
+    return render(request, '***REMOVED***/profile.html')
 
 
 @login_required
