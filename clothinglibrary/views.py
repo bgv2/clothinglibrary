@@ -1,9 +1,10 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
+
+from ***REMOVED*** import settings
 from .forms import ItemForm, UserProfileForm
 from .models import Item, UserProfile, ItemPhoto
 import boto3
-import settings
 import uuid
 
 def home(request):
