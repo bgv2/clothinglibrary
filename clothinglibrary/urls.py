@@ -26,4 +26,5 @@ urlpatterns = [
     path('catalog/', views.catalog, name='catalog'),
     path('add-item/', views.add_item, name='add_item'),
     path('profile', views.profile, name='profile'),
+    path('edit-profile/', views.edit_profile, name='edit_profile'),
 ]

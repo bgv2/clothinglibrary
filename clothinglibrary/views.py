@@ -1,7 +1,8 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
-from .models import ContentPage, Item, ItemPhoto, Rental, Review, ReviewPhoto
-from .forms import ItemForm
+from .forms import ItemForm, UserProfileForm
+from .models import UserProfile
+
 
 def home(request):
     return render(request, '***REMOVED***/homepage.html')
@@ -30,3 +31,17 @@ def add_item(request):
         form = ItemForm()
 
     return render(request, '***REMOVED***/add_item.html', {'form': form})
+
+@login_required
+def edit_profile(request):
+    user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = UserProfileForm(instance=user_profile)
+
+    return render(request, '***REMOVED***/edit_profile.html', {'form': form})

@@ -6,11 +6,6 @@ def is_librarian(self):
     return self.groups.filter(name='Librarians').exists()
 User.add_to_class('is_librarian', is_librarian)
 
-def is_patron(self):
-    return self.groups.filter(name='Patrons').exists()
-User.add_to_class('is_patron', is_patron)
-
-
 class ContentPage(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
@@ -119,3 +114,11 @@ class ReviewPhoto(models.Model):
 
     def __str__(self):
         return f"Photo for review by {self.review.user.username}"
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    description = models.TextField(blank=True, null=True)
+    photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
+
+    def __str__(self):
+        return f"Profile for {self.user.username}"

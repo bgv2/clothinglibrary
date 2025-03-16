@@ -1,5 +1,6 @@
 from django.forms import ModelForm
-from ***REMOVED***.models import Item
+from ***REMOVED***.models import Item, UserProfile
+
 
 class ItemForm(ModelForm):
     class Meta:
@@ -38,3 +39,8 @@ class ItemForm(ModelForm):
                 'required': "Please select a category.",
             },
         }
+
+class UserProfileForm(ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['description', 'photo']
