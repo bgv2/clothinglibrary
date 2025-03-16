@@ -7,7 +7,7 @@
             <h1 class="mb-4">Add New Item</h1>
             <div class="card">
                 <div class="card-body">
-                    <form method="POST">
+                    <form method="POST" enctype="multipart/form-data">
                         {% csrf_token %}
                         {% if form.non_field_errors %}
                             <div class="alert alert-danger">
@@ -25,6 +25,10 @@
                                 {% endif %}
                             </div>
                         {% endfor %}
+                        <div class="form-group">
+                            <label for="photo">Upload Image</label>
+                            <input type="file" name="photo" class="form-control-file" id="photo">
+                        </div>
                         <button type="submit" class="btn btn-primary mt-3">Submit</button>
                     </form>
                 </div>

@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User, Group
 from django.utils import timezone
+import uuid
 
 def is_librarian(self):
     return self.groups.filter(name='Librarians').exists()
@@ -19,6 +20,8 @@ class ContentPage(models.Model):
         return self.title
 
 class Item(models.Model):
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
+
     CONDITION_CHOICES = [
         ('NW', 'Brand New'),
         ('EC', 'Excellent Condition'),
