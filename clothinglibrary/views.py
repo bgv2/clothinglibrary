@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 from .forms import ItemForm, UserProfileForm
 from .models import Item, UserProfile, ItemPhoto
 import boto3
-
+import settings
+import uuid
 
 def home(request):
     return render(request, '***REMOVED***/homepage.html')
