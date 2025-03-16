@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>[USER NAME]</h1>
+    <h1>{{ user.username }}</h1>
+    <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
 {% endblock %}

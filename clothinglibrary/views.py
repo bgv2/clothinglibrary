@@ -13,7 +13,6 @@ def catalog(request):
 def profile(request):
     return render(request, '***REMOVED***/profile.html')
 
-
 @login_required
 def add_item(request):
     if not request.user.is_librarian():
