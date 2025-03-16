@@ -3,9 +3,14 @@
 {% block content %}
     <h1>CATALOG</h1>
     {% for item in items %}
-        <div class="item" style="border: 1px solid black; padding: 10px; margin: 10px;">
-            <h2>{{ item.name }}</h2>
-            <p>{{ item.get_condition_display }}</p>
-        </div>
-    {% endfor %}
+  <div>
+    <h3>{{ item.name }} (ID: {{ item.pk }})</h3>
+    {% if item.photos.exists %}
+      <!-- Display the first photo or loop all photos -->
+      <img src="{{ item.photos.first.photo }}" alt="Photo for {{ item.name }}">
+    {% else %}
+      <p>No photos uploaded.</p>
+    {% endif %}
+  </div>
+{% endfor %}
 {% endblock %}
