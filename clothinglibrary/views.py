@@ -11,7 +11,28 @@ def home(request):
     return render(request, '***REMOVED***/homepage.html')
 
 def catalog(request):
-    return render(request, '***REMOVED***/catalog.html', {'items': Item.objects.all()})
+    CATEGORY_ORDER = [
+        ('formal', 'Formal Wear'),
+        ('casual', 'Casual Wear'),
+        ('sports', 'Sportswear'),
+        ('vintage', 'Vintage'),
+        ('street', 'Streetwear'),
+        ('active', 'Activewear'),
+        ('denim', 'Denim'),
+        ('outerwear', 'Outerwear'),
+        ('accessories', 'Accessories'),
+        ('other', 'Other'),
+    ]
+    
+    # Build a dictionary keyed by category code, each value is a list of items
+    items_by_category = {}
+    for code, label in CATEGORY_ORDER:
+        items_by_category[code] = Item.objects.filter(category=code).order_by('-created_at')
+
+    return render(request, '***REMOVED***/catalog.html', {
+        'CATEGORY_ORDER': CATEGORY_ORDER,
+        'items_by_category': items_by_category
+    })
 
 def profile(request):
     return render(request, '***REMOVED***/profile.html')
