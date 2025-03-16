@@ -27,7 +27,7 @@ def catalog(request):
     # Build a dictionary keyed by category code, each value is a list of items
     items_by_category = {}
     for code, label in CATEGORY_ORDER:
-        items_by_category[code] = Item.objects.filter(category=code).order_by('-created_at')
+        items_by_category[code] = Item.objects.filter(category=code).order_by('created_at')
 
     return render(request, '***REMOVED***/catalog.html', {
         'CATEGORY_ORDER': CATEGORY_ORDER,
