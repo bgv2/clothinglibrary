@@ -1,14 +1,14 @@
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import ItemForm, UserProfileForm
-from .models import UserProfile
+from .models import Item, UserProfile
 
 
 def home(request):
     return render(request, '***REMOVED***/homepage.html')
 
 def catalog(request):
-    return render(request, '***REMOVED***/catalog.html')
+    return render(request, '***REMOVED***/catalog.html', {'items': Item.objects.all()})
 
 def profile(request):
     return render(request, '***REMOVED***/profile.html')
