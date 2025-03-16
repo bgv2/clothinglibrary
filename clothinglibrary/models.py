@@ -20,7 +20,6 @@ class ContentPage(models.Model):
         return self.title
 
 class Item(models.Model):
-    uuid = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
 
     CONDITION_CHOICES = [
         ('NW', 'Brand New'),
