@@ -30,7 +30,7 @@ def add_item(request):
             if 'photo' in request.FILES:
                 photo_file = request.FILES['photo']
                 # Generate a unique file key for the image
-                file_key = f"item_photos/{uuid.uuid4().hex}_{photo_file.name}"
+                file_key = f"item_photos/{item.pk}_{photo_file.name}"
                 # Create an S3 client using credentials from settings
                 s3_client = boto3.client(
                     's3',
