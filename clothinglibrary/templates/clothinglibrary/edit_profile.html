@@ -9,13 +9,11 @@
                 <div class="card-body">
                     <form method="POST" action="{% url 'edit_profile' %}" enctype="multipart/form-data">
                         {% csrf_token %}
-
                         {% if form.non_field_errors %}
                             <div class="alert alert-danger">
                                 {{ form.non_field_errors }}
                             </div>
                         {% endif %}
-
                         {% for field in form %}
                             <div class="form-group">
                                 <label for="{{ field.id_for_label }}">{{ field.label }}</label>
@@ -27,7 +25,6 @@
                                 {% endif %}
                             </div>
                         {% endfor %}
-
                         <button type="submit" class="btn btn-primary mt-3">Save Changes</button>
                     </form>
                 </div>
