@@ -1,17 +1,69 @@
 {% extends "base.html" %}
 
 {% block content %}
-   <section class="welcome-message d-flex flex-column align-items-center text-center bg-light py-5" style="margin-top: 50px;">
-        <h1 class="fw-bold">Clothing Library</h1>
-            {% if user.is_librarian %}
-                <p>Welcome, Librarian! Ready to lend a new item?</p>
-            {% elif user.is_authenticated %}
-                <p>Welcome, Patron! Ready to borrow an item?</p>
-            {% else %}
-                <p>Rent UVA formal/event-wear for free!</p>
-            {% endif %}
-       <div class="mt-4">
-           <a href="{% url 'catalog' %}" class="btn btn-dark btn-lg">Go to Catalog</a>
+   <section class="welcome-message d-flex flex-column justify-content-center align-items-center text-center text-white bg-light py-5"
+            style="background-image: url('https://***REMOVED***.s3.amazonaws.com/static/landing_bg.jpg');
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            margin: 0;">
+       <div class="container-fluid">
+           <h1 class="display-2">Clothing Library</h1>
+                {% if user.is_librarian %}
+                    <p>Welcome, Librarian! Ready to lend a new item?</p>
+                {% elif user.is_authenticated %}
+                    <p>Welcome, Patron! Ready to borrow an item?</p>
+                {% else %}
+                    <p>Rent UVA formal/event-wear for free!</p>
+                {% endif %}
+           <div class="mt-4">
+               <a href="{% url 'catalog' %}" class="btn btn-lg text-light" style="background-color: #000000;">Go to Catalog</a>
+           </div>
        </div>
+    </section>
+    <section class="about-us bg-white py-5 text-center">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>How To Rent</h2>
+                    <p>[Instructions on how to use the website, will fill in later.]</p>
+                    <p>
+                        Example paragraph text to fill it in:
+                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
+                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
+                        ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+                        in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+                        Excepteur sint occaecat cupidatat non proident,
+                        sunt in culpa qui officia deserunt mollit anim id est laborum.
+                    </p>
+                </div>
+                <div class="col-md-6">
+                    <img src="https://***REMOVED***.s3.amazonaws.com/static/landing_bg.jpg" alt="How To Rent" class="img-fluid">
+                </div>
+            </div>
+        </div>
+        <div class="container mt-5 px-5">
+            <h2> About Us </h2>
+            <p>We are Group B-19, students taking CS 3240 - Software Engineering at the University of Virginia.
+            This project is a mock rental website, not to be used for real-world application.
+            </p>
+            {# FILL THIS IN / EDIT LATER, we should probably have either pictures or descriptions #}
+            <h5>Emma Ylagan</h5>
+            <h6 style="color: dimgrey">Scrum Master</h6>
+            <p> </p>
+            <h5>Elyse Undan</h5>
+            <h6 style="color: dimgrey">Requirements Manager</h6>
+            <p> </p>
+            <h5>Vikranth Nara</h5>
+            <h6 style="color: dimgrey">Testing Manager</h6>
+            <p> </p>
+            <h5>Bhargav Garre Venkata</h5>
+            <h6 style="color: dimgrey">DevOps Manager</h6>
+            <p> </p>
+            <h5>Pranav Goteti</h5>
+            <h6 style="color: dimgrey">Software Architect</h6>
+
+        </div>
     </section>
 {% endblock %}

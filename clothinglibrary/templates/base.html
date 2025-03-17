@@ -16,28 +16,28 @@
 
 <body class="d-flex flex-column min-vh-100">
     <header>
-        <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
-             <a class="navbar-brand" href="{% url 'home' %}">
+        <nav class="navbar navbar-expand-sm" style="background-color: #ffffff;">
+             <a class="navbar-brand text-dark" href="{% url 'home' %}">
                  <i class="bi bi-house-door-fill"></i> Clothing Library
              </a>
             <ul class="navbar-nav">
             {% if user.is_librarian %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'add_item' %}">Add Item</a>
+                    <a class="nav-link text-dark" href="{% url 'add_item' %}">Add Item</a>
                 </li>
             {% endif %}
             </ul>
             <ul class="navbar-nav ml-auto">
             {% if user.is_authenticated %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'profile' %}"><i class="bi bi-person"></i>{{ user.get_full_name }} ({{ user.username }})</a>
+                    <a class="nav-link text-dark" href="{% url 'profile' %}"><i class="bi bi-person"></i>{{ user.get_full_name }} ({{ user.username }})</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="{% url 'account_logout' %}">Log out</a>
+                    <a class="nav-link text-dark" href="{% url 'account_logout' %}">Log out</a>
                 </li>
             {% else %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{% provider_login_url 'google' %}">Sign in with Google</a>
+                    <a class="nav-link text-dark" href="{% provider_login_url 'google' %}">Sign in with Google</a>
                 </li>
             {% endif %}
             </ul>
@@ -51,7 +51,7 @@
         </div>
     </main>
 
-    <footer class="bg-dark text-white text-center py-3 mt-4">
+    <footer class="bg-light text-center py-3 mt-4">
     <p>&copy; 2024 B-19 | This system is a class project and not monitored. No real information should be submitted in this website.</p>
     </footer>
 </body>
