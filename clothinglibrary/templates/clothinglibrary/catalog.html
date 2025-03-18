@@ -1,41 +1,29 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block content %}
-<style>
-.scroll-container {
-   display: flex;
-   gap: 1rem;
-   overflow-x: auto; 
-   white-space: nowrap;
-}
-.item-card {
-   min-width: 200px; 
-   border: 1px solid #ccc; 
-   padding: 10px;
-   border-radius: 5px;
-   background-color: #f9f9f9;
-}
-</style>
-
 <div class="container mt-5">
-    {% for code, label in CATEGORY_ORDER %}
-        <h2>{{ label }}</h2>
-        <div class="scroll-container mb-4">
-            {% for item in items_by_category.code %}
-                <div class="item-card">
-                    <h5>{{ item.name }}</h5>
+    <h1>Catalog of Items</h1>
+
+    <div class="row">
+        {% for item in items %}
+            <div class="col-md-4">
+                <div class="card">
+                    <h5 class="card-title">{{ item.name }}</h5>
+
                     {% if item.photos.first %}
-                        <img src="{{ item.photos.first.photo.url }}" alt="{{ item.name }}" 
-                             style="width:100%; height:auto;" />
+                        <img src="{{ item.photos.first.photo.url|default_if_none:'#' }}" alt="{{ item.name }}" style="width:100%; height:auto;" />
                     {% else %}
-                        <p>No photo</p>
+                        <p>No photo available</p>
                     {% endif %}
-                    <p>Date Added: {{ item.created_at }}</p>
+
+                    <p>Category: {{ item.get_category_display }}</p>
+                    <p>Condition: {{ item.get_condition_display }}</p>
+                    <p>Date Added: {{ item.created_at|date:"F j, Y" }}</p>
                 </div>
-            {% empty %}
-                <p>No items in this category.</p>
-            {% endfor %}
-        </div>
-    {% endfor %}
+            </div>
+        {% empty %}
+            <p>No items available.</p>
+        {% endfor %}
+    </div>
 </div>
 {% endblock %}

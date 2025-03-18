@@ -23,7 +23,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('accounts/', include('allauth.urls')),
     path('accounts/', include('allauth.socialaccount.urls')),
-    path('catalog/', views.catalog, name='catalog'),
+    path('catalog/', views.catalog_view, name='catalog'),
     path('add-item/', views.add_item, name='add_item'),
     path('profile', views.profile, name='profile'),
     path('edit-profile/', views.edit_profile, name='edit_profile'),

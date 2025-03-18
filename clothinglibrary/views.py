@@ -34,6 +34,12 @@ def catalog(request):
         'items_by_category': items_by_category
     })
 
+
+def catalog_view(request):
+    items = Item.objects.prefetch_related('photos').all()  # Fetch items and related photos
+    return render(request, '***REMOVED***/catalog.html', {"items": items})
+
+
 def profile(request):
     return render(request, '***REMOVED***/profile.html')
 
