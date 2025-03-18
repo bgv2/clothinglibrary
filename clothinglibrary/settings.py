@@ -211,6 +211,3 @@ try:
         django_heroku.settings(locals())
 except ImportError:
     found = False
-
-MEDIA_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/"
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
