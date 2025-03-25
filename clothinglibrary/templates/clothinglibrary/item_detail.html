@@ -1,6 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
+{% if item.photos.first %}
+    <img src="{{ item.photos.first.photo }}" alt="{{ item.name }}" style="width:10rem; height:auto;" />
+{% else %}
+    <p>No photo available</p>
+{% endif %}
 <h1> {{ item.name }} </h1>
 <p> {{ item.description }} </p>
 <p> Size: {{ item.size }} </p>
@@ -8,11 +13,6 @@
 <p> Category: {{ item.get_category_display }} </p>
 <p> Condition: {{ item.get_condition_display }} </p>
 <p> Care Instructions: {{ item.care_instructions }} </p>
+<p> Protection Info: {{ item.protection_info }} </p>
 <p> Date Added: {{ item.created_at|date:"F j, Y" }} </p>
-
-{% if item.photos.first %}
-    <img src="{{ item.photos.first.photo.url }}" alt="{{ item.name }}" style="width:100%; height:auto;" />
-{% else %}
-    <p>No photo available</p>
-{% endif %}
 {% endblock %}
