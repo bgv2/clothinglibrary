@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1> {{ item.name }} </h1>
+<p> {{ item.description }} </p>
+<p> Size: {{ item.size }} </p>
+<p> Measurements: {{ item.measurements }} </p>
+<p> Category: {{ item.get_category_display }} </p>
+<p> Condition: {{ item.get_condition_display }} </p>
+<p> Care Instructions: {{ item.care_instructions }} </p>
+<p> Date Added: {{ item.created_at|date:"F j, Y" }} </p>
+
+{% if item.photos.first %}
+    <img src="{{ item.photos.first.photo.url }}" alt="{{ item.name }}" style="width:100%; height:auto;" />
+{% else %}
+    <p>No photo available</p>
+{% endif %}
+{% endblock %}
