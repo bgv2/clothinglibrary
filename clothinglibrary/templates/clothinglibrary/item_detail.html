@@ -8,10 +8,13 @@
 {% endif %}
 <h1> {{ item.name }} </h1>
 <p> {{ item.description }} </p>
+<p> Lender: {{ item.lender.get_full_name }} </p>
+<p> Max Rental Duration: {{ item.max_rental_duration }} days </p>
 <p> Size: {{ item.size }} </p>
 <p> Measurements: {{ item.measurements }} </p>
 <p> Category: {{ item.get_category_display }} </p>
-<p> Condition: {{ item.get_condition_display }} </p>
+<p> Condition: {{ item.get_condition_display }} (worn {{ item.times_worn }} times)</p>
+<p> Flaws: {{ item.flaws }} </p>
 <p> Care Instructions: {{ item.care_instructions }} </p>
 <p> Protection Info: {{ item.protection_info }} </p>
 <p> Date Added: {{ item.created_at|date:"F j, Y" }} </p>
