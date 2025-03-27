@@ -71,8 +71,7 @@ def add_item(request):
                 # Save the ItemPhoto object
                 ItemPhoto.objects.create(item=item, photo=photo_url, is_primary=True)
 
-            # TODO: Eventually redirect to product detail page, not just home
-            return redirect('home')
+            return redirect('item_detail', item_id=item.pk)
     else:
         form = ItemForm()
 
