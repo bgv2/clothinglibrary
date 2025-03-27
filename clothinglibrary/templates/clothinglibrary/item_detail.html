@@ -18,4 +18,10 @@
 <p> Care Instructions: {{ item.care_instructions }} </p>
 <p> Protection Info: {{ item.protection_info }} </p>
 <p> Date Added: {{ item.created_at|date:"F j, Y" }} </p>
+<h2> Reviews </h2>
+<ul>
+{% for review in item.reviews.all %}
+<li>{{ review.user.username }} says: {{ review.comment }} </li>
+{% endfor %}
+</ul>
 {% endblock %}
