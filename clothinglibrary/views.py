@@ -109,3 +109,10 @@ def add_review(request, item_id):
         )
         return redirect('item_detail', item_id=item_id)
     return redirect('item_detail', item_id=item_id)
+
+@login_required
+def delete_review(request, review_id):
+    review = get_object_or_404(Review, pk=review_id)
+    if review.user == request.user:  # Ensure the logged-in user is the author
+        review.delete()
+    return redirect('item_detail', item_id=review.item.id)
