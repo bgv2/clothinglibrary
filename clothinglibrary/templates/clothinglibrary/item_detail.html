@@ -23,13 +23,9 @@
     {% for review in item.reviews.all %}
         <li>
             <strong>{{ review.user.username }}</strong>: 
-            <span class="star-rating-display" data-rating="{{ review.rating }}">
+            <span>
                 {% for i in "12345" %}
-                    {% if forloop.counter <= review.rating %}
-                        <span class="star filled">&#9733;</span>
-                    {% else %}
-                        <span class="star">&#9733;</span>
-                    {% endif %}
+                    <span class="star {% if forloop.counter <= review.rating %}filled{% endif %}">&#9733;</span>
                 {% endfor %}
             </span>
             <p>{{ review.comment }}</p>
