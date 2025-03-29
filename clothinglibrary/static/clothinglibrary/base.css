@@ -1,24 +1,38 @@
-/* For anything custom CSS */
+/* Star rating input */
 .star-rating {
     display: inline-flex;
     flex-direction: row-reverse;
     font-size: 2rem;
-  }
-  
-  .star-rating input[type="radio"] {
+}
+
+.star-rating input[type="radio"] {
     display: none;
-  }
-  
-  .star-rating label {
+}
+
+.star-rating label {
     color: #bbb;
     cursor: pointer;
-  }
-  
-  .star-rating label:hover,
-  .star-rating label:hover ~ label {
+}
+
+.star-rating label:hover,
+.star-rating label:hover ~ label {
     color: gold;
-  }
-  
-  .star-rating input[type="radio"]:checked ~ label {
+}
+
+.star-rating input[type="radio"]:checked ~ label {
     color: gold;
-  }
+}
+
+/* Star rating display */
+.star-rating-display {
+    display: inline-flex;
+    font-size: 1.5rem;
+}
+
+.star-rating-display .star {
+    color: #bbb;
+}
+
+.star-rating-display .star.filled {
+    color: gold;
+}
