@@ -18,10 +18,40 @@
 <p> Care Instructions: {{ item.care_instructions }} </p>
 <p> Protection Info: {{ item.protection_info }} </p>
 <p> Date Added: {{ item.created_at|date:"F j, Y" }} </p>
-<h2> Reviews </h2>
+<h2>Reviews</h2>
 <ul>
-{% for review in item.reviews.all %}
-<li>{{ review.user.username }} says: {{ review.comment }} </li>
-{% endfor %}
+    {% for review in item.reviews.all %}
+        <li>
+            {{ review.user.username }}: {{ review.comment }} ({{ review.rating }}/5)
+        </li>
+    {% empty %}
+        <li>No reviews yet.</li>
+    {% endfor %}
 </ul>
+
+<h3>Add a Review</h3>
+<form method="POST" action="{% url 'add_review' item.id %}">
+    {% csrf_token %}
+    <textarea name="comment" rows="4" cols="60" placeholder="Write your review here..."></textarea>
+    <br><br>
+    <label>Rating:</label>
+        <div class="star-rating">
+        <input type="radio" id="star5" name="rating" value="5">
+        <label for="star5" title="5 stars">&#9733;</label>
+        
+        <input type="radio" id="star4" name="rating" value="4">
+        <label for="star4" title="4 stars">&#9733;</label>
+        
+        <input type="radio" id="star3" name="rating" value="3">
+        <label for="star3" title="3 stars">&#9733;</label>
+        
+        <input type="radio" id="star2" name="rating" value="2">
+        <label for="star2" title="2 stars">&#9733;</label>
+        
+        <input type="radio" id="star1" name="rating" value="1">
+        <label for="star1" title="1 star">&#9733;</label>
+        </div>
+    <br><br>
+    <button type="submit">Submit</button>
+</form>
 {% endblock %}

@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 
 from ***REMOVED*** import settings
 from .forms import ItemForm, UserProfileForm
-from .models import Item, UserProfile, ItemPhoto
+from .models import Item, UserProfile, ItemPhoto, Review
 import boto3
 import uuid
 
@@ -94,3 +94,18 @@ def edit_profile(request):
         form = UserProfileForm(instance=user_profile)
 
     return render(request, '***REMOVED***/edit_profile.html', {'form': form})
+
+@login_required
+def add_review(request, item_id):
+    item = get_object_or_404(Item, pk=item_id)
+    if request.method == 'POST':
+        comment = request.POST.get('comment')
+        rating = request.POST.get('rating')
+        Review.objects.create(
+            item=item,
+            user=request.user,
+            comment=comment,
+            rating=rating
+        )
+        return redirect('item_detail', item_id=item_id)
+    return redirect('item_detail', item_id=item_id)
