@@ -134,7 +134,9 @@ class Collection(models.Model):
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='collections')
     allowed_users = models.ManyToManyField(User, related_name='shared_collections', blank=True)
 
-    #Chat Prompt: "How can I make it so that only selected users can view private collections?"
+    # Resource: ChatGPT 4o
+    # Prompt: "How can I make it so that only selected users can view private collections?"
+    # Date: March 30, 2025 10:11pm
     def user_can_view(self, user):
         if self.is_public:
             return True
