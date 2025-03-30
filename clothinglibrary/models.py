@@ -125,3 +125,27 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"Profile for {self.user.username}"
+    
+class Collection(models.Model):
+    title = models.CharField(max_length=500)
+    description = models.CharField(max_length=1000)
+    items = models.ManyToManyField(Item, related_name='collections')
+    is_public = models.BooleanField(default=True)
+    creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name='collections')
+    allowed_users = models.ManyToManyField(User, related_name='shared_collections', blank=True)
+
+    #Chat Prompt: "How can I make it so that only selected users can view private collections?"
+    def user_can_view(self, user):
+        if self.is_public:
+            return True
+        if user.is_librarian():
+            return True
+        return user in self.allowed_users.all()
+
+    def save(self, *args, **kwargs):
+        if not self.creator.is_librarian():
+            self.is_public = True
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.title
