@@ -7,7 +7,7 @@
     <div class="row">
         {% for item in items %}
             <div class="col-md-4">
-                <div class="card">
+                <div class="card p-3">
                     <h5 class="card-title">
                         <a href="{% url 'item_detail' item.id %}">{{ item.name }}</a>
                     </h5>
@@ -27,5 +27,16 @@
             <p>No items available.</p>
         {% endfor %}
     </div>
+    <h2>Collections</h2>
+        {% for collection in collections %}
+                <h3>{{ collection.title }}</h3>
+                <p>{{ collection.description }}</p>
+                <p>Created by: {{ collection.creator.username }}</p>
+                {% for item in collection.items.all %}
+                    <a href="{% url 'item_detail' item.id %}">{{ item.name }}</a><br>
+                {% endfor %}
+        {% empty %}
+            <p>No collections available.</p>
+        {% endfor %}
 </div>
 {% endblock %}

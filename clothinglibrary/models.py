@@ -140,6 +140,8 @@ class Collection(models.Model):
     def user_can_view(self, user):
         if self.is_public:
             return True
+        if not user.is_authenticated:
+            return False
         if user.is_librarian():
             return True
         return user in self.allowed_users.all()

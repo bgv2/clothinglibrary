@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 
 from ***REMOVED*** import settings
 from .forms import ItemForm, UserProfileForm
-from .models import Item, UserProfile, ItemPhoto, Review
+from .models import Item, UserProfile, ItemPhoto, Review, Collection
 import boto3
 import uuid
 
@@ -37,7 +37,12 @@ def catalog(request):
 
 def catalog_view(request):
     items = Item.objects.prefetch_related('photos').all()  # Fetch items and related photos
-    return render(request, '***REMOVED***/catalog.html', {"items": items})
+    # Resource: ChatGPT 4o
+    # Prompt: Can I filter by a function in a Django model?
+    # Date: March 30, 2025 7:20pm
+    all_collections = Collection.objects.all()
+    visible_collections = [collection for collection in all_collections if collection.user_can_view(request.user)]
+    return render(request, '***REMOVED***/catalog.html', {"items": items, "collections": visible_collections})
 
 
 def profile(request):
