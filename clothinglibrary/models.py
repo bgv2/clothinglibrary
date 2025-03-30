@@ -136,7 +136,7 @@ class Collection(models.Model):
 
     # Resource: ChatGPT 4o
     # Prompt: "How can I make it so that only selected users can view private collections?"
-    # Date: March 30, 2025 10:11pm
+    # Date: March 30, 2025 10:11am
     def user_can_view(self, user):
         if self.is_public:
             return True
