@@ -29,15 +29,22 @@
     </div>
     <h2>Collections</h2>
         {% for collection in collections %}
-                <h3>{{ collection.title }}</h3>
+                <h3>{{ collection.title }} 
+                    {% if user.is_authenticated and user.is_librarian or user.is_authenticated and collection.creator == user %}
+                    <a href="{% url 'edit_collection' collection.id %}">[Edit]</a><br>
+                    {% endif %}
+                </h3>
                 <p>{{ collection.description }}</p>
                 <p>Created by: {{ collection.creator.username }}</p>
+                <ul>
                 {% for item in collection.items.all %}
-                    <a href="{% url 'item_detail' item.id %}">{{ item.name }}</a><br>
+                    <li>
+                        <a href="{% url 'item_detail' item.id %}">{{ item.name }}</a>
+                    </li>
+                {% empty %}
+                    <li>No items in this collection.</li>
                 {% endfor %}
-                {% if user.is_authenticated and user.is_librarian or user.is_authenticated and collection.creator == user %}
-                    <a href="{% url 'edit_collection' collection.id %}">Edit Collection</a><br>
-                {% endif %}
+                </ul>
         {% empty %}
             <p>No collections available.</p>
         {% endfor %}
