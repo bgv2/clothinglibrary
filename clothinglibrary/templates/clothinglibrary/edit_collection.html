@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
+<h1>Edit Collection</h1>
+<p>Use Ctrl + Click (or Cmd + Click on Mac) to select multiple items.</p>
 <form method="post">{% csrf_token %}
     {{ form.as_p }}
     <input type="submit" value="Update">
