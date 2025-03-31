@@ -61,6 +61,12 @@ class CollectionCreateView(CreateView):
         if (form.cleaned_data.get('is_public')) and (form.cleaned_data.get('allowed_users')):
             form.add_error('allowed_users', "Public collections cannot have a list of allowed users.")
             return self.form_invalid(form)
+        items = form.cleaned_data.get('items')
+        if items:
+            for item in items:
+                if Collection.objects.filter(items__in=[item], is_public=False).exists():
+                    form.add_error('items', f"{item} is already in a private collection.")
+                    return self.form_invalid(form)
         form.instance.creator = self.request.user
         return super().form_valid(form)
 
