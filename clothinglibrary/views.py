@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
 from ***REMOVED*** import settings
 from .forms import ItemForm, UserProfileForm
@@ -45,6 +46,17 @@ def catalog_view(request):
     visible_collections = [collection for collection in all_collections if collection.user_can_view(request.user)]
     return render(request, '***REMOVED***/catalog.html', {"items": items, "collections": visible_collections})
 
+
+@method_decorator(login_required, name='dispatch')
+class CollectionCreateView(CreateView):
+    model = Collection
+    fields = ['title', 'description', 'items', 'is_public']
+    template_name = '***REMOVED***/create_collection.html'
+    success_url = '/catalog/'
+
+    def form_valid(self, form):
+        form.instance.creator = self.request.user
+        return super().form_valid(form)
 
 class CollectionUpdateView(UpdateView):
     model = Collection

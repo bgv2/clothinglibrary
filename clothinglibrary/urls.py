@@ -32,5 +32,6 @@ urlpatterns = [
     path('item/<item_id>/review/', views.add_review, name='add_review'),
     path('review/<review_id>/delete/', views.delete_review, name='delete_review'),
     path('collection/<int:pk>/', views.CollectionUpdateView.as_view(), name='edit_collection'),
+    path('collection/create/', views.CollectionCreateView.as_view(), name='create_collection'),
 
 ]
