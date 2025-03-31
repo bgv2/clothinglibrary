@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 
@@ -75,6 +75,18 @@ class CollectionUpdateView(UpdateView):
     fields = ['title', 'description', 'items']
     template_name = '***REMOVED***/edit_collection.html'
     success_url = '/catalog/'
+
+@method_decorator(login_required, name='dispatch')
+class CollectionDeleteView(DeleteView):
+    model = Collection
+    template_name = '***REMOVED***/delete_collection.html'
+    success_url = '/catalog/'
+
+    # get which collections the user can delete
+    def get_queryset(self):
+        if self.request.user.is_librarian():
+            return Collection.objects.all()
+        return self.model.objects.filter(creator=self.request.user)
 
 def profile(request):
     return render(request, '***REMOVED***/profile.html')

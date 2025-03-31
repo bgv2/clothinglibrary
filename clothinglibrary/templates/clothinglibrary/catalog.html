@@ -34,7 +34,8 @@
         {% for collection in collections %}
                 <h3>{{ collection.title }} 
                     {% if user.is_authenticated and user.is_librarian or user.is_authenticated and collection.creator == user %}
-                    <a href="{% url 'edit_collection' collection.id %}">[Edit]</a><br>
+                    <a href="{% url 'edit_collection' collection.id %}">[Edit] </a>
+                    <a href="{% url 'delete_collection' collection.id %}">[Delete]</a>
                     {% endif %}
                 </h3>
                 <p>{{ collection.description }}</p>

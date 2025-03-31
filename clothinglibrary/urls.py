@@ -33,5 +33,5 @@ urlpatterns = [
     path('review/<review_id>/delete/', views.delete_review, name='delete_review'),
     path('collection/<int:pk>/', views.CollectionUpdateView.as_view(), name='edit_collection'),
     path('collection/create/', views.CollectionCreateView.as_view(), name='create_collection'),
-
+    path('collection/<int:pk>/delete/', views.CollectionDeleteView.as_view(), name='delete_collection'),
 ]
