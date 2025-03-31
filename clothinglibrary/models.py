@@ -1,8 +1,6 @@
 from django.db import models
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from django.utils import timezone
-import uuid
-from django.conf import settings
 
 def is_librarian(self):
     return self.groups.filter(name='Librarians').exists()
