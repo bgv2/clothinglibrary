@@ -50,11 +50,14 @@ def catalog_view(request):
 @method_decorator(login_required, name='dispatch')
 class CollectionCreateView(CreateView):
     model = Collection
-    fields = ['title', 'description', 'items', 'is_public']
+    fields = ['title', 'description', 'items', 'is_public', 'allowed_users']
     template_name = '***REMOVED***/create_collection.html'
     success_url = '/catalog/'
 
     def form_valid(self, form):
+        if (not form.cleaned_data.get('is_public')) and (not self.request.user.is_librarian()):
+            form.add_error('is_public', "You must be a librarian to create a private collection.")
+            return self.form_invalid(form)
         form.instance.creator = self.request.user
         return super().form_valid(form)
 
