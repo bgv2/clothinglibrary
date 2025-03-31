@@ -31,6 +31,6 @@ urlpatterns = [
     path('edit-profile/', views.edit_profile, name='edit_profile'),
     path('item/<item_id>/review/', views.add_review, name='add_review'),
     path('review/<review_id>/delete/', views.delete_review, name='delete_review'),
-
+    path('collection/<int:pk>/', views.CollectionUpdateView.as_view(), name='edit_collection'),
 
 ]

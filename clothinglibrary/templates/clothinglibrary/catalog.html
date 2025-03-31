@@ -35,6 +35,9 @@
                 {% for item in collection.items.all %}
                     <a href="{% url 'item_detail' item.id %}">{{ item.name }}</a><br>
                 {% endfor %}
+                {% if user.is_authenticated and user.is_librarian or user.is_authenticated and collection.creator == user %}
+                    <a href="{% url 'edit_collection' collection.id %}">Edit Collection</a><br>
+                {% endif %}
         {% empty %}
             <p>No collections available.</p>
         {% endfor %}

@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404, render, redirect
+from django.views.generic.edit import UpdateView
 from django.contrib.auth.decorators import login_required
 
 from ***REMOVED*** import settings
@@ -44,6 +45,12 @@ def catalog_view(request):
     visible_collections = [collection for collection in all_collections if collection.user_can_view(request.user)]
     return render(request, '***REMOVED***/catalog.html', {"items": items, "collections": visible_collections})
 
+
+class CollectionUpdateView(UpdateView):
+    model = Collection
+    fields = ['title', 'description', 'items']
+    template_name = '***REMOVED***/edit_collection.html'
+    success_url = '/catalog/'
 
 def profile(request):
     return render(request, '***REMOVED***/profile.html')
