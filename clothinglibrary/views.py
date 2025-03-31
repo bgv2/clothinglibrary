@@ -58,6 +58,9 @@ class CollectionCreateView(CreateView):
         if (not form.cleaned_data.get('is_public')) and (not self.request.user.is_librarian()):
             form.add_error('is_public', "You must be a librarian to create a private collection.")
             return self.form_invalid(form)
+        if (form.cleaned_data.get('is_public')) and (form.cleaned_data.get('allowed_users')):
+            form.add_error('allowed_users', "Public collections cannot have a list of allowed users.")
+            return self.form_invalid(form)
         form.instance.creator = self.request.user
         return super().form_valid(form)
 
