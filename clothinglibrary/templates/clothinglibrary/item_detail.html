@@ -29,10 +29,12 @@
                 <span>
                     {% if review.user.userprofile.photo %}
                         <img src="{{ review.user.userprofile.photo.url }}" alt="Profile Photo" class="small-profile-image" />
+                    {% else %}
+                        <i class="bi bi-person-circle"></i>
                     {% endif %}
-                    {{ review.user.get_full_name }}</span>
+                    {{ review.user.get_full_name|default:review.user.username }}
+                </span>
             </h6>
-            {% comment %} <strong>{{ review.user.username }}</strong> {% endcomment %}
             <p>{{ review.comment }}</p>
             {% if review.user == user %}
                 <!-- Show delete button only for the review's author -->
