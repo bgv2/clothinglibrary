@@ -36,3 +36,15 @@
 .star-rating-display .star.filled {
     color: gold;
 }
+
+.small-profile-image {
+    width: 20px;
+    height: 20px;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.review-title {
+    display: flex;
+    justify-content: space-between;
+}

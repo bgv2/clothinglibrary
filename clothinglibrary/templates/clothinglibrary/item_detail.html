@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load review_stars %}
 
 {% block content %}
 {% if item.photos.first %}
@@ -19,10 +20,20 @@
 <p> Protection Info: {{ item.protection_info }} </p>
 <p> Date Added: {{ item.created_at|date:"F j, Y" }} </p>
 <h2>Reviews</h2>
-<ul>
+<div class="row">
     {% for review in item.reviews.all %}
-        <li>
-            <strong>{{ review.user.username }}</strong>: {{ review.comment }} ({{ review.rating }}/5)
+    <div class="col-md-4">
+        <div class="card p-3 mb-3">
+            <h6 class="card-title review-title" style="">
+                <span>{{ review.rating|stars }}</span>
+                <span>
+                    {% if review.user.userprofile.photo %}
+                        <img src="{{ review.user.userprofile.photo.url }}" alt="Profile Photo" class="small-profile-image" />
+                    {% endif %}
+                    {{ review.user.get_full_name }}</span>
+            </h6>
+            {% comment %} <strong>{{ review.user.username }}</strong> {% endcomment %}
+            <p>{{ review.comment }}</p>
             {% if review.user == user %}
                 <!-- Show delete button only for the review's author -->
                 <form method="POST" action="{% url 'delete_review' review.id %}" style="display:inline;">
@@ -30,17 +41,17 @@
                     <button type="submit" class="btn btn-danger btn-sm">Delete</button>
                 </form>
             {% endif %}
-        </li>
+        </div>
+    </div>
     {% empty %}
-        <li>No reviews yet.</li>
+    <p class="ml-3">No reviews yet.</p>
     {% endfor %}
-</ul>
-
+</div>
 <h3>Add a Review</h3>
 {% if user.is_authenticated %}
     <form method="POST" action="{% url 'add_review' item.id %}">
         {% csrf_token %}
-        <textarea name="comment" rows="4" cols="60" placeholder="Write your review here..."></textarea>
+        <textarea name="comment" rows="4" cols="60" class="form-control" placeholder="Write your review here..."></textarea>
         <br><br>
         <label for="rating">Rating:</label>
         <select name="rating" id="rating">
@@ -51,9 +62,9 @@
             <option value="5">5</option>
         </select>
         <br><br>
-        <button type="submit">Submit</button>
+        <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 {% else %}
-    <p>You must <a href="{% url 'account_login' %}">log in</a> to add a review.</p>
+    <p>You must log in to add a review.</p>
 {% endif %}
 {% endblock %}
