@@ -29,13 +29,13 @@
     </div>
     <h2>Collections</h2>
     {% if user.is_authenticated %}
-    <a href="{% url 'create_collection' %}">New collection</a>
+    <a href="{% url 'create_collection' %}" class="btn btn-primary">New collection</a>
     {% endif %}
         {% for collection in collections %}
                 <h3>{{ collection.title }} 
                     {% if user.is_authenticated and user.is_librarian or user.is_authenticated and collection.creator == user %}
-                    <a href="{% url 'edit_collection' collection.id %}">[Edit] </a>
-                    <a href="{% url 'delete_collection' collection.id %}">[Delete]</a>
+                    <a href="{% url 'edit_collection' collection.id %}" class="btn btn-outline-primary">Edit</a>
+                    <a href="{% url 'delete_collection' collection.id %}" class="btn btn-outline-primary">Delete</a>
                     {% endif %}
                 </h3>
                 <p>{{ collection.description }}</p>
