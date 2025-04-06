@@ -105,15 +105,22 @@ def add_item(request):
             if 'photo' in request.FILES:
                 photo_file = request.FILES['photo']
                 # Generate a unique file key for the image
-                file_key = f"item_photos/{item.pk}_{photo_file.name}"
+                file_key = f"item_photos/{item.pk}_{uuid.uuid4().hex}_{photo_file.name}"
                 # Create an S3 client using credentials from settings
-                s3_client = boto3.client(
-                    's3',
+                s3_client = boto3.client('s3',
                     aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
-                    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY
+                    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
                 )
                 # Upload the file-like object directly
-                s3_client.upload_fileobj(photo_file, settings.AWS_STORAGE_BUCKET_NAME, file_key)
+                s3_client.upload_fileobj(
+                    photo_file,
+                    settings.AWS_STORAGE_BUCKET_NAME,
+                    file_key,
+                    ExtraArgs={
+                        "CacheControl": "max-age=2628000", # 30 days
+                        "ContentType": photo_file.content_type, 
+                    },
+                )
                 # Construct the photo URL
                 photo_url = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{file_key}"
                 # Save the ItemPhoto object
