@@ -53,16 +53,25 @@
 {% if user.is_authenticated %}
     <form method="POST" action="{% url 'add_review' item.id %}">
         {% csrf_token %}
-        <textarea name="comment" rows="4" cols="60" class="form-control" placeholder="Write your review here..."></textarea>
-        <br><br>
+        <textarea name="comment" rows="4" cols="60" class="form-control" required placeholder="Write your review here..."></textarea>
         <label for="rating">Rating:</label>
-        <select name="rating" id="rating">
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-        </select>
+        <div class="star-rating">
+            <label for="star5" title="5 stars">&#9733;</label>
+            <input type="radio" id="star5" name="rating" value="5">
+        
+            <label for="star4" title="4 stars">&#9733;</label>
+            <input type="radio" id="star4" name="rating" value="4">
+        
+            <label for="star3" title="3 stars">&#9733;</label>
+            <input type="radio" id="star3" name="rating" value="3">
+        
+            <label for="star2" title="2 stars">&#9733;</label>
+            <input type="radio" id="star2" name="rating" value="2">
+        
+            <label for="star1" title="1 star">&#9733;</label>
+            <input type="radio" id="star1" name="rating" value="1" required>
+            {% comment %} TODO: display warning message when rating not selected {% endcomment %}
+        </div>
         <br><br>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>

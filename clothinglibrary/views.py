@@ -156,6 +156,8 @@ def add_review(request, item_id):
     if request.method == 'POST':
         comment = request.POST.get('comment')
         rating = request.POST.get('rating')
+        if not comment or not rating:
+            return redirect('item_detail', item_id=item_id)
         Review.objects.create(
             item=item,
             user=request.user,
