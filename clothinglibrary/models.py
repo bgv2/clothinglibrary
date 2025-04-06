@@ -121,7 +121,6 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True)
     photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True, storage=ProfilePhotoStorage)
-    # TODO: give each image uuid names to avoid collisions
     
     def __str__(self):
         return f"Profile for {self.user.username}"
