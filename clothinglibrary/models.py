@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from .custom_storages import ProfilePhotoStorage
 
 def is_librarian(self):
     return self.groups.filter(name='Librarians').exists()
@@ -119,8 +120,9 @@ class ReviewPhoto(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True)
-    photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
-
+    photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True, storage=ProfilePhotoStorage)
+    # TODO: give each image uuid names to avoid collisions
+    
     def __str__(self):
         return f"Profile for {self.user.username}"
     
