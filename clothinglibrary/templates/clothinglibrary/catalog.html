@@ -39,6 +39,9 @@
                 </div>
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">{{ collection.title }}</h5>
+                    {% if not collection.is_public %}
+                        <p class="text-muted small mb-2"> Private Collection</p>
+                    {% endif %}
                     <p class="text-muted small mb-2">Created by: {{ collection.creator.username }}</p>
                     <p class="card-text">{{ collection.description }}</p>
                 </div>
