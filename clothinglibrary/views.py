@@ -133,7 +133,7 @@ def add_item(request):
     return render(request, '***REMOVED***/add_item.html', {'form': form})
 
 def item_detail(request, item_id):
-    item = get_object_or_404(Item, pk=item_id)
+    item = get_object_or_404(Item.objects.prefetch_related('photos'), pk=item_id)
     return render(request, '***REMOVED***/item_detail.html', {'item': item})
 
 @login_required
