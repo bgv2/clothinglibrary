@@ -25,16 +25,14 @@
     color: gold;
 }
 
-/* Star rating display */
-.star-rating-display {
-    display: inline-flex;
-    font-size: 1.5rem;
+.small-profile-image {
+    width: 20px;
+    height: 20px;
+    object-fit: cover;
+    border-radius: 50%;
 }
 
-.star-rating-display .star {
-    color: #bbb;
-}
-
-.star-rating-display .star.filled {
-    color: gold;
+.review-title {
+    display: flex;
+    justify-content: space-between;
 }

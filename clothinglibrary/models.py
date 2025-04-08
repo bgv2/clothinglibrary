@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from .custom_storages import ProfilePhotoStorage
 
 def is_librarian(self):
     return self.groups.filter(name='Librarians').exists()
