@@ -2,23 +2,47 @@
 {% load review_stars %}
 
 {% block content %}
-{% if item.photos.first %}
-    <img src="{{ item.photos.first.photo }}" alt="{{ item.name }}" style="width:10rem; height:auto;" />
-{% else %}
-    <p>No photo available</p>
-{% endif %}
-<h1> {{ item.name }} </h1>
-<p> {{ item.description }} </p>
-<p> Lender: {{ item.lender.get_full_name }} </p>
-<p> Max Rental Duration: {{ item.max_rental_duration }} days </p>
-<p> Size: {{ item.size }} </p>
-<p> Measurements: {{ item.measurements }} </p>
-<p> Category: {{ item.get_category_display }} </p>
-<p> Condition: {{ item.get_condition_display }} (worn {{ item.times_worn }} times)</p>
-<p> Flaws: {{ item.flaws }} </p>
-<p> Care Instructions: {{ item.care_instructions }} </p>
-<p> Protection Info: {{ item.protection_info }} </p>
-<p> Date Added: {{ item.created_at|date:"F j, Y" }} </p>
+    <div class="container py-4">
+        <div class="row align-items-stretch min-vh-75 gx-4">
+            <div class="col-lg-8 col-md-7 mb-4 p-0">
+                {% if item.photos.first %}
+                    <div class="bg-light rounded d-flex justify-content-center align-items-center h-100 p-0 overflow-hidden"
+                         style="background-image: url('{{ item.photos.first.photo }}'); background-size: contain; background-position: center; max-height: 400px; background-repeat: no-repeat;">
+                    </div>
+                {% else %}
+                    <div class="w-100 bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 500px;">
+                        <p>No photo available</p>
+                    </div>
+                {% endif %}
+            </div>
+        <div class="col-lg-4 col-md-5 mb-4">
+            <div class="bg-white p-4 rounded shadow-sm h-100 d-flex flex-column justify-content-between">
+            <h1 class="h3 mb-4 text-center"> {{ item.name }} </h1>
+                <p class="text-center mb-4 text-muted" style="font-size: 0.9rem;"> Lender: {{ item.lender.get_full_name }} </p>
+                <p class="text-center mb-4"> Category: {{ item.get_category_display }} </p>
+                <p class="text-center mb-0">{{ item.description }}</p>
+                <a href="#" class="btn btn-primary mt-4 align-self-center">Click here to rent</a>  {#  need to add rental implementation #}
+                <p class="text-center mt-4"> Date Added: {{ item.created_at|date:"F j, Y" }} </p>
+                <p class="text-center mb-4"> Max Rental Duration: {{ item.max_rental_duration }} days </p>
+                <p class="text-center mt-4 text-muted" style="font-size: 0.9rem;"> View Product Details Down Below. </p>
+            </div>
+        </div>
+        </div>
+    </div>
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="bg-white p-4 rounded shadow-sm" style="max-width: 80%; margin: 0 auto;">
+                <h3 class="h5 mb-3">Product Details</h3>
+                <p> Size: {{ item.size }} </p>
+                <p> Measurements: {{ item.measurements }} </p>
+                <p> Condition: {{ item.get_condition_display }} (worn {{ item.times_worn }} times)</p>
+                <p> Flaws: {{ item.flaws }} </p>
+                <p> Care Instructions: {{ item.care_instructions }} </p>
+                <p> Protection Info: {{ item.protection_info }} </p>
+            </div>
+        </div>
+    </div>
+    <hr style="margin-top: 80px; margin-bottom: 40px;">
 <h2>Reviews</h2>
 <div class="row">
     {% for review in item.reviews.all %}

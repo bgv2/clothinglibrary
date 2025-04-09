@@ -29,28 +29,41 @@
     </div>
     <h2>Collections</h2>
     {% if user.is_authenticated %}
-    <a href="{% url 'create_collection' %}" class="btn btn-primary">New collection</a>
+    <a href="{% url 'create_collection' %}" class="btn btn-primary mb-4">New collection</a>
     {% endif %}
+    <div class="d-flex overflow-auto flex-row gap-3 pb-3">
         {% for collection in collections %}
-                <h3>{{ collection.title }} 
-                    {% if user.is_authenticated and user.is_librarian or user.is_authenticated and collection.creator == user %}
-                    <a href="{% url 'edit_collection' collection.id %}" class="btn btn-outline-primary">Edit</a>
-                    <a href="{% url 'delete_collection' collection.id %}" class="btn btn-outline-primary">Delete</a>
+            <div class="card shadow-sm" style="min-width: 300px; max-width: 300px; height: 100%; flex: 0 0 auto;">
+                <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <span>No Image</span>
+                </div>
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title">{{ collection.title }}</h5>
+                    {% if not collection.is_public %}
+                        <p class="text-muted small mb-2"> Private Collection</p>
                     {% endif %}
-                </h3>
-                <p>{{ collection.description }}</p>
-                <p>Created by: {{ collection.creator.username }}</p>
-                <ul>
-                {% for item in collection.items.all %}
-                    <li>
-                        <a href="{% url 'item_detail' item.id %}">{{ item.name }}</a>
-                    </li>
-                {% empty %}
-                    <li>No items in this collection.</li>
-                {% endfor %}
+                    <p class="text-muted small mb-2">Created by: {{ collection.creator.username }}</p>
+                    <p class="card-text">{{ collection.description }}</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    {% for item in collection.items.all %}
+                        <li class="list-group-item">
+                            <a href="{% url 'item_detail' item.id %}">{{ item.name }}</a>
+                        </li>
+                    {% empty %}
+                        <li class="list-group-item text-muted">No items in this collection.</li>
+                    {% endfor %}
                 </ul>
+                {% if user.is_authenticated and user.is_librarian or collection.creator == user %}
+                    <div class="card-footer d-flex justify-content-end gap-2">
+                        <a href="{% url 'edit_collection' collection.id %}" class="btn btn-sm btn-outline-secondary">Edit</a>
+                        <a href="{% url 'delete_collection' collection.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                    </div>
+                {% endif %}
+            </div>
         {% empty %}
-            <p>No collections available.</p>
+            <p  class="text-muted">No collections available.</p>
         {% endfor %}
+    </div>
 </div>
 {% endblock %}
