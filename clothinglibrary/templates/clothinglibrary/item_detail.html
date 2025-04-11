@@ -16,15 +16,19 @@
                 {% endif %}
             </div>
         <div class="col-lg-4 col-md-5 mb-4">
-            <div class="bg-white p-4 rounded shadow-sm h-100 d-flex flex-column justify-content-between">
-            <h1 class="h3 mb-4 text-center"> {{ item.name }} </h1>
-                <p class="text-center mb-4 text-muted" style="font-size: 0.9rem;"> Lender: {{ item.lender.get_full_name }} </p>
-                <p class="text-center mb-4"> Category: {{ item.get_category_display }} </p>
-                <p class="text-center mb-0">{{ item.description }}</p>
+            <div class="bg-white p-4 rounded shadow-sm h-100 d-flex flex-column justify-content-between text-center">
+                <h1 class="h3 mb-4 text-center"> {{ item.name }} </h1>
+                <p class="mb-4 text-muted" style="font-size: 0.9rem;"> Lender: {{ item.lender.get_full_name }} </p>
+                <p class="mb-4"> Category: {{ item.get_category_display }} </p>
+                <p class="mb-0">{{ item.description }}</p>
+                {% if user.is_authenticated %}
                 <a href="#" class="btn btn-primary mt-4 align-self-center">Click here to rent</a>  {#  need to add rental implementation #}
-                <p class="text-center mt-4"> Date Added: {{ item.created_at|date:"F j, Y" }} </p>
-                <p class="text-center mb-4"> Max Rental Duration: {{ item.max_rental_duration }} days </p>
-                <p class="text-center mt-4 text-muted" style="font-size: 0.9rem;"> View Product Details Down Below. </p>
+                {% else %}
+                <p class="mt-4">Sign up or sign in to rent.</p>
+                {% endif %}
+                <p class="mt-4"> Date Added: {{ item.created_at|date:"F j, Y" }} </p>
+                <p class="mb-4"> Max Rental Duration: {{ item.max_rental_duration }} days </p>
+                <p class="mt-4 text-muted small"> ↓ More product details below </p>
             </div>
         </div>
         </div>
@@ -34,11 +38,11 @@
             <div class="bg-white p-4 rounded shadow-sm" style="max-width: 80%; margin: 0 auto;">
                 <h3 class="h5 mb-3">Product Details</h3>
                 <p> Size: {{ item.size }} </p>
-                <p> Measurements: {{ item.measurements }} </p>
+                <p> Measurements: {{ item.measurements|default:"None provided"|safe }} </p>
                 <p> Condition: {{ item.get_condition_display }} (worn {{ item.times_worn }} times)</p>
-                <p> Flaws: {{ item.flaws }} </p>
-                <p> Care Instructions: {{ item.care_instructions }} </p>
-                <p> Protection Info: {{ item.protection_info }} </p>
+                <p> Flaws: {{ item.flaws|default:"None provided"|safe }} </p>
+                <p> Care Instructions: {{ item.care_instructions|default:"None provided"|safe }} </p>
+                <p> Protection Info: {{ item.protection_info|default:"None provided"|safe }} </p>
             </div>
         </div>
     </div>
