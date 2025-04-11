@@ -66,7 +66,7 @@ class Item(models.Model):
 
 class ItemPhoto(models.Model):
     item = models.ForeignKey(Item, related_name='photos', on_delete=models.CASCADE)
-    photo = models.URLField() # changed so that it accessed URL instead of uploading it to item_photos/
+    photo = models.ImageField(upload_to='item_photos/')
     is_primary = models.BooleanField(default=False)
 
     def __str__(self):
@@ -112,7 +112,7 @@ class Review(models.Model):
 
 class ReviewPhoto(models.Model):
     review = models.ForeignKey(Review, related_name='photos', on_delete=models.CASCADE)
-    photo = models.URLField()
+    photo = models.ImageField(upload_to='review_photos/')
 
     def __str__(self):
         return f"Photo for review by {self.review.user.username}"
@@ -120,7 +120,7 @@ class ReviewPhoto(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     description = models.TextField(blank=True, null=True)
-    photo = models.URLField(null=True, blank=True)
+    photo = models.ImageField(upload_to='profile_photos/', null=True, blank=True)
 
     def __str__(self):
         return f"Profile for {self.user.username}"
