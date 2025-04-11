@@ -21,6 +21,9 @@
                     <p>Category: {{ item.get_category_display }}</p>
                     <p>Condition: {{ item.get_condition_display }}</p>
                     <p>Date Added: {{ item.created_at|date:"F j, Y" }}</p>
+                    {% if user.is_authenticated and user.is_librarian %}
+                    <a href="{% url 'delete_item' item.id %}" class="btn btn-danger btn-sm">Delete</a>
+                    {% endif %}
                 </div>
             </div>
         {% empty %}

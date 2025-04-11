@@ -129,6 +129,16 @@ def add_item(request):
 
     return render(request, '***REMOVED***/add_item.html', {'form': form})
 
+class ItemDeleteView(DeleteView):
+    model = Item
+    template_name = '***REMOVED***/delete_item.html'
+    success_url = '/catalog/'
+    def get_queryset(self):
+        if self.request.user.is_librarian():
+            return Item.objects.all()
+        # non-librarians can't delete
+        return Item.objects.none()
+
 def item_detail(request, item_id):
     item = get_object_or_404(Item.objects.prefetch_related('photos'), pk=item_id)
     return render(request, '***REMOVED***/item_detail.html', {'item': item})

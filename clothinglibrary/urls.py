@@ -27,6 +27,7 @@ urlpatterns = [
     # example: /catalog/5/
     path('catalog/<item_id>/', views.item_detail, name='item_detail'),
     path('add-item/', views.add_item, name='add_item'),
+    path('item/<int:pk>/delete', views.ItemDeleteView.as_view(), name='delete_item'),
     path('profile', views.profile, name='profile'),
     path('edit-profile/', views.edit_profile, name='edit_profile'),
     path('item/<item_id>/review/', views.add_review, name='add_review'),
