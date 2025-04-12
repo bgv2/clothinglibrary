@@ -33,6 +33,11 @@
                         {% endif %}
                     </ul>
                 </li>
+                {% if user.is_librarian %}
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="{% url 'promote_patrons' %}">Promote Patrons</a>
+                </li>
+                {% endif %}
             </ul>
             <ul class="navbar-nav ml-auto">
             {% if user.is_authenticated %}

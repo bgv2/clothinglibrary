@@ -1,10 +1,10 @@
 from django.shortcuts import get_object_or_404, render, redirect
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.contrib.auth.decorators import login_required
+from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 
 from ***REMOVED*** import settings
-from .forms import ItemForm, UserProfileForm
+from .forms import ItemForm, PromotePatronForm, UserProfileForm
 from .models import Item, UserProfile, ItemPhoto, Review, Collection
 import boto3
 import uuid
@@ -180,3 +180,18 @@ def delete_review(request, review_id):
     if review.user == request.user:  # Ensure the logged-in user is the author
         review.delete()
     return redirect('item_detail', item_id=review.item.id)
+
+@method_decorator(login_required, name='dispatch')
+# TODO: make this redirect to 404 instead of infinite redirect loop
+@method_decorator(user_passes_test(lambda u: u.is_librarian()), name='dispatch')
+class PromotePatronsFormView(FormView):
+    template_name = '***REMOVED***/promote_patrons.html'
+    form_class = PromotePatronForm
+    success_url = '/catalog/'
+    def form_valid(self, form):
+        if not self.request.user.is_librarian():
+            form.add_error(None, 'You must be a librarian to promote other users.')
+        if form.errors:
+            return self.form_invalid(form)
+        form.promote_users()
+        return super().form_valid(form)

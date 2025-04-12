@@ -1,5 +1,6 @@
-from django.forms import ModelForm
+from django.forms import CheckboxSelectMultiple, ModelForm, Form, ModelMultipleChoiceField
 from ***REMOVED***.models import Item, UserProfile
+from django.contrib.auth.models import User, Group
 
 
 class ItemForm(ModelForm):
@@ -44,3 +45,15 @@ class UserProfileForm(ModelForm):
     class Meta:
         model = UserProfile
         fields = ['description', 'photo']
+
+class PromotePatronForm(Form):
+    users_to_promote = ModelMultipleChoiceField(
+        queryset=User.objects.exclude(groups__name='Librarians').exclude(is_superuser=True),
+        widget=CheckboxSelectMultiple,
+        label="Select users to promote to Librarian:",
+    )
+
+    def promote_users(self):
+        for user in self.cleaned_data['users_to_promote']:
+            user.groups.add(Group.objects.get(name='Librarians'))
+            user.save()
