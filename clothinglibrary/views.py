@@ -1,3 +1,4 @@
+from datetime import timezone
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -5,7 +6,7 @@ from django.utils.decorators import method_decorator
 
 from ***REMOVED*** import settings
 from .forms import ItemForm, PromotePatronForm, UserProfileForm
-from .models import Item, UserProfile, ItemPhoto, Review, Collection
+from .models import BorrowRequest, Item, Rental, UserProfile, ItemPhoto, Review, Collection
 import boto3
 import uuid
 
@@ -195,3 +196,52 @@ class PromotePatronsFormView(FormView):
             return self.form_invalid(form)
         form.promote_users()
         return super().form_valid(form)
+
+
+@login_required
+def request_borrow(request, item_id):
+    item = get_object_or_404(Item, pk=item_id)
+    if not item.is_available:
+        return redirect('item_detail', item_id=item_id)
+
+    # Check if a pending request already exists
+    if BorrowRequest.objects.filter(item=item, user=request.user, status='PENDING').exists():
+        return redirect('item_detail', item_id=item_id)
+
+    BorrowRequest.objects.create(item=item, user=request.user)
+    return redirect('item_detail', item_id=item_id)
+
+@login_required
+def my_borrowed_items(request):
+    borrowed_items = Rental.objects.filter(renter=request.user, status='on_loan')
+    return render(request, '***REMOVED***/my_borrowed_items.html', {'borrowed_items': borrowed_items})
+    
+@user_passes_test(lambda u: u.is_librarian())
+def manage_borrow_requests(request):
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        request_id = request.POST.get('request_id')
+        borrow_request = get_object_or_404(BorrowRequest, pk=request_id)
+
+        if action == 'approve':
+            borrow_request.status = 'APPROVED'
+            borrow_request.date_approved = timezone.now()
+            borrow_request.due_date = timezone.now().date() + timezone.timedelta(days=14)  # Example: 14-day loan
+            borrow_request.save()
+
+            # Create a Rental record
+            Rental.objects.create(
+                item=borrow_request.item,
+                renter=borrow_request.user,
+                start_date=timezone.now().date(),
+                end_date=borrow_request.due_date,
+                status='on_loan'
+            )
+        elif action == 'deny':
+            borrow_request.status = 'DENIED'
+            borrow_request.save()
+
+        return redirect('manage_borrow_requests')
+
+    pending_requests = BorrowRequest.objects.filter(status='PENDING').select_related('item', 'user')
+    return render(request, '***REMOVED***/manage_borrow_requests.html', {'pending_requests': pending_requests})

@@ -1,0 +1,10 @@
+<h2>My Borrowed Items</h2>
+<ul>
+    {% for rental in borrowed_items %}
+        <li>
+            {{ rental.item.name }} - Due: {{ rental.end_date|date:"F j, Y" }}
+        </li>
+    {% empty %}
+        <li>You have no borrowed items.</li>
+    {% endfor %}
+</ul>

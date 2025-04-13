@@ -152,3 +152,20 @@ class Collection(models.Model):
 
     def __str__(self):
         return self.title
+
+class BorrowRequest(models.Model):
+    STATUS_CHOICES = [
+        ('PENDING', 'Pending'),
+        ('APPROVED', 'Approved'),
+        ('DENIED', 'Denied'),
+    ]
+
+    item = models.ForeignKey(Item, related_name='borrow_requests', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')
+    date_requested = models.DateTimeField(auto_now_add=True)
+    date_approved = models.DateTimeField(null=True, blank=True)
+    due_date = models.DateField(null=True, blank=True)
+
+    def __str__(self):
+        return f"{self.item.name} - {self.user.username} - {self.status}"
