@@ -1,4 +1,5 @@
 from datetime import timezone
+from pyexpat.errors import messages
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -229,17 +230,30 @@ def manage_borrow_requests(request):
             borrow_request.due_date = timezone.now().date() + timezone.timedelta(days=14)  # Example: 14-day loan
             borrow_request.save()
 
-            # Create a Rental record
-            Rental.objects.create(
-                item=borrow_request.item,
-                renter=borrow_request.user,
-                start_date=timezone.now().date(),
-                end_date=borrow_request.due_date,
-                status='on_loan'
-            )
+            try:
+                # Ensure all required fields are valid
+                if borrow_request.item and borrow_request.user and borrow_request.due_date:
+                    Rental.objects.create(
+                        item=borrow_request.item,
+                        renter=borrow_request.user,
+                        start_date=timezone.now().date(),
+                        end_date=borrow_request.due_date,
+                        status='on_loan'
+                    )
+                else:
+                    raise ValueError("Invalid data for creating a rental.")
+            except Exception as e:
+                print(f"Error creating Rental: {e}")
+                messages.error(request, "An error occurred while approving the borrow request.")
+                borrow_request.status = 'PENDING'
+                borrow_request.save()
+                return redirect('manage_borrow_requests')
+
         elif action == 'deny':
             borrow_request.status = 'DENIED'
             borrow_request.save()
+            messages.error(request, f"Borrow request for {borrow_request.item.name} denied.")
+
 
         return redirect('manage_borrow_requests')
 
