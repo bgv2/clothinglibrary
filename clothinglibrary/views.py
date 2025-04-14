@@ -1,5 +1,5 @@
 from datetime import timezone
-from pyexpat.errors import messages
+from django.contrib import messages
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -240,11 +240,12 @@ def manage_borrow_requests(request):
                         end_date=borrow_request.due_date,
                         status='on_loan'
                     )
+                    messages.success(request, f"Borrow request for {borrow_request.item.name} approved.")
                 else:
                     raise ValueError("Invalid data for creating a rental.")
             except Exception as e:
-                print(f"Error creating Rental: {e}")
-                messages.error(request, "An error occurred while approving the borrow request.")
+                error_message = f"An error occurred while approving the borrow request: {e}"
+                messages.error(request, error_message)
                 borrow_request.status = 'PENDING'
                 borrow_request.save()
                 return redirect('manage_borrow_requests')
@@ -253,7 +254,6 @@ def manage_borrow_requests(request):
             borrow_request.status = 'DENIED'
             borrow_request.save()
             messages.error(request, f"Borrow request for {borrow_request.item.name} denied.")
-
 
         return redirect('manage_borrow_requests')
 
