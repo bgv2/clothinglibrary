@@ -1,4 +1,13 @@
 <h2>Pending Borrow Requests</h2>
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
 <ul>
     {% for request in pending_requests %}
         <li>
