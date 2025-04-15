@@ -1,3 +1,6 @@
+{% extends "base.html" %}
+{% block title %}My Borrowed Items{% endblock %}
+{% block content %}
 <h2>My Borrowed Items</h2>
 <ul>
     {% for rental in borrowed_items %}
@@ -8,3 +11,4 @@
         <li>You have no borrowed items.</li>
     {% endfor %}
 </ul>
+{% endblock %}
