@@ -1,4 +1,5 @@
 from django.utils import timezone
+from datetime import datetime
 from django.contrib import messages
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
@@ -205,11 +206,23 @@ def request_borrow(request, item_id):
     if not item.is_available:
         return redirect('item_detail', item_id=item_id)
 
-    # Check if a pending request already exists
     if BorrowRequest.objects.filter(item=item, user=request.user, status='PENDING').exists():
         return redirect('item_detail', item_id=item_id)
 
-    BorrowRequest.objects.create(item=item, user=request.user)
+    if request.method == 'POST':
+        duration_input = request.POST.get('desired_duration', '7')
+        try:
+            patron_duration = int(duration_input)
+        except ValueError:
+            patron_duration = 7
+
+        BorrowRequest.objects.create(
+            item=item,
+            user=request.user,
+            desired_duration=patron_duration,
+            status='PENDING'
+        )
+
     return redirect('item_detail', item_id=item_id)
 
 @login_required
@@ -227,11 +240,28 @@ def manage_borrow_requests(request):
         if action == 'approve':
             borrow_request.status = 'APPROVED'
             borrow_request.date_approved = timezone.now()
-            borrow_request.due_date = timezone.now().date() + timezone.timedelta(days=14)  # Example: 14-day loan
+
+            # Check if librarian provided an override due date
+            override_due_date_str = request.POST.get('override_due_date', '')
+            if override_due_date_str:
+                try:
+                    borrow_request.override_due_date = datetime.strptime(override_due_date_str, '%Y-%m-%d').date()
+                except ValueError:
+                    messages.error(request, "Invalid override due date format.")
+                    borrow_request.status = 'PENDING'
+                    borrow_request.save()
+                    return redirect('manage_borrow_requests')
+
+            # If override date is set, use it; otherwise, compute from patron’s desired duration
+            if borrow_request.override_due_date:
+                borrow_request.due_date = borrow_request.override_due_date
+            else:
+                borrow_request.due_date = timezone.now().date() + timezone.timedelta(days=borrow_request.desired_duration)
+
             borrow_request.save()
 
             try:
-                # Ensure all required fields are valid
+                # Ensure fields are valid
                 if borrow_request.item and borrow_request.user and borrow_request.due_date:
                     Rental.objects.create(
                         item=borrow_request.item,
@@ -244,7 +274,7 @@ def manage_borrow_requests(request):
                 else:
                     raise ValueError("Invalid data for creating a rental.")
             except Exception as e:
-                error_message = f"An error occurred while approving the borrow request: {e}"
+                error_message = f"Error approving the borrow request: {e}"
                 messages.error(request, error_message)
                 borrow_request.status = 'PENDING'
                 borrow_request.save()

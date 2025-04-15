@@ -167,5 +167,7 @@ class BorrowRequest(models.Model):
     date_approved = models.DateTimeField(null=True, blank=True)
     due_date = models.DateField(null=True, blank=True)
 
+    desired_duration = models.PositiveIntegerField(default=7)
+
     def __str__(self):
         return f"{self.item.name} - {self.user.username} - {self.status}"

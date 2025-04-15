@@ -22,7 +22,12 @@
                 <p class="mb-4"> Category: {{ item.get_category_display }} </p>
                 <p class="mb-0">{{ item.description }}</p>
                 {% if user.is_authenticated %}
-                    <a href="{% url 'request_borrow' item.id %}" class="btn btn-primary mt-4 align-self-center">Request to Borrow</a>
+                    <form action="{% url 'request_borrow' item.id %}" method="POST">
+                        {% csrf_token %}
+                        <label for="desired_duration">Days to borrow:</label>
+                        <input type="number" name="desired_duration" id="desired_duration" min="1" value="7">
+                        <button type="submit">Request to Borrow</button>
+                    </form>
                 {% else %}
                     <p class="mt-4">Sign up or sign in to borrow this item.</p>
                 {% endif %}
