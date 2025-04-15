@@ -241,23 +241,7 @@ def manage_borrow_requests(request):
             borrow_request.status = 'APPROVED'
             borrow_request.date_approved = timezone.now()
 
-            # Check if librarian provided an override due date
-            override_due_date_str = request.POST.get('override_due_date', '')
-            if override_due_date_str:
-                try:
-                    borrow_request.override_due_date = datetime.strptime(override_due_date_str, '%Y-%m-%d').date()
-                except ValueError:
-                    messages.error(request, "Invalid override due date format.")
-                    borrow_request.status = 'PENDING'
-                    borrow_request.save()
-                    return redirect('manage_borrow_requests')
-
-            # If override date is set, use it; otherwise, compute from patron’s desired duration
-            if borrow_request.override_due_date:
-                borrow_request.due_date = borrow_request.override_due_date
-            else:
-                borrow_request.due_date = timezone.now().date() + timezone.timedelta(days=borrow_request.desired_duration)
-
+            borrow_request.due_date = timezone.now().date() + timezone.timedelta(days=borrow_request.desired_duration)
             borrow_request.save()
 
             try:
