@@ -205,6 +205,10 @@ SOCIALACCOUNT_LOGIN_ON_GET = True # log in via Google without showing confirmati
 ACCOUNT_LOGOUT_ON_GET = True
 ACCOUNT_LOGOUT_REDIRECT_URL = '/'
 
+#to redirect HTTP to HTTPS
+SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
 try:
     if 'HEROKU' in os.environ:
         import django_heroku
