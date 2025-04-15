@@ -38,6 +38,19 @@
                     <a class="nav-link text-dark" href="{% url 'promote_patrons' %}">Promote Patrons</a>
                 </li>
                 {% endif %}
+
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="{% url 'my_borrowed_items' %}">My Borrowed Items</a>
+                </li>
+
+                {% if user.is_librarian %}
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="{% url 'manage_borrow_requests' %}">Manage Borrow Requests</a>
+                </li>
+                {% endif %}
+
+                {% endif %}
             </ul>
             <ul class="navbar-nav ml-auto">
             {% if user.is_authenticated %}
