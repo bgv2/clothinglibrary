@@ -25,8 +25,8 @@
                     <form action="{% url 'request_borrow' item.id %}" method="POST">
                         {% csrf_token %}
                         <label for="desired_duration">Days to borrow:</label>
-                        <input type="number" name="desired_duration" id="desired_duration" min="1" value="7">
-                        <button type="submit">Request to Borrow</button>
+                        <input type="number" name="desired_duration" id="desired_duration" min="1" max="{{ item.max_rental_duration }}" value="{{ item.max_rental_duration }}" class="form-control mb-2">
+                        <button type="submit" class="btn btn-primary">Request to Borrow</button>
                     </form>
                 {% else %}
                     <p class="mt-4">Sign up or sign in to borrow this item.</p>
