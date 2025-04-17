@@ -290,14 +290,14 @@ def manage_borrow_requests(request):
 def collection_detail(request, collection_id):
     collection = get_object_or_404(Collection, pk=collection_id)
 
-    if request.user.is_librarian:
-        items_in_collection = collection.items.all()
-        return render(request, '***REMOVED***/collection_detail.html', {
-            'collection': collection,
-            'items_in_collection': items_in_collection,
-        })
-
     if not collection.is_public:
+        if request.user.is_librarian:
+            items_in_collection = collection.items.all()
+            return render(request, '***REMOVED***/collection_detail.html', {
+                'collection': collection,
+                'items_in_collection': items_in_collection,
+            })
+
         access_request = CollectionAccessRequest.objects.filter(collection=collection, user=request.user).first()
         if access_request and access_request.status != 'APPROVED':
             return redirect('request_access', collection_id=collection.id)
