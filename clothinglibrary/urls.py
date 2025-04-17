@@ -33,10 +33,11 @@ urlpatterns = [
     path('promote-patrons/', views.PromotePatronsFormView.as_view(), name='promote_patrons'),
     path('item/<item_id>/review/', views.add_review, name='add_review'),
     path('review/<review_id>/delete/', views.delete_review, name='delete_review'),
-    path('collection/<int:pk>/', views.CollectionUpdateView.as_view(), name='edit_collection'),
+    path('collection/edit/<int:pk>/', views.CollectionUpdateView.as_view(), name='edit_collection'),
     path('collection/create/', views.CollectionCreateView.as_view(), name='create_collection'),
     path('collection/<int:pk>/delete/', views.CollectionDeleteView.as_view(), name='delete_collection'),
     path('item/<int:item_id>/request_borrow/', views.request_borrow, name='request_borrow'),
     path('my-borrowed-items/', views.my_borrowed_items, name='my_borrowed_items'),
     path('manage-borrow-requests/', views.manage_borrow_requests, name='manage_borrow_requests'),
+    path('collection/<int:collection_id>/', views.collection_detail, name='collection_detail'),
 ]

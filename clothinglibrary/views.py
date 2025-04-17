@@ -273,3 +273,14 @@ def manage_borrow_requests(request):
 
     pending_requests = BorrowRequest.objects.filter(status='PENDING').select_related('item', 'user')
     return render(request, '***REMOVED***/manage_borrow_requests.html', {'pending_requests': pending_requests})
+
+
+def collection_detail(request, collection_id):
+    collection = get_object_or_404(Collection, pk=collection_id)
+
+    items_in_collection = collection.items.all()
+
+    return render(request, '***REMOVED***/collection_detail.html', {
+        'collection': collection,
+        'items_in_collection': items_in_collection,
+    })
