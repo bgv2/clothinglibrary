@@ -244,18 +244,22 @@ def my_borrowed_items(request):
     return render(request, '***REMOVED***/my_borrowed_items.html', {'borrowed_items': borrowed_items})
 
 @user_passes_test(lambda u: u.is_librarian())
-def manage_borrow_requests(request):
+def manage_requests(request):
     if request.method == 'POST':
         action = request.POST.get('action')
         request_id = request.POST.get('request_id')
         borrow_request = get_object_or_404(BorrowRequest, pk=request_id)
+        access_request = get_object_or_404(CollectionAccessRequest, pk=request_id)
 
         if action == 'approve':
             borrow_request.status = 'APPROVED'
             borrow_request.date_approved = timezone.now()
-
             borrow_request.due_date = timezone.now().date() + timezone.timedelta(days=borrow_request.desired_duration)
             borrow_request.save()
+            access_request.status = 'APPROVED'
+            access_request.date_approved = timezone.now()
+            access_request.save()
+            messages.success(request,f"Access request for {access_request.collection.title} by {access_request.user.username} approved.")
 
             try:
                 # Ensure fields are valid
@@ -275,17 +279,21 @@ def manage_borrow_requests(request):
                 messages.error(request, error_message)
                 borrow_request.status = 'PENDING'
                 borrow_request.save()
-                return redirect('manage_borrow_requests')
+                return redirect('manage_requests')
 
         elif action == 'deny':
             borrow_request.status = 'DENIED'
             borrow_request.save()
             messages.error(request, f"Borrow request for {borrow_request.item.name} denied.")
+            access_request.status = 'DENIED'
+            access_request.save()
+            messages.error(request,f"Access request for {access_request.collection.title} by {access_request.user.username} denied.")
 
-        return redirect('manage_borrow_requests')
+        return redirect('manage_requests')
 
-    pending_requests = BorrowRequest.objects.filter(status='PENDING').select_related('item', 'user')
-    return render(request, '***REMOVED***/manage_borrow_requests.html', {'pending_requests': pending_requests})
+    pending_borrow_requests = BorrowRequest.objects.filter(status='PENDING').select_related('item', 'user')
+    pending_access_requests = CollectionAccessRequest.objects.filter(status='PENDING').select_related('collection', 'user')
+    return render(request, '***REMOVED***/manage_requests.html', {'pending_borrow_requests': pending_borrow_requests, 'pending_access_requests': pending_access_requests})
 
 def collection_detail(request, collection_id):
     collection = get_object_or_404(Collection, pk=collection_id)
@@ -345,27 +353,3 @@ def request_access(request, collection_id):
         'collection': collection,
         'existing_request': existing_request,
     })
-
-@login_required
-@user_passes_test(lambda u: u.is_librarian())
-def manage_access_requests(request):
-    if request.method == 'POST':
-        action = request.POST.get('action')
-        request_id = request.POST.get('request_id')
-        access_request = get_object_or_404(CollectionAccessRequest, pk=request_id)
-
-        if action == 'approve':
-            access_request.status = 'APPROVED'
-            access_request.date_approved = timezone.now()
-            access_request.save()
-            messages.success(request, f"Access request for {access_request.collection.title} by {access_request.user.username} approved.")
-
-        elif action == 'deny':
-            access_request.status = 'DENIED'
-            access_request.save()
-            messages.error(request, f"Access request for {access_request.collection.title} by {access_request.user.username} denied.")
-
-        return redirect('manage_access_requests')
-
-    pending_requests = CollectionAccessRequest.objects.filter(status='PENDING').select_related('collection', 'user')
-    return render(request, '***REMOVED***/manage_access_requests.html', {'pending_requests': pending_requests})

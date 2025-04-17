@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Manage Borrow Requests{% endblock %}
+{% block content %}
+<h2>Pending Borrow Item Requests</h2>
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+    {% if pending_borrow_requests %}
+        <ul>
+        {% for request in pending_borrow_requests %}
+        <li>
+            {{ request.item.name }} requested by {{ request.user.username }}
+            <form method="POST" style="display:inline;">
+                {% csrf_token %}
+                <input type="hidden" name="request_id" value="{{ request.id }}">
+                <button type="submit" name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
+                <button type="submit" name="action" value="deny" class="btn btn-danger btn-sm">Deny</button>
+            </form>
+        </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+    <li>No pending requests.</li>
+    {% endif %}
+
+
+    <hr style="margin-top: 80px; margin-bottom: 40px;">
+
+    <h2>Pending Private Collection Access Requests</h2>
+    {% if pending_access_requests %}
+        <ul>
+            {% for request in pending_access_requests %}
+                <li>
+                    {{ request.user.username }} has requested access to {{ request.collection.title }}.
+                    <form method="POST" class="d-inline">
+                        {% csrf_token %}
+                        <input type="hidden" name="request_id" value="{{ request.id }}">
+                        <button type="submit" name="action" value="approve" class="btn btn-success">Approve</button>
+                        <button type="submit" name="action" value="deny" class="btn btn-danger">Deny</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+    <li>No pending requests.</li>
+    {% endif %}
+
+{% endblock %}
