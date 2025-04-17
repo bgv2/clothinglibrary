@@ -46,21 +46,21 @@ def catalog_view(request):
     # Prompt: Can I filter by a function in a Django model?
     # Date: March 30, 2025 7:20pm
     all_collections = Collection.objects.all()
-    collections_with_access = []
+
     if request.user.is_authenticated:
         access_requests = CollectionAccessRequest.objects.filter(user=request.user, status='APPROVED')
         approved_collections = access_requests.values_list('collection_id', flat=True)
 
+        collections_with_access = []
         for collection in all_collections:
-            collection.is_approved = collection.id in approved_collections
-            collection.has_pending_request = CollectionAccessRequest.objects.filter(collection=collection,
-                                                                                    user=request.user,
-                                                                                    status='PENDING').exists()
+            if collection.is_public or collection.id in approved_collections:
+                collection.is_approved = collection.id in approved_collections
+                collection.has_pending_request = CollectionAccessRequest.objects.filter(collection=collection, user=request.user, status='PENDING').exists()
             collections_with_access.append(collection)
     else:
-        collections_with_access = all_collections
+        collections_with_access = [c for c in all_collections if c.is_public]
 
-    return render(request, '***REMOVED***/catalog.html', {"items": items, "collections": all_collections, 'collections_with_access': collections_with_access, "user": request.user,})
+    return render(request, '***REMOVED***/catalog.html', {"items": items, "collections": collections_with_access, "user": request.user,})
 
 @method_decorator(login_required, name='dispatch')
 class CollectionCreateView(CreateView):
@@ -286,8 +286,6 @@ def manage_borrow_requests(request):
     pending_requests = BorrowRequest.objects.filter(status='PENDING').select_related('item', 'user')
     return render(request, '***REMOVED***/manage_borrow_requests.html', {'pending_requests': pending_requests})
 
-
-@login_required
 def collection_detail(request, collection_id):
     collection = get_object_or_404(Collection, pk=collection_id)
 
