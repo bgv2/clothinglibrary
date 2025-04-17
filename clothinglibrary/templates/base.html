@@ -61,7 +61,9 @@
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdownUser">
                     <li><a class="dropdown-item" href="{% url 'profile' %}">View Profile</a></li>
+                    {% if not user.is_librarian %}
                     <li> <a class="dropdown-item" href="{% url 'request_librarian' %}">Request Librarian Promotion</a></li>
+                    {% endif %}
                     <li><a class="dropdown-item" href="{% url 'account_logout' %}">Log Out</a></li>
                 </ul>
             </li>

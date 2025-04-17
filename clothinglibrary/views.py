@@ -219,6 +219,10 @@ def request_borrow(request, item_id):
     if not item.is_available:
         return redirect('item_detail', item_id=item_id)
 
+    if request.user.is_librarian and item.lender == request.user:
+        messages.error(request, "You cannot borrow your own item.")
+        return redirect('item_detail', item_id=item_id)
+    
     if BorrowRequest.objects.filter(item=item, user=request.user, status='PENDING').exists():
         return redirect('item_detail', item_id=item_id)
 
