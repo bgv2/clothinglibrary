@@ -53,8 +53,9 @@ def catalog_view(request):
 
         collections_with_access = []
         for collection in all_collections:
-            if collection.is_public or collection.id in approved_collections:
-                collection.is_approved = collection.id in approved_collections
+            is_approved = request.user.is_librarian or collection.id in approved_collections
+            if collection.is_public or is_approved:
+                collection.is_approved = is_approved
                 collection.has_pending_request = CollectionAccessRequest.objects.filter(collection=collection, user=request.user, status='PENDING').exists()
             collections_with_access.append(collection)
     else:
