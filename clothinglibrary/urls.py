@@ -41,4 +41,5 @@ urlpatterns = [
     path('collection/<int:collection_id>/', views.collection_detail, name='collection_detail'),
     path('request_access/<int:collection_id>/', views.request_access, name='request_access'),
     path('manage_requests/', views.manage_requests, name='manage_requests'),
+    path('request_librarian/', views.request_librarian, name='request_librarian'),
 ]
