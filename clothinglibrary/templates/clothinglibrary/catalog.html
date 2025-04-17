@@ -44,15 +44,22 @@
                 </div>
                 <div class="card-body d-flex flex-column">
                     <h5 class="card-title">
-                    {% if collection.is_public or user.is_librarian %}
+                    {% if collection.is_public %}
+                         <a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a>
+                    {% else %}
+                    {% if collection.is_approved %}
                         <a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a>
                     {% else %}
-                    {{ collection.title }}
+                        {{ collection.title }}
+                    {% endif %}
                     {% endif %}
                     </h5>
                     {% if not collection.is_public %}
-                    <p class="text-muted small mb-2">Private Collection</p>
-                    {% if user.is_authenticated and not user.is_librarian %}
+                        <p class="text-muted small mb-2">Private Collection</p>
+                    {% if collection.is_approved %}
+                    {% elif collection.has_pending_request %}
+                        <p>Your request is pending.</p>
+                    {% else %}
                         <a href="{% url 'request_access' collection.id %}" class="btn btn-primary">Request Access</a>
                     {% endif %}
                     {% endif %}

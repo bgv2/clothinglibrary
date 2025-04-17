@@ -46,12 +46,21 @@ def catalog_view(request):
     # Prompt: Can I filter by a function in a Django model?
     # Date: March 30, 2025 7:20pm
     all_collections = Collection.objects.all()
+    collections_with_access = []
     if request.user.is_authenticated:
-        visible_collections = all_collections
-    else:
-        visible_collections = [c for c in all_collections if c.is_public]
-    return render(request, '***REMOVED***/catalog.html', {"items": items, "collections": visible_collections})
+        access_requests = CollectionAccessRequest.objects.filter(user=request.user, status='APPROVED')
+        approved_collections = access_requests.values_list('collection_id', flat=True)
 
+        for collection in all_collections:
+            collection.is_approved = collection.id in approved_collections
+            collection.has_pending_request = CollectionAccessRequest.objects.filter(collection=collection,
+                                                                                    user=request.user,
+                                                                                    status='PENDING').exists()
+            collections_with_access.append(collection)
+    else:
+        collections_with_access = all_collections
+
+    return render(request, '***REMOVED***/catalog.html', {"items": items, "collections": all_collections, 'collections_with_access': collections_with_access, "user": request.user,})
 
 @method_decorator(login_required, name='dispatch')
 class CollectionCreateView(CreateView):
