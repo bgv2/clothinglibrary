@@ -40,4 +40,6 @@ urlpatterns = [
     path('my-borrowed-items/', views.my_borrowed_items, name='my_borrowed_items'),
     path('manage-borrow-requests/', views.manage_borrow_requests, name='manage_borrow_requests'),
     path('collection/<int:collection_id>/', views.collection_detail, name='collection_detail'),
+    path('request_access/<int:collection_id>/', views.request_access, name='request_access'),
+    path('manage_access_requests/', views.manage_access_requests, name='manage_access_requests'),
 ]

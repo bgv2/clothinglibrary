@@ -50,6 +50,13 @@
                 </li>
                 {% endif %}
 
+                {% if user.is_librarian %}
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="{% url 'manage_access_requests' %}">Manage Access Requests</a>
+
+                </li>
+                {% endif %}
+
                 {% endif %}
             </ul>
             <ul class="navbar-nav ml-auto">

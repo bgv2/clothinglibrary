@@ -8,7 +8,7 @@ from django.utils.decorators import method_decorator
 
 from ***REMOVED*** import settings
 from .forms import ItemForm, PromotePatronForm, UserProfileForm
-from .models import BorrowRequest, Item, Rental, UserProfile, ItemPhoto, Review, Collection
+from .models import BorrowRequest, Item, Rental, UserProfile, ItemPhoto, Review, Collection, CollectionAccessRequest
 import boto3
 import uuid
 
@@ -46,7 +46,10 @@ def catalog_view(request):
     # Prompt: Can I filter by a function in a Django model?
     # Date: March 30, 2025 7:20pm
     all_collections = Collection.objects.all()
-    visible_collections = [collection for collection in all_collections if collection.user_can_view(request.user)]
+    if request.user.is_authenticated:
+        visible_collections = all_collections
+    else:
+        visible_collections = [c for c in all_collections if c.is_public]
     return render(request, '***REMOVED***/catalog.html', {"items": items, "collections": visible_collections})
 
 
@@ -229,7 +232,7 @@ def request_borrow(request, item_id):
 def my_borrowed_items(request):
     borrowed_items = Rental.objects.filter(renter=request.user, status='on_loan')
     return render(request, '***REMOVED***/my_borrowed_items.html', {'borrowed_items': borrowed_items})
-    
+
 @user_passes_test(lambda u: u.is_librarian())
 def manage_borrow_requests(request):
     if request.method == 'POST':
@@ -275,8 +278,16 @@ def manage_borrow_requests(request):
     return render(request, '***REMOVED***/manage_borrow_requests.html', {'pending_requests': pending_requests})
 
 
+@login_required
 def collection_detail(request, collection_id):
     collection = get_object_or_404(Collection, pk=collection_id)
+
+    if not collection.is_public:
+        access_request = CollectionAccessRequest.objects.filter(collection=collection, user=request.user).first()
+        if access_request and access_request.status != 'APPROVED':
+            return redirect('request_access', collection_id=collection.id)
+        elif not access_request:
+            return redirect('request_access', collection_id=collection.id)
 
     items_in_collection = collection.items.all()
 
@@ -284,3 +295,62 @@ def collection_detail(request, collection_id):
         'collection': collection,
         'items_in_collection': items_in_collection,
     })
+
+@login_required
+def request_access(request, collection_id):
+    collection = get_object_or_404(Collection, pk=collection_id)
+
+    if collection.is_public:
+        return redirect('collection_detail', collection_id=collection.id)
+
+    existing_request = CollectionAccessRequest.objects.filter(collection=collection, user=request.user).first()
+
+    if existing_request:
+        if existing_request.status == 'PENDING':
+            messages.info(request, f"Your request for access to '{collection.title}' is still pending.")
+        elif existing_request.status == 'APPROVED':
+            messages.success(request, f"Your request for access to '{collection.title}' has been approved.")
+        elif existing_request.status == 'DENIED':
+            messages.error(request, f"Your request for access to '{collection.title}' was denied. Please contact a librarian if you have any questions.")
+
+    if request.method == 'POST':
+        if not existing_request:
+            CollectionAccessRequest.objects.create(
+                collection=collection,
+                user=request.user,
+                status='PENDING'
+            )
+            messages.success(request, f"Request for access to '{collection.title}' submitted successfully. Please wait for approval.")
+        elif existing_request.status == 'DENIED':
+            existing_request.status = 'PENDING'
+            existing_request.save()
+            messages.success(request, f"Your request for access to '{collection.title}' is now pending. Please wait for approval.")
+
+    return render(request, '***REMOVED***/request_access.html', {
+        'collection': collection,
+        'existing_request': existing_request,
+    })
+
+@login_required
+@user_passes_test(lambda u: u.is_librarian())
+def manage_access_requests(request):
+    if request.method == 'POST':
+        action = request.POST.get('action')
+        request_id = request.POST.get('request_id')
+        access_request = get_object_or_404(CollectionAccessRequest, pk=request_id)
+
+        if action == 'approve':
+            access_request.status = 'APPROVED'
+            access_request.date_approved = timezone.now()
+            access_request.save()
+            messages.success(request, f"Access request for {access_request.collection.title} by {access_request.user.username} approved.")
+
+        elif action == 'deny':
+            access_request.status = 'DENIED'
+            access_request.save()
+            messages.error(request, f"Access request for {access_request.collection.title} by {access_request.user.username} denied.")
+
+        return redirect('manage_access_requests')
+
+    pending_requests = CollectionAccessRequest.objects.filter(status='PENDING').select_related('collection', 'user')
+    return render(request, '***REMOVED***/manage_access_requests.html', {'pending_requests': pending_requests})

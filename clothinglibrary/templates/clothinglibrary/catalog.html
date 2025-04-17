@@ -43,12 +43,18 @@
                     <span>No Image</span>
                 </div>
                 <div class="card-body d-flex flex-column">
-                    <h5 class="card-title"><a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a></h5>
+                    <h5 class="card-title">
+                    {% if collection.is_public or user.is_librarian %}
+                        <a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a>
+                    {% else %}
+                    {{ collection.title }}
+                    {% endif %}
+                    </h5>
                     {% if not collection.is_public %}
-                        <p class="text-muted small mb-2"> Private Collection</p>
-                        {% if user.is_authenticated %}
-{#                        <a href="{% url 'request_private_collection' collection.id %}" class="btn btn-primary">Request Access</a>#}
-                        {% endif %}
+                    <p class="text-muted small mb-2">Private Collection</p>
+                    {% if user.is_authenticated and not user.is_librarian %}
+                        <a href="{% url 'request_access' collection.id %}" class="btn btn-primary">Request Access</a>
+                    {% endif %}
                     {% endif %}
                     <p class="text-muted small mb-2">Created by: {{ collection.creator.username }}</p>
                     <p class="card-text">{{ collection.description }}</p>
