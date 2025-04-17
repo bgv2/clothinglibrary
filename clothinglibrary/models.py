@@ -187,3 +187,17 @@ class CollectionAccessRequest(models.Model):
 
     def __str__(self):
         return f"Request for {self.collection.title} by {self.user.username} - {self.status}"
+    
+class PromotionRequest(models.Model):
+    STATUS_CHOICES = [
+        ('PENDING', 'Pending'),
+        ('APPROVED', 'Approved'),
+        ('DENIED', 'Denied'),
+    ]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')
+    date_requested = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username} - Promotion Request"

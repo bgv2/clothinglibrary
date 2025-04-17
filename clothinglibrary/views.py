@@ -8,7 +8,7 @@ from django.utils.decorators import method_decorator
 
 from ***REMOVED*** import settings
 from .forms import ItemForm, PromotePatronForm, UserProfileForm
-from .models import BorrowRequest, Item, Rental, UserProfile, ItemPhoto, Review, Collection, CollectionAccessRequest
+from .models import BorrowRequest, Item, PromotionRequest, Rental, UserProfile, ItemPhoto, Review, Collection, CollectionAccessRequest
 import boto3
 import uuid
 
@@ -288,12 +288,32 @@ def manage_requests(request):
             access_request.status = 'DENIED'
             access_request.save()
             messages.error(request,f"Access request for {access_request.collection.title} by {access_request.user.username} denied.")
+        
+        elif action == 'approve_promotion':
+            promo_request_id = request.POST.get('promo_request_id')
+            promo_request = get_object_or_404(PromotionRequest, pk=promo_request_id)
+            promo_request.status = 'APPROVED'
+            promo_request.save()
+            # Here we elevate the user to a librarian. Implementation depends on your app’s logic.
+            user_to_promote = promo_request.user
+            user_to_promote.is_librarian = True
+            user_to_promote.save()
+            messages.success(request, f"{user_to_promote.username} has been promoted to librarian.")
+        
+        elif action == 'deny_promotion':
+            promo_request_id = request.POST.get('promo_request_id')
+            promo_request = get_object_or_404(PromotionRequest, pk=promo_request_id)
+            promo_request.status = 'DENIED'
+            promo_request.save()
+            messages.error(request, f"Promotion request for {promo_request.user.username} denied.")
 
         return redirect('manage_requests')
 
     pending_borrow_requests = BorrowRequest.objects.filter(status='PENDING').select_related('item', 'user')
     pending_access_requests = CollectionAccessRequest.objects.filter(status='PENDING').select_related('collection', 'user')
-    return render(request, '***REMOVED***/manage_requests.html', {'pending_borrow_requests': pending_borrow_requests, 'pending_access_requests': pending_access_requests})
+    pending_promotion_requests = PromotionRequest.objects.filter(status='PENDING').select_related('user')
+
+    return render(request, '***REMOVED***/manage_requests.html', {'pending_borrow_requests': pending_borrow_requests, 'pending_access_requests': pending_access_requests, 'pending_promotion_requests': pending_promotion_requests})
 
 def collection_detail(request, collection_id):
     collection = get_object_or_404(Collection, pk=collection_id)
@@ -353,3 +373,16 @@ def request_access(request, collection_id):
         'collection': collection,
         'existing_request': existing_request,
     })
+
+@login_required
+def request_librarian(request):
+    # If user is already a librarian, skip creating a request
+    if request.user.is_librarian:
+        return redirect('home')
+
+    # Create a new request if none is pending
+    if not PromotionRequest.objects.filter(user=request.user, status='PENDING').exists():
+        PromotionRequest.objects.create(user=request.user)
+
+    messages.success(request, "Your promotion request has been submitted.")
+    return redirect('home')

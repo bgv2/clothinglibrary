@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}Manage Borrow Requests{% endblock %}
+{% block title %}Manage Requests{% endblock %}
 {% block content %}
 <h2>Pending Borrow Item Requests</h2>
     {% if pending_borrow_requests %}
@@ -40,6 +40,28 @@
         </ul>
     {% else %}
     <li>No pending requests.</li>
+    {% endif %}
+
+    <hr style="margin: 2rem 0;" />
+
+
+    <h2>Pending Patron Promotion Requests</h2>
+    {% if pending_promotion_requests %}
+        <ul>
+        {% for promo_request in pending_promotion_requests %}
+            <li>
+                {{ promo_request.user.username }} has requested to become a librarian.
+                <form method="POST" class="d-inline">
+                    {% csrf_token %}
+                    <input type="hidden" name="promo_request_id" value="{{ promo_request.id }}">
+                    <button type="submit" name="action" value="approve_promotion" class="btn btn-success">Approve</button>
+                    <button type="submit" name="action" value="deny_promotion" class="btn btn-danger">Deny</button>
+                </form>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <li>No promotion requests.</li>
     {% endif %}
 
 {% endblock %}
