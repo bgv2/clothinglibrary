@@ -104,9 +104,9 @@
                 <p> Protection Info: {{ item.protection_info|default:"None provided"|safe }} </p>
                 <p> Number of Past Rentals: {{ item.number_of_past_rentals }}</p>
                 {% if item.last_borrowed_date %}
-                    <p>Last Borrowed: {{ item.last_borrowed_date|timesince }} ago</p>
+                    <p>Last Rented: {{ item.last_borrowed_date|timesince }} ago</p>
                 {% else %}
-                    <p>Last Borrowed: Never</p>
+                    <p>Last Rented: Never</p>
                 {% endif %}
 
             </div>
