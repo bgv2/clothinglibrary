@@ -60,6 +60,30 @@ class Item(models.Model):
         return not self.rentals.filter(
             end_date__gte=now
         ).exclude(status__in=['returned', 'overdue']).exists()
+    
+    # Source: Chat GPT
+    # Prompt: "how do i make that property appear on the webpage with either a green dot (item available), yellow dot (item avaiable soon), or red dot (item rented out)"
+    # Date: April 17, 2025
+    @property
+    def availability_info(self):
+        now = timezone.now().date()
+
+        # calculates the next return date, if it exists
+        next_return = self.rentals.filter(
+            end_date__gte=now
+        ).exclude(status__in=['returned', 'overdue']).order_by('end_date').first()
+
+        if self.is_available:
+            return {'status': 'available', 'days_left': None}
+        
+        if next_return:
+            days_left = (next_return.end_date - now).days
+            if days_left <= 3:
+                return {'status': 'soon', 'days_left': days_left}
+        
+        return {'status': 'unavailable', 'days_left': None}
+
+
 
     def __str__(self):
         return self.name

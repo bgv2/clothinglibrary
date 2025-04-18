@@ -2,6 +2,18 @@
 {% load review_stars %}
 
 {% block content %}
+    <style>
+        .dot {
+            height: 12px;
+            width: 12px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+        }
+        .dot-available { background-color: green; }
+        .dot-soon { background-color: goldenrod; }
+        .dot-unavailable { background-color: red; }
+    </style>
     <div class="container py-4">
         <div class="row align-items-stretch min-vh-75 gx-4">
             <div class="col-lg-8 col-md-7 mb-4 p-0">
@@ -18,6 +30,19 @@
         <div class="col-lg-4 col-md-5 mb-4">
             <div class="bg-white p-4 rounded shadow-sm h-100 d-flex flex-column justify-content-between text-center">
                 <h1 class="h3 mb-4 text-center"> {{ item.name }} </h1>
+                {% with item.availability_info as info %}
+                    {% if info.status == 'available' %}
+                        <p><span class="dot dot-available"></span> Available</p>
+                    {% elif info.status == 'soon' %}
+                        <p>
+                            <span class="dot dot-soon"></span>
+                            Available Soon (in {{ info.days_left }} day{{ info.days_left|pluralize }})
+                        </p>
+                    {% else %}
+                        <p><span class="dot dot-unavailable"></span> Currently Unavailable</p>
+                    {% endif %}
+                {% endwith %}
+
                 <p class="mb-4 text-muted" style="font-size: 0.9rem;"> Lender: {{ item.lender.get_full_name }} </p>
                 <p class="mb-4"> Category: {{ item.get_category_display }} </p>
                 <p class="mb-0">{{ item.description }}</p>
