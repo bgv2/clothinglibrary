@@ -10,6 +10,7 @@
             <form method="POST" style="display:inline;">
                 {% csrf_token %}
                 <input type="hidden" name="request_id" value="{{ request.id }}">
+                <input type="hidden" name="request_type" value="borrow">
                 <button type="submit" name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
                 <button type="submit" name="action" value="deny" class="btn btn-danger btn-sm">Deny</button>
             </form>
@@ -17,7 +18,7 @@
         {% endfor %}
         </ul>
     {% else %}
-    <li>No pending requests.</li>
+    <li>No pending borrow requests.</li>
     {% endif %}
 
 
@@ -32,6 +33,7 @@
                     <form method="POST" class="d-inline">
                         {% csrf_token %}
                         <input type="hidden" name="request_id" value="{{ request.id }}">
+                        <input type="hidden" name="request_type" value="access">
                         <button type="submit" name="action" value="approve" class="btn btn-success">Approve</button>
                         <button type="submit" name="action" value="deny" class="btn btn-danger">Deny</button>
                     </form>
@@ -39,7 +41,7 @@
             {% endfor %}
         </ul>
     {% else %}
-    <li>No pending requests.</li>
+    <li>No pending access requests.</li>
     {% endif %}
 
     <hr style="margin: 2rem 0;" />
@@ -53,15 +55,16 @@
                 {{ promo_request.user.username }} has requested to become a librarian.
                 <form method="POST" class="d-inline">
                     {% csrf_token %}
-                    <input type="hidden" name="promo_request_id" value="{{ promo_request.id }}">
-                    <button type="submit" name="action" value="approve_promotion" class="btn btn-success">Approve</button>
-                    <button type="submit" name="action" value="deny_promotion" class="btn btn-danger">Deny</button>
+                    <input type="hidden" name="request_id" value="{{ promo_request.id }}">
+                    <input type="hidden" name="request_type" value="promotion">
+                    <button type="submit" name="action" value="approve" class="btn btn-success">Approve</button>
+                    <button type="submit" name="action" value="deny" class="btn btn-danger">Deny</button>
                 </form>
             </li>
         {% endfor %}
         </ul>
     {% else %}
-        <li>No promotion requests.</li>
+        <li>No pending promotion requests.</li>
     {% endif %}
 
 {% endblock %}

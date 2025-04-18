@@ -251,65 +251,73 @@ def my_borrowed_items(request):
 def manage_requests(request):
     if request.method == 'POST':
         action = request.POST.get('action')
+        request_type = request.POST.get('request_type')
         request_id = request.POST.get('request_id')
-        borrow_request = get_object_or_404(BorrowRequest, pk=request_id)
-        access_request = get_object_or_404(CollectionAccessRequest, pk=request_id)
 
-        if action == 'approve':
-            borrow_request.status = 'APPROVED'
-            borrow_request.date_approved = timezone.now()
-            borrow_request.due_date = timezone.now().date() + timezone.timedelta(days=borrow_request.desired_duration)
-            borrow_request.save()
-            access_request.status = 'APPROVED'
-            access_request.date_approved = timezone.now()
-            access_request.save()
-            messages.success(request,f"Access request for {access_request.collection.title} by {access_request.user.username} approved.")
+        if request_type == 'borrow':
+            borrow_request = get_object_or_404(BorrowRequest, pk=request_id)
 
-            try:
-                # Ensure fields are valid
-                if borrow_request.item and borrow_request.user and borrow_request.due_date:
-                    Rental.objects.create(
-                        item=borrow_request.item,
-                        renter=borrow_request.user,
-                        start_date=timezone.now().date(),
-                        end_date=borrow_request.due_date,
-                        status='on_loan'
-                    )
-                    messages.success(request, f"Borrow request for {borrow_request.item.name} approved.")
-                else:
-                    raise ValueError("Invalid data for creating a rental.")
-            except Exception as e:
-                error_message = f"Error approving the borrow request: {e}"
-                messages.error(request, error_message)
-                borrow_request.status = 'PENDING'
+            if action == 'approve':
+                borrow_request.status = 'APPROVED'
+                borrow_request.date_approved = timezone.now()
+                borrow_request.due_date = timezone.now().date() + timezone.timedelta(days=borrow_request.desired_duration)
                 borrow_request.save()
-                return redirect('manage_requests')
 
-        elif action == 'deny':
-            borrow_request.status = 'DENIED'
-            borrow_request.save()
-            messages.error(request, f"Borrow request for {borrow_request.item.name} denied.")
-            access_request.status = 'DENIED'
-            access_request.save()
-            messages.error(request,f"Access request for {access_request.collection.title} by {access_request.user.username} denied.")
-        
-        elif action == 'approve_promotion':
-            promo_request_id = request.POST.get('promo_request_id')
-            promo_request = get_object_or_404(PromotionRequest, pk=promo_request_id)
-            promo_request.status = 'APPROVED'
-            promo_request.save()
+                try:
+                    # Ensure fields are valid
+                    if borrow_request.item and borrow_request.user and borrow_request.due_date:
+                        Rental.objects.create(
+                            item=borrow_request.item,
+                            renter=borrow_request.user,
+                            start_date=timezone.now().date(),
+                            end_date=borrow_request.due_date,
+                            status='on_loan'
+                        )
+                        messages.success(request, f"Borrow request for {borrow_request.item.name} approved.")
+                    else:
+                        raise ValueError("Invalid data for creating a rental.")
+                except Exception as e:
+                    error_message = f"Error approving the borrow request: {e}"
+                    messages.error(request, error_message)
+                    borrow_request.status = 'PENDING'
+                    borrow_request.save()
+                    return redirect('manage_requests')
+
+            elif action == 'deny':
+                borrow_request.status = 'DENIED'
+                borrow_request.save()
+                messages.error(request, f"Borrow request for {borrow_request.item.name} denied.")
+
+        elif request_type == 'access':
+            access_request = get_object_or_404(CollectionAccessRequest, pk=request_id)
+
+            if action == 'approve':
+                access_request.status = 'APPROVED'
+                access_request.date_approved = timezone.now()
+                access_request.save()
+                messages.success(request, f"Access request for {access_request.collection.title} approved.")
+
+            elif action == 'deny':
+                access_request.status = 'DENIED'
+                access_request.save()
+                messages.error(request, f"Access request for {access_request.collection.title} denied.")
+
+        elif request_type == 'promotion':
+            promo_request = get_object_or_404(PromotionRequest, pk=request_id)
+
+            if action == 'approve':
+                promo_request.status = 'APPROVED'
+                promo_request.save()
             # Here we elevate the user to a librarian. Implementation depends on your app’s logic.
-            user_to_promote = promo_request.user
-            user_to_promote.is_librarian = True
-            user_to_promote.save()
-            messages.success(request, f"{user_to_promote.username} has been promoted to librarian.")
+                user_to_promote = promo_request.user
+                user_to_promote.is_librarian = True
+                user_to_promote.save()
+                messages.success(request, f"{user_to_promote.username} has been promoted to librarian.")
         
-        elif action == 'deny_promotion':
-            promo_request_id = request.POST.get('promo_request_id')
-            promo_request = get_object_or_404(PromotionRequest, pk=promo_request_id)
-            promo_request.status = 'DENIED'
-            promo_request.save()
-            messages.error(request, f"Promotion request for {promo_request.user.username} denied.")
+            elif action == 'deny':
+                promo_request.status = 'DENIED'
+                promo_request.save()
+                messages.error(request, f"Promotion request for {promo_request.user.username} denied.")
 
         return redirect('manage_requests')
 
