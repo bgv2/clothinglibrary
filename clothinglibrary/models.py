@@ -81,9 +81,7 @@ class Item(models.Model):
             if days_left <= 3:
                 return {'status': 'soon', 'days_left': days_left}
         
-        return {'status': 'unavailable', 'days_left': None}
-
-
+        return {'status': 'unavailable', 'days_left': days_left}
 
     def __str__(self):
         return self.name

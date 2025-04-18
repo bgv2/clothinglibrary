@@ -36,10 +36,13 @@
                     {% elif info.status == 'soon' %}
                         <p>
                             <span class="dot dot-soon"></span>
-                            Available Soon (in {{ info.days_left }} day{{ info.days_left|pluralize }})
+                            Available Soon ({{ info.days_left }} day{{ info.days_left|pluralize }})
                         </p>
                     {% else %}
-                        <p><span class="dot dot-unavailable"></span> Currently Unavailable</p>
+                        <p>
+                            <span class="dot dot-unavailable"></span>
+                            Unavailable ({{ info.days_left }} day{{ info.days_left|pluralize }})
+                        </p>
                     {% endif %}
                 {% endwith %}
 
