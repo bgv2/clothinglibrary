@@ -157,7 +157,8 @@ class ItemDeleteView(DeleteView):
 
 def item_detail(request, item_id):
     item = get_object_or_404(Item.objects.prefetch_related('photos'), pk=item_id)
-    return render(request, '***REMOVED***/item_detail.html', {'item': item})
+    borrow_request = BorrowRequest.objects.filter(item=item, user=request.user).order_by('-date_requested').first()
+    return render(request, '***REMOVED***/item_detail.html', {'item': item, 'borrow_request': borrow_request})
 
 @login_required
 def edit_profile(request):

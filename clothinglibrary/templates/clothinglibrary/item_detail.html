@@ -21,15 +21,41 @@
                 <p class="mb-4 text-muted" style="font-size: 0.9rem;"> Lender: {{ item.lender.get_full_name }} </p>
                 <p class="mb-4"> Category: {{ item.get_category_display }} </p>
                 <p class="mb-0">{{ item.description }}</p>
+                <hr class="my-3">
                 {% if user.is_authenticated %}
-                    <form action="{% url 'request_borrow' item.id %}" method="POST">
-                        {% csrf_token %}
-                        <label for="desired_duration">Days to borrow:</label>
-                        <input type="number" name="desired_duration" id="desired_duration" min="1" max="{{ item.max_rental_duration }}" value="{{ item.max_rental_duration }}" class="form-control mb-2">
-                        <button type="submit" class="btn btn-primary">Request to Borrow</button>
-                    </form>
+                    {% if item.is_available %}
+                        {% if borrow_request and borrow_request.status == 'PENDING' %}
+                            <button class="btn btn-warning" disabled>Request Pending</button>
+                            <div class="alert alert-warning mt-3" role="alert">
+                                Your request is pending. The lender will be notified soon.
+                            </div>
+                        {% elif borrow_request and borrow_request.status == 'DENIED' %}
+                            <form action="{% url 'request_borrow' item.id %}" method="POST">
+                                {% csrf_token %}
+                                <label for="desired_duration">Days to borrow:</label>
+                                <input type="number" name="desired_duration" id="desired_duration" min="1" max="{{ item.max_rental_duration }}" value="{{ item.max_rental_duration }}" class="form-control mb-2">
+                                <button type="submit" class="btn btn-primary">Request to Borrow</button>
+                            </form>
+                            <div class="alert alert-danger mt-3" role="alert">
+                                Your request was denied. You can contact the lender for more info or try again.
+                            </div>
+                        {% else %}
+                            <form action="{% url 'request_borrow' item.id %}" method="POST">
+                                {% csrf_token %}
+                                <label for="desired_duration">Days to borrow:</label>
+                                <input type="number" name="desired_duration" id="desired_duration" min="1" max="{{ item.max_rental_duration }}" value="{{ item.max_rental_duration }}" class="form-control mb-2">
+                                <button type="submit" class="btn btn-primary">Request to Borrow</button>
+                            </form>
+                        {% endif %}
+                    {% elif borrow_request and borrow_request.status == 'APPROVED' %}
+                            <div class="alert alert-success" role="alert">
+                                Your request was approved! You can view this item in <a href="{% url 'my_borrowed_items' %}" class="alert-link">My Borrowed Items</a>.
+                            </div>
+                    {% else %}
+                        <button class="btn btn-secondary" disabled>This item is currently unavailable</button>
+                    {% endif %}
                 {% else %}
-                    <p class="mt-4">Sign up or sign in to borrow this item.</p>
+                    <button class="btn btn-secondary" disabled>Sign in to borrow this item</button>
                 {% endif %}
                 <p class="mt-4"> Date Added: {{ item.created_at|date:"F j, Y" }} </p>
                 <p class="mb-4"> Max Rental Duration: {{ item.max_rental_duration }} days </p>
