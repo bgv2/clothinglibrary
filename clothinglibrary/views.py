@@ -5,7 +5,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
-
+from django.urls import reverse_lazy
 from ***REMOVED*** import settings
 from .forms import ItemForm, PromotePatronForm, UserProfileForm
 from .models import BorrowRequest, Item, PromotionRequest, Rental, UserProfile, ItemPhoto, Review, Collection, CollectionAccessRequest
@@ -412,3 +412,8 @@ def lender_items(request):
         'borrowed_items': borrowed_items,
         'available_items': available_items,
     })
+
+class ItemDeleteView(DeleteView):
+    model = Item
+    template_name = '***REMOVED***/item_confirm_delete.html'
+    success_url = reverse_lazy('catalog')

@@ -42,5 +42,6 @@ urlpatterns = [
     path('manage_requests/', views.manage_requests, name='manage_requests'),
     path('request_librarian/', views.request_librarian, name='request_librarian'),
     path('lender_items/', views.lender_items, name='lender_items'),
+    path('item/<int:pk>/delete', views.ItemDeleteView.as_view(), name='delete_item'),
 
 ]
