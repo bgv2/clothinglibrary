@@ -59,7 +59,7 @@ class Item(models.Model):
         now = timezone.now().date()
         return not self.rentals.filter(
             end_date__gte=now
-        ).exclude(status__in=['returned', 'overdue']).exists()
+        ).exclude(status__in=['approved', 'on_loan', 'overdue']).exists()
     
     # Source: Chat GPT
     # Prompt: "how do i make that property appear on the webpage with either a green dot (item available), yellow dot (item avaiable soon), or red dot (item rented out)"
@@ -82,6 +82,19 @@ class Item(models.Model):
                 return {'status': 'soon', 'days_left': days_left}
         
         return {'status': 'unavailable', 'days_left': days_left}
+    
+    @property
+    def number_of_past_rentals(self):
+        return self.rentals.filter(status__in=['on_loan', 'returned', 'overdue']).count()
+    
+    @property
+    def last_borrowed_date(self):
+        past_rental = self.rentals.filter(
+            status__in=['returned', 'overdue', 'on_loan'], 
+            start_date__lte=timezone.now().date()           
+        ).order_by('-start_date').first()
+
+        return past_rental.start_date if past_rental else None
 
     def __str__(self):
         return self.name

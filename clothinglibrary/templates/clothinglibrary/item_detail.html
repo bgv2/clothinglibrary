@@ -102,6 +102,13 @@
                 <p> Flaws: {{ item.flaws|default:"None provided"|safe }} </p>
                 <p> Care Instructions: {{ item.care_instructions|default:"None provided"|safe }} </p>
                 <p> Protection Info: {{ item.protection_info|default:"None provided"|safe }} </p>
+                <p> Number of Past Rentals: {{ item.number_of_past_rentals }}</p>
+                {% if item.last_borrowed_date %}
+                    <p>Last Borrowed: {{ item.last_borrowed_date|timesince }} ago</p>
+                {% else %}
+                    <p>Last Borrowed: Never</p>
+                {% endif %}
+
             </div>
         </div>
     </div>
