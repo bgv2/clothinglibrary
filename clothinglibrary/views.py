@@ -399,3 +399,16 @@ def request_librarian(request):
 
     messages.success(request, "Your promotion request has been submitted.")
     return redirect('home')
+
+@login_required
+@user_passes_test(lambda u: u.is_librarian())
+def lender_items(request):
+    all_items = Item.objects.filter(lender=request.user)
+    borrowed_items = all_items.filter(is_available=False)
+    available_items = all_items.filter(is_available=True)
+    
+    # Pass the borrowed items first, then available ones.
+    return render(request, '***REMOVED***/lender_items.html', {
+        'borrowed_items': borrowed_items,
+        'available_items': available_items,
+    })

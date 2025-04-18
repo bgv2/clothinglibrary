@@ -24,7 +24,6 @@ urlpatterns = [
     path('accounts/', include('allauth.urls')),
     path('accounts/', include('allauth.socialaccount.urls')),
     path('catalog/', views.catalog_view, name='catalog'),
-    # example: /catalog/5/
     path('catalog/<item_id>/', views.item_detail, name='item_detail'),
     path('add-item/', views.add_item, name='add_item'),
     path('item/<int:pk>/delete', views.ItemDeleteView.as_view(), name='delete_item'),
@@ -42,4 +41,6 @@ urlpatterns = [
     path('request_access/<int:collection_id>/', views.request_access, name='request_access'),
     path('manage_requests/', views.manage_requests, name='manage_requests'),
     path('request_librarian/', views.request_librarian, name='request_librarian'),
+    path('lender_items/', views.lender_items, name='lender_items'),
+
 ]
