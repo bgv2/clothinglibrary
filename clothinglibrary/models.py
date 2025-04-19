@@ -80,8 +80,10 @@ class Item(models.Model):
             days_left = (next_return.end_date - now).days
             if days_left <= 3:
                 return {'status': 'soon', 'days_left': days_left}
-        
-        return {'status': 'unavailable', 'days_left': days_left}
+            return {'status': 'unavailable', 'days_left': days_left}
+        else:
+            return {'status': 'unavailable', 'days_left': None}
+    
     
     @property
     def number_of_past_rentals(self):
