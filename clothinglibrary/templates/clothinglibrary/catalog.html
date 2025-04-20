@@ -24,7 +24,11 @@
                     <p>Condition: {{ item.get_condition_display }}</p>
                     <p>Date Added: {{ item.created_at|date:"F j, Y" }}</p>
                     {% if user.is_authenticated and user.is_librarian %}
-                    <a href="{% url 'delete_item' item.id %}" class="btn btn-danger btn-sm">Delete</a>
+                    <div class="d-flex justify-content-center gap-4 mt-4">
+                        <a href="{% url 'edit_item' item.id %}" class="btn btn-info btn-lg px-4">Edit</a>
+                        <div style="width: 32px;"></div>
+                        <a href="{% url 'delete_item' item.id %}" class="btn btn-danger btn-lg px-4">Delete</a>
+                    </div>
                     {% endif %}
                 </div>
             </div>

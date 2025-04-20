@@ -145,6 +145,55 @@ def add_item(request):
 
     return render(request, '***REMOVED***/add_item.html', {'form': form})
 
+# Source: ChatGPT
+# Prompt: How can I add an edit item feature so that I can return to the page where I created the item and edit features
+# Date: April 20, 2025
+@login_required
+def edit_item(request, item_id):
+    item = get_object_or_404(Item, id=item_id)
+
+    # Handles if a user isn't a lender
+    if not request.user.is_librarian():
+        return redirect('catalog')
+
+    if request.method == 'POST':
+        form = ItemForm(request.POST, instance=item) #the form for the current item
+        if form.is_valid():
+            form.save()
+
+            # Handles how a new photo gets added to the amazon s3 bucket
+            if 'photo' in request.FILES:
+                photo_file = request.FILES['photo']
+                file_key = f"item_photos/{item.pk}_{uuid.uuid4().hex}_{photo_file.name}"
+
+                s3_client = boto3.client('s3',
+                    aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                    aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                )
+
+                s3_client.upload_fileobj(
+                    photo_file,
+                    settings.AWS_STORAGE_BUCKET_NAME,
+                    file_key,
+                    ExtraArgs={
+                        "CacheControl": "max-age=2628000",
+                        "ContentType": photo_file.content_type,
+                    },
+                )
+
+                photo_url = f"https://{settings.AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com/{file_key}"
+
+                # Delete existing photo
+                item.photos.filter(is_primary=True).delete()
+
+                ItemPhoto.objects.create(item=item, photo=photo_url, is_primary=True)
+
+            return redirect('catalog')
+    else:
+        form = ItemForm(instance=item)
+
+    return render(request, '***REMOVED***/edit_item.html', {'form': form, 'item': item})
+
 class ItemDeleteView(DeleteView):
     model = Item
     template_name = '***REMOVED***/delete_item.html'
