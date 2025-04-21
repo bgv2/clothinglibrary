@@ -45,7 +45,6 @@ def catalog_view(request):
     # Resource: ChatGPT 4o
     # Prompt: Can I filter by a function in a Django model?
     # Date: March 30, 2025 7:20pm
-    all_collections = Collection.objects.all()
 
     category_order = [
         "Formal Wear", "Casual Wear", "Sportswear", "Vintage", "Streetwear",
@@ -60,23 +59,8 @@ def catalog_view(request):
         else:
             items_by_category.setdefault("Other", []).append(item)
 
-    if request.user.is_authenticated:
-        access_requests = CollectionAccessRequest.objects.filter(user=request.user, status='APPROVED')
-        approved_collections = access_requests.values_list('collection_id', flat=True)
-
-        collections_with_access = []
-        for collection in all_collections:
-            is_approved = request.user.is_librarian or collection.id in approved_collections
-            if collection.is_public or is_approved:
-                collection.is_approved = is_approved
-                collection.has_pending_request = CollectionAccessRequest.objects.filter(collection=collection, user=request.user, status='PENDING').exists()
-            collections_with_access.append(collection)
-    else:
-        collections_with_access = [c for c in all_collections if c.is_public]
-
     return render(request, '***REMOVED***/catalog.html', {
         "items_by_category": items_by_category,
-        "collections": collections_with_access, 
         "user": request.user,
     })
 
