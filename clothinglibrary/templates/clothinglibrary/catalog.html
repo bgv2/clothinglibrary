@@ -1,85 +1,71 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+<style>
+    .nav-tabs .nav-link.active {
+        background-color: #ffffff;
+        border-color: #dee2e6 #dee2e6 #ffffff;
+        color: #0d6efd;
+        font-weight: 500;
+    }
+</style>
+
 <div class="container mt-5">
     <h1>Catalog of Items</h1>
+    <br>
+    <ul class="nav nav-tabs mb-4" id="categoryTabs" role="tablist">
+        {% for category in items_by_category.keys %}
+            <li class="nav-item" role="presentation">
+                <button class="nav-link {% if forloop.first %}active{% endif %}" id="tab-{{ forloop.counter0 }}" data-bs-toggle="tab" data-bs-target="#pane-{{ forloop.counter0 }}" type="button" role="tab">
+                    {{ category }}
+                </button>
+            </li>
+        {% endfor %}
+    </ul>
 
-    <div class="row">
-        {% for item in items %}
-            <div class="col-md-4">
-                <div class="card p-3 mb-3">
-                    <h5 class="card-title">
-                        <a href="{% url 'item_detail' item.id %}">{{ item.name }}</a>
-                    </h5>
-
-                    {% if item.photos.first %}
-                        <img src="{{ item.photos.first.photo|default_if_none:'#' }}" alt="{{ item.name }}" style="width:100%; height:auto;" />
+    <div class="tab-content" id="categoryTabsContent">
+        {% for category, items in items_by_category.items %}
+            <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" id="pane-{{ forloop.counter0 }}" role="tabpanel">
+                <div class="row">
+                    {% if items %}
+                        {% for item in items %}
+                            <div class="col-md-4">
+                                <div class="card p-3 mb-3">
+                                    <h5 class="card-title">
+                                        <a href="{% url 'item_detail' item.id %}">{{ item.name }}</a>
+                                    </h5>
+                
+                                    {% if item.photos.first %}
+                                        <img src="{{ item.photos.first.photo|default_if_none:'#' }}" alt="{{ item.name }}" style="width:100%; height:auto;" />
+                                    {% else %}
+                                        <div class="w-100 bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                                            <p>No photo available</p>
+                                        </div>
+                                    {% endif %}
+                
+                                    <p>Category: {{ item.get_category_display }}</p>
+                                    <p>Condition: {{ item.get_condition_display }}</p>
+                                    <p>Date Added: {{ item.created_at|date:"F j, Y" }}</p>
+                
+                                    {% if user.is_authenticated and user.is_librarian %}
+                                        <div class="d-flex justify-content-center gap-4 mt-4">
+                                            <a href="{% url 'edit_item' item.id %}" class="btn btn-info btn-lg px-4">Edit</a>
+                                            <div style="width: 32px;"></div>
+                                            <a href="{% url 'delete_item' item.id %}" class="btn btn-danger btn-lg px-4">Delete</a>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        {% endfor %}
                     {% else %}
-                        <div class="w-100 bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px; width: 200px; margin: 0 auto;">
-                        <p>No photo available</p>
+                        <div class="col">
+                            <p class="text-muted">No items available.</p>
                         </div>
                     {% endif %}
-
-                    <p>Category: {{ item.get_category_display }}</p>
-                    <p>Condition: {{ item.get_condition_display }}</p>
-                    <p>Date Added: {{ item.created_at|date:"F j, Y" }}</p>
-                    {% if user.is_authenticated and user.is_librarian %}
-                    <div class="d-flex justify-content-center gap-4 mt-4">
-                        <a href="{% url 'edit_item' item.id %}" class="btn btn-info btn-lg px-4">Edit</a>
-                        <div style="width: 32px;"></div>
-                        <a href="{% url 'delete_item' item.id %}" class="btn btn-danger btn-lg px-4">Delete</a>
-                    </div>
-                    {% endif %}
                 </div>
             </div>
-        {% empty %}
-            <p>No items available.</p>
         {% endfor %}
-    </div>
-    <h2>Collections</h2>
-    {% if user.is_authenticated %}
-    <a href="{% url 'create_collection' %}" class="btn btn-primary mb-4">New collection</a>
-    {% endif %}
-    <div class="d-flex overflow-auto flex-row gap-3 pb-3">
-        {% for collection in collections %}
-            <div class="card shadow-sm mr-3" style="min-width: 300px; max-width: 300px; height: 100%; flex: 0 0 auto;">
-                <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
-                    <span>No Image</span>
-                </div>
-                <div class="card-body d-flex flex-column">
-                    <h5 class="card-title">
-                    {% if collection.is_public %}
-                         <a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a>
-                    {% else %}
-                    {% if collection.is_approved %}
-                        <a href="{% url 'collection_detail' collection.id %}">{{ collection.title }}</a>
-                    {% else %}
-                        {{ collection.title }}
-                    {% endif %}
-                    {% endif %}
-                    </h5>
-                    {% if not collection.is_public %}
-                        <p class="text-muted small mb-2">Private Collection</p>
-                    {% if collection.is_approved %}
-                    {% elif collection.has_pending_request %}
-                        <p>Your request is pending.</p>
-                    {% else %}
-                        <a href="{% url 'request_access' collection.id %}" class="btn btn-primary">Request Access</a>
-                    {% endif %}
-                    {% endif %}
-                    <p class="text-muted small mb-2">Created by: {{ collection.creator.username }}</p>
-                    <p class="card-text">{{ collection.description }}</p>
-                </div>
-                {% if user.is_authenticated and user.is_librarian or collection.creator == user %}
-                    <div class="card-footer d-flex justify-content-end gap-2">
-                        <a href="{% url 'edit_collection' collection.id %}" class="btn btn-sm btn-outline-secondary mx-2">Edit</a>
-                        <a href="{% url 'delete_collection' collection.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
-                    </div>
-                {% endif %}
-            </div>
-        {% empty %}
-            <p class="text-muted"> No collections available. </p>
-        {% endfor %}
-    </div>
+    </div> 
 </div>
 {% endblock %}
