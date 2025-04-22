@@ -113,7 +113,7 @@ class CollectionUpdateView(UpdateView):
     model = Collection
     fields = ['title', 'description', 'items']
     template_name = '***REMOVED***/edit_collection.html'
-    success_url = '/catalog/'
+    success_url = '/collections/'
 
     def form_valid(self, form):
         items = form.cleaned_data.get('items')
