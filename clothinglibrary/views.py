@@ -115,6 +115,15 @@ class CollectionUpdateView(UpdateView):
     template_name = '***REMOVED***/edit_collection.html'
     success_url = '/catalog/'
 
+    def form_valid(self, form):
+        items = form.cleaned_data.get('items')
+        if items:
+            for item in items:
+                if Collection.objects.filter(items__in=[item], is_public=False).exists():
+                    form.add_error('items', f"{item} is already in a private collection.")
+                    return self.form_invalid(form)
+        return super().form_valid(form)
+
 @method_decorator(login_required, name='dispatch')
 class CollectionDeleteView(DeleteView):
     model = Collection
