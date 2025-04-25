@@ -15,10 +15,10 @@
     <h1>Catalog</h1>
     <br>
     <ul class="nav nav-tabs mb-4" id="categoryTabs" role="tablist">
-        {% for category in items_by_category.keys %}
+        {% for category, items in items_by_category.items %}
             <li class="nav-item" role="presentation">
                 <button class="nav-link {% if forloop.first %}active{% endif %}" id="tab-{{ forloop.counter0 }}" data-bs-toggle="tab" data-bs-target="#pane-{{ forloop.counter0 }}" type="button" role="tab">
-                    {{ category }}
+                    {{ category }} ({{ items|length }})
                 </button>
             </li>
         {% endfor %}
