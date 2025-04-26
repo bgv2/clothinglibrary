@@ -126,8 +126,8 @@ class CollectionUpdateView(UpdateView):
         items = form.cleaned_data.get('items')
         if items:
             for item in items:
-                if Collection.objects.filter(items__in=[item], is_public=False).exists():
-                    form.add_error('items', f"{item} is already in a private collection.")
+                if Collection.objects.filter(items__in=[item], is_public=False).exists() and item not in form.instance.items.all():
+                    form.add_error('items', f"{item} is already in a private collection, so it cannot be added to another collection.")
                     return self.form_invalid(form)
         return super().form_valid(form)
 
