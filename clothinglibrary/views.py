@@ -109,6 +109,13 @@ class CollectionCreateView(CreateView):
         form.instance.creator = self.request.user
         return super().form_valid(form)
 
+    def get_form(self, *args, **kwargs):
+        form = super().get_form(*args, **kwargs)
+        for field in form:
+            if field.name != 'csrf_token':
+                field.field.widget.attrs.update({'class': 'form-control custom-form-control'})
+        return form
+
 class CollectionUpdateView(UpdateView):
     model = Collection
     fields = ['title', 'description', 'items']
@@ -123,6 +130,13 @@ class CollectionUpdateView(UpdateView):
                     form.add_error('items', f"{item} is already in a private collection.")
                     return self.form_invalid(form)
         return super().form_valid(form)
+
+    def get_form(self, *args, **kwargs):
+        form = super().get_form(*args, **kwargs)
+        for field in form:
+            if field.name != 'csrf_token':
+                field.field.widget.attrs.update({'class': 'form-control custom-form-control'})
+        return form
 
 @method_decorator(login_required, name='dispatch')
 class CollectionDeleteView(DeleteView):

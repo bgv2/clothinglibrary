@@ -41,10 +41,17 @@ class ItemForm(ModelForm):
             },
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            if not isinstance(field.widget, CheckboxSelectMultiple):
+                field.widget.attrs.update({'class': 'form-control'})
+
 class UserProfileForm(ModelForm):
     class Meta:
         model = UserProfile
         fields = ['description', 'photo']
+
 
 class PromotePatronForm(Form):
     users_to_promote = ModelMultipleChoiceField(
