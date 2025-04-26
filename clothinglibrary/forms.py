@@ -1,4 +1,4 @@
-from django.forms import CheckboxSelectMultiple, ModelForm, Form, ModelMultipleChoiceField
+from django.forms import CheckboxSelectMultiple, ModelForm, Form, ModelMultipleChoiceField, Textarea
 from ***REMOVED***.models import Item, UserProfile
 from django.contrib.auth.models import User, Group
 
@@ -52,6 +52,13 @@ class UserProfileForm(ModelForm):
         model = UserProfile
         fields = ['description', 'photo']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            if isinstance(field.widget, Textarea):
+                field.widget.attrs.update({'class': 'form-control'})
+            elif field.widget.input_type != 'file':
+                field.widget.attrs.update({'class': 'form-control'})
 
 class PromotePatronForm(Form):
     users_to_promote = ModelMultipleChoiceField(

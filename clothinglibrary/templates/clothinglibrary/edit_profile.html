@@ -15,8 +15,8 @@
                             </div>
                         {% endif %}
                         {% for field in form %}
-                            <div class="form-group">
-                                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            <div class="mb-3">
+                                <label for="{{ field.id_for_label }}" class="form-label d-block">{{ field.label }}</label>
                                 {{ field }}
                                 {% if field.errors %}
                                     <div class="invalid-feedback d-block">
