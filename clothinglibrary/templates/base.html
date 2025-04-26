@@ -90,5 +90,15 @@
     <footer class="bg-light text-center py-3 mt-4">
     <p>&copy; 2024 B-19 | This system is a class project and not monitored. No real information should be submitted in this website.</p>
     </footer>
+    <script>
+        document.querySelectorAll('option').forEach(option => {
+            option.onmousedown = function(e) {
+                e.preventDefault();
+                this.selected = !this.selected;
+                this.parentElement.focus();
+                return false;
+            }
+        })
+    </script>
 </body>
 </html>
