@@ -512,8 +512,3 @@ def lender_items(request):
         'borrowed_items': borrowed_items,
         'available_items': available_items,
     })
-
-class ItemDeleteView(DeleteView):
-    model = Item
-    template_name = '***REMOVED***/item_confirm_delete.html'
-    success_url = reverse_lazy('catalog')
