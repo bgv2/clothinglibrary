@@ -492,16 +492,17 @@ def request_access(request, collection_id):
 
 @login_required
 def request_librarian(request):
-    # If user is already a librarian, skip creating a request
-    if request.user.is_librarian:
-        return redirect('home')
+    # Determine the URL to redirect back to – default to home if no referrer found
+    redirect_url = request.META.get("HTTP_REFERER", "/")
 
-    # Create a new request if none is pending
+    # Create a new promotion request if none is pending
     if not PromotionRequest.objects.filter(user=request.user, status='PENDING').exists():
         PromotionRequest.objects.create(user=request.user)
-
-    messages.success(request, "Your promotion request has been submitted.")
-    return redirect('home')
+        messages.success(request, "Your promotion request has been submitted.")
+    else:
+        messages.info(request, "Your promotion request is already pending.")
+    
+    return redirect(redirect_url)
 
 @login_required
 @user_passes_test(lambda u: u.is_librarian())
