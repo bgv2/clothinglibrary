@@ -47,16 +47,14 @@
                                         <p>Category: {{ item.get_category_display }}</p>
                                         <p>Condition: {{ item.get_condition_display }}</p>
                                         <p>Date Added: {{ item.created_at|date:"F j, Y" }}</p>
+                                        {% if user.is_authenticated and user.is_librarian %}
+                                        <div class="d-flex justify-content-center gap-4 mt-2">
+                                            <a href="{% url 'edit_item' item.id %}" class="btn btn-info px-3 mr-4">Edit</a>
+                                            <a href="{% url 'delete_item' item.id %}" class="btn btn-danger px-3">Delete</a>
+                                        </div>
+                                        {% endif %}
                                     </div>
                                 </a>
-
-                                {% if user.is_authenticated and user.is_librarian %}
-                                <div class="d-flex justify-content-center gap-4 mt-2">
-                                    <a href="{% url 'edit_item' item.id %}" class="btn btn-info btn-lg px-4">Edit</a>
-                                    <div style="width: 32px;"></div>
-                                    <a href="{% url 'delete_item' item.id %}" class="btn btn-danger btn-lg px-4">Delete</a>
-                                </div>
-                                {% endif %}
                             </div>
                         {% endfor %}
                     {% else %}
