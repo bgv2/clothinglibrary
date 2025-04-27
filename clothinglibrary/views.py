@@ -368,8 +368,13 @@ def request_borrow(request, item_id):
 
 @login_required
 def my_borrowed_items(request):
-    borrowed_items = Rental.objects.filter(renter=request.user, status='on_loan')
-    return render(request, '***REMOVED***/my_borrowed_items.html', {'borrowed_items': borrowed_items})
+    current_rentals = Rental.objects.filter(renter=request.user, status='on_loan')
+
+    past_rentals = Rental.objects.filter(renter=request.user).exclude(status='on_loan')
+
+    borrow_requests = BorrowRequest.objects.filter(user=request.user).order_by('-date_requested')
+
+    return render(request, '***REMOVED***/my_borrowed_items.html', {'past_rentals': past_rentals, 'borrow_requests': borrow_requests, 'current_rentals': current_rentals})
 
 @user_passes_test(lambda u: u.is_librarian())
 def manage_requests(request):
