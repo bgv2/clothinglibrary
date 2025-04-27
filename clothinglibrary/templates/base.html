@@ -15,16 +15,35 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </head>  
 <body class="d-flex flex-column min-vh-100">
-    <div id="django-messages" style="position:fixed; bottom:20px; right:20px; z-index:9999; min-width:250px;">
+
+    <div id="django-messages" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999; min-width: 250px;">
         {% if messages %}
-            {% for message in messages %}
-                <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                </div>
-            {% endfor %}
+          {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+              {{ message }}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% endfor %}
         {% endif %}
-    </div>
+      </div>
+      
+      <script>
+      document.addEventListener("DOMContentLoaded", function(){
+        // For each alert, auto dismiss after 5 seconds (5000ms)
+        setTimeout(function(){
+          var alerts = document.querySelectorAll("#django-messages .alert");
+          alerts.forEach(function(alert){
+            // Remove the "show" class to trigger Bootstrap's fade out (if configured)
+            alert.classList.remove("show");
+            // After a short delay, remove the element from the DOM entirely
+            setTimeout(function(){
+              alert.remove();
+            }, 500); // 500ms for fade-out
+          });
+        }, 5000);
+      });
+      </script>
+
     <header>
         <nav class="navbar navbar-expand-sm" style="background-color: #ffffff;">
              <a class="navbar-brand text-dark" href="{% url 'home' %}">
