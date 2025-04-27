@@ -15,8 +15,17 @@
                             {% endif %}
                             {% for field in form %}
                                 <div class="mb-3">
+                                {% if field.name == "is_public" %}
+                                <div class="mb-3" style="margin-left: 0;">
+                                    <div class="form-check" style="padding-left: 0;">
+                                        {{ field }}
+                                        <label for="{{ field.id_for_label }}" class="form-check-label ms-2">{{ field.label }}</label>
+                                    </div>
+                                </div>
+                                {% else %}
                                     <label for="{{ field.id_for_label }}" class="form-label d-block">{{ field.label }}</label>
                                     {{ field }}
+                                {% endif %}
                             {% if field.errors %}
                                 <div class="invalid-feedback d-block">
                                     {% for error in field.errors %}

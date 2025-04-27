@@ -1,3 +1,4 @@
+from django import forms
 from django.utils import timezone
 from datetime import datetime
 from django.contrib import messages
@@ -113,7 +114,9 @@ class CollectionCreateView(CreateView):
         form = super().get_form(*args, **kwargs)
         for field in form:
             if field.name != 'csrf_token':
-                field.field.widget.attrs.update({'class': 'form-control custom-form-control'})
+                widget = field.field.widget
+                if not isinstance(widget, (forms.CheckboxInput, forms.CheckboxSelectMultiple)):
+                    widget.attrs.update({'class': 'form-control custom-form-control'})
         return form
 
 class CollectionUpdateView(UpdateView):
