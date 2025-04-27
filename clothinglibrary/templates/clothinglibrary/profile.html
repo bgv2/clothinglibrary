@@ -8,8 +8,7 @@
     
     <!-- Profile Picture Column -->
     <div class="col-md-4">
-      <div class="border shadow h-100 d-flex align-items-center justify-content-center"
-           style="min-height: 250px;">
+      <div class="border shadow h-100 d-flex align-items-center justify-content-center" style="min-height: 250px;">
         {% if user.userprofile.photo %}
           <img src="{{ user.userprofile.photo.url }}" alt="Profile Photo"
                class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: cover;">
@@ -17,20 +16,20 @@
           <div class="text-center text-muted">No photo available</div>
         {% endif %}
       </div>
-      <!-- Button for changing profile picture -->
+      <!-- Hidden file input form for updating profile picture -->
+      <form id="update-picture-form" method="post" action="{% url 'update_profile_picture' %}" enctype="multipart/form-data" style="display: none;">
+        {% csrf_token %}
+        <input type="file" id="profile-picture-input" name="photo" accept="image/jpeg, image/png" onchange="document.getElementById('update-picture-form').submit();">
+      </form>
+      <!-- Button for adding/changing profile picture -->
       <div class="mt-2 text-center">
-        <button class="btn btn-primary" id="edit-profile-picture-btn">Change Profile Picture</button>
-      </div>
-      <!-- Inline Profile Picture Edit Form -->
-      <div id="profile-picture-edit-form" style="display: none;" class="mt-2">
-        <form method="post" action="{% url 'update_profile_picture' %}" enctype="multipart/form-data">
-          {% csrf_token %}
-          <div class="mb-2">
-            <input type="file" name="photo" class="form-control" accept="image/jpeg, image/png">
-          </div>
-          <button type="submit" class="btn btn-primary btn-sm">Save</button>
-          <button type="button" id="cancel-profile-picture-edit" class="btn btn-secondary btn-sm">Cancel</button>
-        </form>
+        <button class="btn btn-primary" id="trigger-profile-picture-input">
+          {% if user.userprofile.photo %}
+            Change Profile Picture
+          {% else %}
+            Add Profile Picture
+          {% endif %}
+        </button>
       </div>
     </div>
     
@@ -82,12 +81,9 @@
     document.getElementById("description-display").style.display = "inline";
   });
   
-  // Toggle profile picture edit form
-  document.getElementById("edit-profile-picture-btn").addEventListener("click", function(){
-    document.getElementById("profile-picture-edit-form").style.display = "block";
-  });
-  document.getElementById("cancel-profile-picture-edit").addEventListener("click", function(){
-    document.getElementById("profile-picture-edit-form").style.display = "none";
+  // Directly trigger file selection when profile picture button is clicked
+  document.getElementById("trigger-profile-picture-input").addEventListener("click", function(){
+    document.getElementById("profile-picture-input").click();
   });
 </script>
 {% endblock %}
