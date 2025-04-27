@@ -2,41 +2,138 @@
 {% block title %}Your Profile{% endblock %}
 
 {% block content %}
-    <div class="container mt-4">
-    <h1 class="mb-4">{{ user.get_full_name|default:user.username }}'s Profile</h1>
-    {% if user.userprofile %}
-        <div class="row align-items-stretch">
-            <div class="col-md-4">
-                <div class="border shadow h-100 d-flex align-items-center justify-content-center"
-                     style="min-height: 250px;">
-                    {% if user.userprofile.photo %}
-                        <img src="{{ user.userprofile.photo.url }}"
-                             alt="Profile Photo"
-                             class="img-fluid"
-                             style="max-height: 100%; max-width: 100%; object-fit: cover;">
-                    {% else %}
-                        <div class="text-center text-muted">No photo available</div>
-                    {% endif %}
-                </div>
-            </div><div class="col-md-8">
-                <div class="border p-3 h-100">
-                    <p><strong>Username:</strong> {{ user.username }}</p>
-                    <p><strong>Email:</strong> {{ user.email }}</p>
-                    <p>
-                        <strong>Description:</strong>
-                        {% if user.userprofile.description %}
-                            {{ user.userprofile.description }}
-                        {% else %}
-                            <em>No description provided.</em>
-                        {% endif %}
-                    </p>
-                    <p><strong> Date Joined: </strong> {{ user.date_joined }}</p>
-            <a href="{% url 'edit_profile' %}" class="btn btn-primary">Edit Profile</a>
+<div class="container mt-4">
+  <h1 class="mb-4">{{ user.get_full_name|default:user.username }}'s Profile</h1>
+  <div class="row align-items-stretch">
+    <div class="col-md-4">
+      <div class="border shadow h-100 d-flex align-items-center justify-content-center"
+           style="min-height: 250px;">
+        {% if user.userprofile.photo %}
+          <img src="{{ user.userprofile.photo.url }}" alt="Profile Photo"
+               class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: cover;">
+        {% else %}
+          <div class="text-center text-muted">No photo available</div>
+        {% endif %}
+      </div>
+      <!-- Button for adding/changing profile picture -->
+      <div class="mt-2 text-center">
+        <a href="{% url 'edit_profile' %}" class="btn btn-primary">Change Profile Picture</a>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="border p-3 h-100">
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p>
+          <strong>Description:</strong>
+          <span id="description-display">
+            {% if user.userprofile.description %}
+              {{ user.userprofile.description }}
+            {% else %}
+              <em>No description provided.</em>
+            {% endif %}
+          </span>
+          <a href="#" id="edit-description-btn" class="ms-2 text-decoration-none" title="Edit Description">
+            <i class="bi bi-pencil"></i>
+          </a>
+        </p>
+        <div id="description-edit-form" style="display: none;">
+          <form method="post" action="{% url 'update_description' %}">
+            {% csrf_token %}
+            <div class="mb-2">
+              <textarea name="description" class="form-control" rows="3">{{ user.userprofile.description }}</textarea>
             </div>
+            <button type="submit" class="btn btn-primary btn-sm">Save</button>
+            <button type="button" id="cancel-description-edit" class="btn btn-secondary btn-sm">Cancel</button>
+          </form>
         </div>
-        </div>
-    {% else %}
-        <p>No user profile available.</p>
-    {% endif %}
+        <p><strong>Date Joined:</strong> {{ user.date_joined }}</p>
+      </div>
+    </div>
+  </div>
 </div>
+
+<script>
+  document.getElementById("edit-description-btn").addEventListener("click", function(e) {
+    e.preventDefault();
+    document.getElementById("description-display").style.display = "none";
+    document.getElementById("description-edit-form").style.display = "block";
+  });
+  
+  document.getElementById("cancel-description-edit").addEventListener("click", function(){
+    document.getElementById("description-edit-form").style.display = "none";
+    document.getElementById("description-display").style.display = "inline";
+  });
+</script>
+{% endblock %}
+``` 
+
+Now, the edit button uses a pencil icon (`<i class="bi bi-pencil"></i>`) to clearly indicate the edit functionality for the description.<!-- filepath: /Users/vikranthnara/Documents/GitHub/SDE 2/project-b-19/***REMOVED***/templates/***REMOVED***/profile.html -->
+{% extends "base.html" %}
+{% block title %}Your Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+  <h1 class="mb-4">{{ user.get_full_name|default:user.username }}'s Profile</h1>
+  <div class="row align-items-stretch">
+    <div class="col-md-4">
+      <div class="border shadow h-100 d-flex align-items-center justify-content-center"
+           style="min-height: 250px;">
+        {% if user.userprofile.photo %}
+          <img src="{{ user.userprofile.photo.url }}" alt="Profile Photo"
+               class="img-fluid" style="max-height: 100%; max-width: 100%; object-fit: cover;">
+        {% else %}
+          <div class="text-center text-muted">No photo available</div>
+        {% endif %}
+      </div>
+      <!-- Button for adding/changing profile picture -->
+      <div class="mt-2 text-center">
+        <a href="{% url 'edit_profile' %}" class="btn btn-primary">Change Profile Picture</a>
+      </div>
+    </div>
+    <div class="col-md-8">
+      <div class="border p-3 h-100">
+        <p><strong>Username:</strong> {{ user.username }}</p>
+        <p><strong>Email:</strong> {{ user.email }}</p>
+        <p>
+          <strong>Description:</strong>
+          <span id="description-display">
+            {% if user.userprofile.description %}
+              {{ user.userprofile.description }}
+            {% else %}
+              <em>No description provided.</em>
+            {% endif %}
+          </span>
+          <a href="#" id="edit-description-btn" class="ms-2 text-decoration-none" title="Edit Description">
+            <i class="bi bi-pencil"></i>
+          </a>
+        </p>
+        <div id="description-edit-form" style="display: none;">
+          <form method="post" action="{% url 'update_description' %}">
+            {% csrf_token %}
+            <div class="mb-2">
+              <textarea name="description" class="form-control" rows="3">{{ user.userprofile.description }}</textarea>
+            </div>
+            <button type="submit" class="btn btn-primary btn-sm">Save</button>
+            <button type="button" id="cancel-description-edit" class="btn btn-secondary btn-sm">Cancel</button>
+          </form>
+        </div>
+        <p><strong>Date Joined:</strong> {{ user.date_joined }}</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById("edit-description-btn").addEventListener("click", function(e) {
+    e.preventDefault();
+    document.getElementById("description-display").style.display = "none";
+    document.getElementById("description-edit-form").style.display = "block";
+  });
+  
+  document.getElementById("cancel-description-edit").addEventListener("click", function(){
+    document.getElementById("description-edit-form").style.display = "none";
+    document.getElementById("description-display").style.display = "inline";
+  });
+</script>
 {% endblock %}
