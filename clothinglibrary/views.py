@@ -262,6 +262,32 @@ def item_detail(request, item_id):
     if request.user.is_authenticated:
         borrow_request = BorrowRequest.objects.filter(item=item, user=request.user).order_by('-date_requested').first()
     return render(request, '***REMOVED***/item_detail.html', {'item': item, 'borrow_request': borrow_request})
+
+@login_required
+def update_description(request):
+    if request.method == 'POST':
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        description = request.POST.get('description', '').strip()
+        user_profile.description = description
+        user_profile.save()
+        messages.success(request, "Description updated successfully.")
+    else:
+        messages.error(request, "Invalid request method.")
+    return redirect('profile')
+
+@login_required
+def update_profile_picture(request):
+    if request.method == 'POST':
+        user_profile, created = UserProfile.objects.get_or_create(user=request.user)
+        if 'photo' in request.FILES:
+            user_profile.photo = request.FILES['photo']
+            user_profile.save()
+            messages.success(request, "Profile picture updated successfully.")
+        else:
+            messages.error(request, "No photo uploaded.")
+    else:
+        messages.error(request, "Invalid request method.")
+    return redirect('profile')
     
 @login_required
 def edit_profile(request):
