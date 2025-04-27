@@ -94,7 +94,7 @@ class CollectionCreateView(CreateView):
     model = Collection
     fields = ['title', 'description', 'items', 'is_public']
     template_name = '***REMOVED***/create_collection.html'
-    success_url = '/catalog/'
+    success_url = '/collections/'
 
     def form_valid(self, form):
         if (not form.cleaned_data.get('is_public')) and (not self.request.user.is_librarian()):
