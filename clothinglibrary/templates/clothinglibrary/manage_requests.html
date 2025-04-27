@@ -34,8 +34,8 @@
                         {% csrf_token %}
                         <input type="hidden" name="request_id" value="{{ request.id }}">
                         <input type="hidden" name="request_type" value="access">
-                        <button type="submit" name="action" value="approve" class="btn btn-success">Approve</button>
-                        <button type="submit" name="action" value="deny" class="btn btn-danger">Deny</button>
+                        <button type="submit" name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
+                        <button type="submit" name="action" value="deny" class="btn btn-danger btn-sm">Deny</button>
                     </form>
                 </li>
             {% endfor %}
@@ -57,8 +57,8 @@
                     {% csrf_token %}
                     <input type="hidden" name="request_id" value="{{ promo_request.id }}">
                     <input type="hidden" name="request_type" value="promotion">
-                    <button type="submit" name="action" value="approve" class="btn btn-success">Approve</button>
-                    <button type="submit" name="action" value="deny" class="btn btn-danger">Deny</button>
+                    <button type="submit" name="action" value="approve" class="btn btn-success btn-sm">Approve</button>
+                    <button type="submit" name="action" value="deny" class="btn btn-danger btn-sm">Deny</button>
                 </form>
             </li>
         {% endfor %}

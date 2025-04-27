@@ -30,7 +30,7 @@ urlpatterns = [
     path('profile', views.profile, name='profile'),
     path('profile/update_description/', views.update_description, name='update_description'),
     path('profile/update_picture/', views.update_profile_picture, name='update_profile_picture'),
-    path('edit-profile/', views.edit_profile, name='edit_profile'),
+    path('profile/remove_picture/', views.remove_profile_picture, name='remove_profile_picture'),
     path('promote-patrons/', views.PromotePatronsFormView.as_view(), name='promote_patrons'),
     path('item/<item_id>/review/', views.add_review, name='add_review'),
     path('review/<review_id>/delete/', views.delete_review, name='delete_review'),
@@ -47,5 +47,4 @@ urlpatterns = [
     path('item/<int:pk>/delete', views.ItemDeleteView.as_view(), name='delete_item'),
     path('items/<int:item_id>/edit/', views.edit_item, name='edit_item'),
     path('collections/', views.collections_view, name='collections'),
-    
 ]

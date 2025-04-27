@@ -288,20 +288,14 @@ def update_profile_picture(request):
     else:
         messages.error(request, "Invalid request method.")
     return redirect('profile')
-    
+
 @login_required
-def edit_profile(request):
+def remove_profile_picture(request):
     user_profile, created = UserProfile.objects.get_or_create(user=request.user)
-
-    if request.method == 'POST':
-        form = UserProfileForm(request.POST, request.FILES, instance=user_profile)
-        if form.is_valid():
-            form.save()
-            return redirect('profile')
-    else:
-        form = UserProfileForm(instance=user_profile)
-
-    return render(request, '***REMOVED***/edit_profile.html', {'form': form})
+    user_profile.photo = None
+    user_profile.save()
+    messages.success(request, "Profile picture removed.")
+    return redirect('profile')
 
 @login_required
 def add_review(request, item_id):

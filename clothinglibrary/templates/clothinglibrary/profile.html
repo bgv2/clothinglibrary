@@ -30,6 +30,11 @@
             Add Profile Picture
           {% endif %}
         </button>
+        {% if user.userprofile.photo %}
+          <a href="{% url 'remove_profile_picture' %}" class="btn btn-danger ms-2" title="Remove Profile Picture">
+            <i class="bi bi-x"></i>
+          </a>
+        {% endif %}
       </div>
     </div>
     
