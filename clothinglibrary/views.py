@@ -375,7 +375,7 @@ def request_borrow(request, item_id):
 @login_required
 def my_borrowed_items(request):
     current_rentals = Rental.objects.filter(renter=request.user, status='on_loan')
-    borrow_requests = BorrowRequest.objects.filter(user=request.user).order_by('-date_requested')
+    borrow_requests = BorrowRequest.objects.filter(user=request.user, status='PENDING').order_by('-date_requested')
 
     return render(request, '***REMOVED***/my_borrowed_items.html', {'borrow_requests': borrow_requests, 'current_rentals': current_rentals})
 
