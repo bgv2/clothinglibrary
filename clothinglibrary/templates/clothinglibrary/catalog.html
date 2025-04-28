@@ -3,126 +3,180 @@
 {% block content %}
 
 <style>
-    .nav-tabs .nav-link.active {
-        background-color: #ffffff;
-        border-color: #dee2e6 #dee2e6 #ffffff;
-        color: #0d6efd;
+    .search-bar {
+        border-radius: 50px;
+        padding: 10px 20px;
+        width: 100%;
+        border: 1px solid #ccc;
+    }
+    .category-tabs .nav-link {
+        border-radius: 50px;
+        padding: 8px 20px;
+        margin: 5px;
         font-weight: 500;
+        background-color: #f8f9fa;
+        color: #333;
+    }
+    .category-tabs .nav-link.active {
+        background-color: #0d6efd;
+        color: white;
+    }
+    .card-custom {
+        border: 1px solid #eee;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+        overflow: hidden;
+        box-shadow: 0px 2px 8px rgba(0,0,0,0.05);
+        text-align: center;
+        margin-bottom: 0; 
+    }
+    .card-custom:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 6px 20px rgba(0,0,0,0.1);
+    }
+    .item-image {
+        width: 100%;
+        height: 300px;
+        object-fit: cover;
+        border-bottom: 1px solid #eee;
+    }
+    .badge-unavailable {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: #6c757d;
+        color: white;
+        font-size: 0.75rem;
+        padding: 5px 10px;
+        border-radius: 50px;
+        opacity: 0.9;
+    }
+
+    .btn-light {
+        font-weight: 500;
+        border-radius: 30px;
+        padding: 6px 18px;
+    }
+
+    .btn-light:hover {
+        background-color: #f8f9fa;
+        box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .text-danger {
+        color: #dc3545 !important;
+    }
+
+    .text-danger:hover {
+        color: #bb2d3b !important;
+    }
+
+    .row.g-4 {
+        row-gap: 2.5rem; /* control vertical spacing between rows */
     }
 </style>
 
-<div class="container">
-    <h1>Catalog</h1>
+<div class="container py-4">
+    <h1 class="mb-4 text-center">Catalog</h1>
 
-    <form method="get" action="{% url 'catalog' %}" class="d-flex mb-2">
-        <input type="text" name="q" class="form-control me-2" placeholder="Search items..." value="{{ query }}">
-        <button class="btn btn-primary" type="submit">Search</button>
+    <form method="get" action="{% url 'catalog' %}" class="mb-4">
+        <input type="text" name="q" class="form-control search-bar" placeholder="Search for an item..." value="{{ query }}">
     </form>
 
-    <br>
     {% if not query %}
-    <ul class="nav nav-tabs mb-4" id="categoryTabs" role="tablist">
-        {% for category, items in items_by_category.items %}
-        <li class="nav-item" role="presentation">
-            <button class="nav-link {% if forloop.first %}active{% endif %}" id="tab-{{ forloop.counter0 }}"
-                data-bs-toggle="tab" data-bs-target="#pane-{{ forloop.counter0 }}" type="button" role="tab">
-                {{ category }} ({{ items|length }})
-            </button>
-        </li>
-        {% endfor %}
-    </ul>
-
-    <div class="tab-content" id="categoryTabsContent">
-        {% for category, items in items_by_category.items %}
-        <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" id="pane-{{ forloop.counter0 }}"
-            role="tabpanel">
-            <div class="row">
-                {% if items %}
-                {% for item in items %}
-                <div class="col-md-4">
-                    <a href="{% url 'item_detail' item.id %}" class="card-link" style="text-decoration: none; color: inherit;">
-                        <div class="card p-3 mb-3 h-100" style="position: relative;" >
-                            {% if not item.is_available %}
-                            <span class="badge bg-dark text-light px-3 py-2 rounded-pill" 
-                            style="position: absolute; top: 10px; left: 10px; font-size: 0.8rem; opacity: 0.9;">
-                          Unavailable
-                      </span>
-                            {% endif %}
-
-                            <h5 class="card-title">
-                                {{ item.name }}
-                            </h5>
-
-                            {% if item.photos.first %}
-                                <img src="{{ item.photos.first.photo|default_if_none:'#' }}" alt="{{ item.name }}"
-                                    style="width:100%; height:auto;" />
-                            {% else %}
-                                <div class="w-100 bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
-                                    <p>No photo available</p>
-                                </div>
-                            {% endif %}
-
-                            <p>Category: {{ item.get_category_display }}</p>
-                            <p>Condition: {{ item.get_condition_display }}</p>
-                            <p>Date Added: {{ item.created_at|date:"F j, Y" }}</p>
-                            {% if user.is_authenticated and user.is_librarian %}
-                                <div class="d-flex justify-content-center gap-4 mt-2">
-                                    <a href="{% url 'edit_item' item.id %}" class="btn btn-info px-3 mr-4">Edit</a>
-                                    <a href="{% url 'delete_item' item.id %}" class="btn btn-danger px-3">Delete</a>
-                                </div>
-                            {% endif %}
-                        </div>
-                    </a>
-                </div>
+        <div class="d-flex justify-content-center flex-wrap mb-4 category-tabs">
+            <ul class="nav nav-pills">
+                {% for category, items in items_by_category.items %}
+                <li class="nav-item">
+                    <button class="nav-link {% if forloop.first %}active{% endif %}" id="tab-{{ forloop.counter0 }}"
+                        data-bs-toggle="tab" data-bs-target="#pane-{{ forloop.counter0 }}" type="button" role="tab">
+                        {{ category }} ({{ items|length }})
+                    </button>
+                </li>
                 {% endfor %}
-                {% else %}
-                <div class="col">
-                    <p class="text-muted">No items available.</p>
-                </div>
-                {% endif %}
-            </div>
+            </ul>
         </div>
-        {% endfor %}
-    </div>
-</div>
-{% else %}
-<h2 class="">Showing {{ num_results }} results for "{{ query }}"</h2>
-<div class="row mt-4">
-    {% for category, items in items_by_category.items %}
-    {% for item in items %}
-    <div class="col-md-4">
-        <a href="{% url 'item_detail' item.id %}" class="card-link" style="text-decoration: none; color: inherit;">
-            <div class="card p-3 mb-3 h-100">
-                <div class="card p-3 mb-3 h-100" style="position: relative;">
-                    <h5 class="card-title">
-                        {{ item.name }}
-                    </h5>
-                    {% if item.photos.first %}
-                    <img src="{{ item.photos.first.photo|default_if_none:'#' }}" alt="{{ item.name }}"
-                        style="width:100%; height:auto;" />
-                    {% else %}
-                    <div class="w-100 bg-secondary text-white d-flex align-items-center justify-content-center"
-                        style="height: 200px;">
-                        <p>No photo available</p>
+
+        <div class="tab-content">
+            {% for category, items in items_by_category.items %}
+            <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" id="pane-{{ forloop.counter0 }}" role="tabpanel">
+                <div class="row g-4">
+                    {% for item in items %}
+                    <div class="col-md-4">
+                        <a href="{% url 'item_detail' item.id %}" style="text-decoration: none; color: inherit;">
+                            <div class="card-custom position-relative d-flex flex-column justify-content-between h-100">
+                                {% if not item.is_available %}
+                                <span class="badge-unavailable">Unavailable</span>
+                                {% endif %}
+                            
+                                {% if item.photos.first %}
+                                    <img src="{{ item.photos.first.photo|default_if_none:'#' }}" class="item-image" alt="{{ item.name }}">
+                                {% else %}
+                                    <div class="item-image d-flex align-items-center justify-content-center bg-light">
+                                        <p class="text-muted">No photo</p>
+                                    </div>
+                                {% endif %}
+                            
+                                <div class="pt-3 pb-1">
+                                    <h5 class="mb-2">{{ item.name }}</h5>
+                                    <p class="text-muted small">{{ item.get_category_display }}</p>
+                                </div>
+                            
+                                {% if user.is_authenticated and user.is_librarian %}
+                                <div class="pb-3 d-flex justify-content-center">
+                                    <a href="{% url 'edit_item' item.id %}" class="btn btn-light border btn-sm shadow-sm me-3">Edit</a>
+                                    <a href="{% url 'delete_item' item.id %}" class="btn btn-light border text-danger btn-sm shadow-sm ms-3">Delete</a>
+                                </div>
+                                {% endif %}
+                            </div>                            
+                        </a>
                     </div>
-                    {% endif %}
-                    {% if not item.is_available %}
-                        <span class="badge bg-secondary" style="position: absolute; top: 10px; left: 10px;">Unavailable</span>
-                    {% endif %}
-                    {% comment %} <p>Category: {{ item.get_category_display }}</p> {% endcomment %}
-                    <p>Condition: {{ item.get_condition_display }}</p>
-                    <p>Date Added: <span class="date">{{ item.created_at|date:"Y-m-d H:i:s" }}</span></p>
+                    {% endfor %}
                 </div>
             </div>
-        </a>
-    </div>
-    {% endfor %}
-    {% empty %}
-    <div class="col">
-        <p class="text-muted">No matching items found.</p>
-    </div>
-    {% endfor %}
+            {% endfor %}
+        </div>
+    {% else %}
+        <h2 class="text-center mb-4">Showing {{ num_results }} results for "{{ query }}"</h2>
+        <div class="row g-4">
+            {% for category, items in items_by_category.items %}
+            {% for item in items %}
+            <div class="col-md-4">
+                <a href="{% url 'item_detail' item.id %}" style="text-decoration: none; color: inherit;">
+                    <div class="card-custom position-relative d-flex flex-column justify-content-between h-100">
+                        {% if not item.is_available %}
+                        <span class="badge-unavailable">Unavailable</span>
+                        {% endif %}
+                    
+                        {% if item.photos.first %}
+                            <img src="{{ item.photos.first.photo|default_if_none:'#' }}" class="item-image" alt="{{ item.name }}">
+                        {% else %}
+                            <div class="item-image d-flex align-items-center justify-content-center bg-light">
+                                <p class="text-muted">No photo</p>
+                            </div>
+                        {% endif %}
+                    
+                        <div class="p-3">
+                            <h5 class="mb-2">{{ item.name }}</h5>
+                            <p class="text-muted small">{{ item.get_category_display }}</p>
+                        </div>
+                    
+                        {% if user.is_authenticated and user.is_librarian %}
+                        <div class="p-3 d-flex justify-content-center gap-6 mt-auto">
+                            <a href="{% url 'edit_item' item.id %}" class="btn btn-light border btn-sm shadow-sm">Edit</a>
+                            <a href="{% url 'delete_item' item.id %}" class="btn btn-light border text-danger btn-sm shadow-sm">Delete</a>
+                        </div>                        
+                        {% endif %}
+                    </div>                    
+                </a>
+            </div>
+            {% endfor %}
+            {% empty %}
+            <div class="col-12 text-center">
+                <p class="text-muted">No matching items found.</p>
+            </div>
+            {% endfor %}
+        </div>
+    {% endif %}
 </div>
-{% endif %}
-
 {% endblock %}
