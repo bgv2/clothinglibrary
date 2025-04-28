@@ -42,24 +42,29 @@ def catalog(request):
 
 
 def catalog_view(request):
-    items = Item.objects.prefetch_related('photos').all()  # Fetch items and related photos
-    # Resource: ChatGPT 4o
-    # Prompt: Can I filter by a function in a Django model?
-    # Date: March 30, 2025 7:20pm
-
+    today = timezone.now().date()
+    overdue_rentals = Rental.objects.filter(status='on_loan', end_date__lt=today)
+    for rental in overdue_rentals:
+        rental.status = 'returned'
+        rental.save()
+    
+    # Get available items: we use the is_available property on Item 
+    all_items = Item.objects.prefetch_related('photos').all()
+    available_items = [item for item in all_items if item.is_available]
+    
+    # Group available items by category using their display names
     category_order = [
         "Formal Wear", "Casual Wear", "Sportswear", "Vintage", "Streetwear",
         "Activewear", "Denim", "Outerwear", "Accessories", "Other"
     ]
-
     items_by_category = {cat: [] for cat in category_order}
-    for item in items:
+    for item in available_items:
         cat = item.get_category_display()
         if cat in items_by_category:
             items_by_category[cat].append(item)
         else:
             items_by_category.setdefault("Other", []).append(item)
-
+    
     return render(request, '***REMOVED***/catalog.html', {
         "items_by_category": items_by_category,
         "user": request.user,
@@ -370,12 +375,9 @@ def request_borrow(request, item_id):
 @login_required
 def my_borrowed_items(request):
     current_rentals = Rental.objects.filter(renter=request.user, status='on_loan')
-
-    past_rentals = Rental.objects.filter(renter=request.user).exclude(status='on_loan')
-
     borrow_requests = BorrowRequest.objects.filter(user=request.user).order_by('-date_requested')
 
-    return render(request, '***REMOVED***/my_borrowed_items.html', {'past_rentals': past_rentals, 'borrow_requests': borrow_requests, 'current_rentals': current_rentals})
+    return render(request, '***REMOVED***/my_borrowed_items.html', {'borrow_requests': borrow_requests, 'current_rentals': current_rentals})
 
 @user_passes_test(lambda u: u.is_librarian())
 def manage_requests(request):
