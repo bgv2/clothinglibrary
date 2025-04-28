@@ -3,6 +3,16 @@
 {% block content %}
 <div class="container mt-5">
     <h1>{{ collection.title }}</h1>
+
+    <form method="get" action="{% url 'collection_detail' collection.id %}" class="d-flex mb-4">
+        <input type="text" name="q" class="form-control me-2" placeholder="Search items in this collection..." value="{{ query }}">
+        <button class="btn btn-primary" type="submit">Search</button>
+    </form>
+
+    {% if query %}
+        <h4 class="mt-3 mb-4">Showing {{ num_results }} result{% if num_results != 1 %}s{% endif %} for "{{ query }}"</h4>
+    {% endif %}
+
     <p>{{ collection.description }}</p>
     <p>Created by: {{ collection.creator.username }}</p>
     {% if not collection.is_public %}
@@ -10,7 +20,7 @@
     {% endif %}
 
     <div class="row">
-        {% for item in collection.items.all %}
+        {% for item in items_in_collection %}
             <div class="col-md-4">
                 <div class="card p-3 mb-3">
                     <h5 class="card-title">

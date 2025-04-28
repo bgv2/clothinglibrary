@@ -522,9 +522,24 @@ def collection_detail(request, collection_id):
 
     items_in_collection = collection.items.all()
 
+    query = request.GET.get('q', '')
+
+    #if the user searches something
+    if query:
+        query_lower = query.lower()
+        items_in_collection = [item for item in items_in_collection if (
+            query_lower in (item.name or '').lower() or
+            query_lower in (item.description or '').lower() or
+            query_lower in (item.category or '').lower()
+        )]
+
+    num_results = len(items_in_collection)
+
     return render(request, '***REMOVED***/collection_detail.html', {
         'collection': collection,
         'items_in_collection': items_in_collection,
+        'query': query,
+        'num_results': num_results,
     })
 
 @login_required
