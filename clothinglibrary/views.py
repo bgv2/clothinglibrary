@@ -512,18 +512,12 @@ def collection_detail(request, collection_id):
     if not collection.is_public:
         if request.user.is_librarian:
             items_in_collection = collection.items.all()
-            return render(request, '***REMOVED***/collection_detail.html', {
-                'collection': collection,
-                'items_in_collection': items_in_collection,
-            })
-
-        access_request = CollectionAccessRequest.objects.filter(collection=collection, user=request.user).first()
-        if access_request and access_request.status != 'APPROVED':
-            return redirect('request_access', collection_id=collection.id)
-        elif not access_request:
-            return redirect('request_access', collection_id=collection.id)
-
-    items_in_collection = collection.items.all()
+        else:
+            access_request = CollectionAccessRequest.objects.filter(collection=collection, user=request.user).first()
+            if not access_request or access_request.status != 'APPROVED':
+                return redirect('request_access', collection_id=collection.id)
+    else:
+        items_in_collection = collection.items.all()
 
     query = request.GET.get('q', '')
 
