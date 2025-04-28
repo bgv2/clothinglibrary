@@ -26,17 +26,22 @@
             <div class="row">
                 <div class="col-md-6">
                     <h2>How To Rent</h2>
-                    <p>[Instructions on how to use the website, will fill in later.]</p>
-                    <p>
-                        Example paragraph text to fill it in:
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                        sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi
-                        ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
-                        in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
-                        Excepteur sint occaecat cupidatat non proident,
-                        sunt in culpa qui officia deserunt mollit anim id est laborum.
-                    </p>
+                    <ol class="text-left">
+                        <li><a href="{% url 'catalog' %}">Browse our catalog</a> of clothing items.</li>
+                        <li>Select the item you want to rent.</li>
+                        <li>Choose your rental period and click Borrow.</li>
+                        <li>Wait for a librarian to approve your request.</li>
+                        <li>Enjoy your outfit!</li>
+                    </ol>
+                    {% if user.is_librarian %}
+                    {% elif user.is_authenticated %}
+                    <h3>Want to lend an item?</h3>
+                    <p>Request to become a librarian by <a href="{% url 'request_librarian' %}">clicking here</a>.</p>
+                    {% else %}
+                    <p>Note: You must be a registered user to borrow items.</p>
+                    <h3>Want to lend an item?</h3>
+                    <p>Sign up or log in at the top right, then request to become a librarian.</p>
+                    {% endif %}
                 </div>
                 <div class="col-md-6">
                 {# FILLER STATIC IMAGE, maybe this can be a carousel of different images of clothing and whatnot #}
