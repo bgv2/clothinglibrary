@@ -73,7 +73,7 @@ def catalog_view(request):
             query.lower() in (item.category or '').lower()
     )]
 
-    available_items = [item for item in all_items if item.is_available]
+    #available_items = [item for item in all_items if item.is_available]
     
     # Group available items by category using their display names
     category_order = [
@@ -81,7 +81,7 @@ def catalog_view(request):
         "Activewear", "Denim", "Outerwear", "Accessories", "Other"
     ]
     items_by_category = {cat: [] for cat in category_order}
-    for item in available_items:
+    for item in all_items:
         cat = item.get_category_display()
         if cat in items_by_category:
             items_by_category[cat].append(item)
@@ -89,7 +89,7 @@ def catalog_view(request):
             items_by_category.setdefault("Other", []).append(item)
     
     #for displaying the count of the search
-    num_results = len(available_items)
+    num_results = len(all_items)
     
     return render(request, '***REMOVED***/catalog.html', {
         "items_by_category": items_by_category,

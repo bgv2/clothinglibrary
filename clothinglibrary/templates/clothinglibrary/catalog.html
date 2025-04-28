@@ -40,30 +40,36 @@
                 {% if items %}
                 {% for item in items %}
                 <div class="col-md-4">
-                    <a href="{% url 'item_detail' item.id %}" class="card-link"
-                        style="text-decoration: none; color: inherit;">
-                        <div class="card p-3 mb-3 h-100">
+                    <a href="{% url 'item_detail' item.id %}" class="card-link" style="text-decoration: none; color: inherit;">
+                        <div class="card p-3 mb-3 h-100" style="position: relative;" >
+                            {% if not item.is_available %}
+                            <span class="badge bg-dark text-light px-3 py-2 rounded-pill" 
+                            style="position: absolute; top: 10px; left: 10px; font-size: 0.8rem; opacity: 0.9;">
+                          Unavailable
+                      </span>
+                            {% endif %}
+
                             <h5 class="card-title">
                                 {{ item.name }}
                             </h5>
+
                             {% if item.photos.first %}
-                            <img src="{{ item.photos.first.photo|default_if_none:'#' }}" alt="{{ item.name }}"
-                                style="width:100%; height:auto;" />
+                                <img src="{{ item.photos.first.photo|default_if_none:'#' }}" alt="{{ item.name }}"
+                                    style="width:100%; height:auto;" />
                             {% else %}
-                            <div class="w-100 bg-secondary text-white d-flex align-items-center justify-content-center"
-                                style="height: 200px;">
-                                <p>No photo available</p>
-                            </div>
+                                <div class="w-100 bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                                    <p>No photo available</p>
+                                </div>
                             {% endif %}
 
                             <p>Category: {{ item.get_category_display }}</p>
                             <p>Condition: {{ item.get_condition_display }}</p>
                             <p>Date Added: {{ item.created_at|date:"F j, Y" }}</p>
                             {% if user.is_authenticated and user.is_librarian %}
-                            <div class="d-flex justify-content-center gap-4 mt-2">
-                                <a href="{% url 'edit_item' item.id %}" class="btn btn-info px-3 mr-4">Edit</a>
-                                <a href="{% url 'delete_item' item.id %}" class="btn btn-danger px-3">Delete</a>
-                            </div>
+                                <div class="d-flex justify-content-center gap-4 mt-2">
+                                    <a href="{% url 'edit_item' item.id %}" class="btn btn-info px-3 mr-4">Edit</a>
+                                    <a href="{% url 'delete_item' item.id %}" class="btn btn-danger px-3">Delete</a>
+                                </div>
                             {% endif %}
                         </div>
                     </a>
@@ -87,21 +93,26 @@
     <div class="col-md-4">
         <a href="{% url 'item_detail' item.id %}" class="card-link" style="text-decoration: none; color: inherit;">
             <div class="card p-3 mb-3 h-100">
-                <h5 class="card-title">
-                    {{ item.name }}
-                </h5>
-                {% if item.photos.first %}
-                <img src="{{ item.photos.first.photo|default_if_none:'#' }}" alt="{{ item.name }}"
-                    style="width:100%; height:auto;" />
-                {% else %}
-                <div class="w-100 bg-secondary text-white d-flex align-items-center justify-content-center"
-                    style="height: 200px;">
-                    <p>No photo available</p>
+                <div class="card p-3 mb-3 h-100" style="position: relative;">
+                    <h5 class="card-title">
+                        {{ item.name }}
+                    </h5>
+                    {% if item.photos.first %}
+                    <img src="{{ item.photos.first.photo|default_if_none:'#' }}" alt="{{ item.name }}"
+                        style="width:100%; height:auto;" />
+                    {% else %}
+                    <div class="w-100 bg-secondary text-white d-flex align-items-center justify-content-center"
+                        style="height: 200px;">
+                        <p>No photo available</p>
+                    </div>
+                    {% endif %}
+                    {% if not item.is_available %}
+                        <span class="badge bg-secondary" style="position: absolute; top: 10px; left: 10px;">Unavailable</span>
+                    {% endif %}
+                    <p>Category: {{ item.get_category_display }}</p>
+                    <p>Condition: {{ item.get_condition_display }}</p>
+                    <p>Date Added: {{ item.created_at|date:"F j, Y" }}</p>
                 </div>
-                {% endif %}
-                <p>Category: {{ item.get_category_display }}</p>
-                <p>Condition: {{ item.get_condition_display }}</p>
-                <p>Date Added: {{ item.created_at|date:"F j, Y" }}</p>
             </div>
         </a>
     </div>
