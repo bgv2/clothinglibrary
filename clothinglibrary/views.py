@@ -53,14 +53,26 @@ def catalog_view(request):
     
     # Get available items: we use the is_available property on Item 
     all_items = Item.objects.prefetch_related('photos').all()
-
-    #if the user searches, filter all items to what the user wants
+    
+    if not request.user.is_authenticated or request.user.is_librarian:
+        visible_items = []
+        for item in all_items:
+            item_collections = item.collections.all()
+            if not item_collections.exists(): #belongs to no collections
+                visible_items.append(item)
+            else:
+                if all(collection.is_public for collection in item_collections): #if all collections it belongs to are public
+                    visible_items.append(item) 
+        all_items = visible_items
+        
+    #if the user searches something
     if query:
-        all_items = all_items.filter(
-            Q(name__icontains=query) | 
-            Q(description__icontains=query) |
-            Q(category__icontains=query)
-        )
+        all_items = [item for item in all_items if (
+            query.lower() in (item.name or '').lower() or
+            query.lower() in (item.description or '').lower() or
+            query.lower() in (item.category or '').lower()
+    )]
+
     available_items = [item for item in all_items if item.is_available]
     
     # Group available items by category using their display names
