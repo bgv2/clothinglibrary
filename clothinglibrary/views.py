@@ -396,18 +396,15 @@ def manage_requests(request):
                 borrow_request.save()
 
                 try:
-                    # Ensure fields are valid
-                    if borrow_request.item and borrow_request.user and borrow_request.due_date:
-                        Rental.objects.create(
-                            item=borrow_request.item,
-                            renter=borrow_request.user,
-                            start_date=timezone.now().date(),
-                            end_date=borrow_request.due_date,
-                            status='on_loan'
-                        )
-                        messages.success(request, f"Borrow request for {borrow_request.item.name} approved.")
-                    else:
-                        raise ValueError("Invalid data for creating a rental.")
+                    # Create rental with status "on_loan" to mark the item as borrowed
+                    Rental.objects.create(
+                        item=borrow_request.item,
+                        renter=borrow_request.user,
+                        start_date=timezone.now().date(),
+                        end_date=borrow_request.due_date,
+                        status='on_loan'
+                    )
+                    messages.success(request, f"Borrow request for {borrow_request.item.name} approved.")
                 except Exception as e:
                     error_message = f"Error approving the borrow request: {e}"
                     messages.error(request, error_message)
