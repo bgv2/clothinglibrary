@@ -32,28 +32,27 @@
 
   <!-- Borrow Requests Section -->
   <h3 class="mt-4">Borrow Requests</h3>
-  <!-- Each borrow request gets its own horizontal scroll row -->
-  {% for request in borrow_requests %}
-      <div class="mb-3">
-          <div class="d-flex overflow-auto flex-row gap-3 pb-3">
-              <div class="card shadow-sm" style="min-width: 300px; max-width: 300px;">
-                  {% if request.item.photos.all %}
-                      <img src="{{ request.item.photos.first.photo }}" alt="{{ request.item.name }}" class="card-img-top">
-                  {% else %}
-                      <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
-                          No Image
-                      </div>
-                  {% endif %}
-                  <div class="card-body">
-                      <h5 class="card-title">{{ request.item.name }}</h5>
-                      <p class="card-text">Status: {{ request.get_status_display }}</p>
+  {% if borrow_requests %}
+    <div class="d-flex overflow-auto flex-row gap-3 pb-3">
+      {% for request in borrow_requests %}
+          <div class="card shadow-sm" style="min-width: 300px; max-width: 300px;">
+              {% if request.item.photos.all %}
+                  <img src="{{ request.item.photos.first.photo }}" alt="{{ request.item.name }}" class="card-img-top">
+              {% else %}
+                  <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                      No Image
                   </div>
-                  <a href="{% url 'item_detail' request.item.pk %}" class="stretched-link"></a>
+              {% endif %}
+              <div class="card-body">
+                  <h5 class="card-title">{{ request.item.name }}</h5>
+                  <p class="card-text">Status: {{ request.get_status_display }}</p>
               </div>
+              <a href="{% url 'item_detail' request.item.pk %}" class="stretched-link"></a>
           </div>
-      </div>
-  {% empty %}
-      <p class="text-muted">No borrow requests.</p>
-  {% endfor %}
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="text-muted">No borrow requests.</p>
+  {% endif %}
 </div>
 {% endblock %}
