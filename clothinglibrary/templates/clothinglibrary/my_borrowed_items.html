@@ -36,7 +36,7 @@
       {% for rental in current_rentals %}
           <div class="card shadow-sm" style="min-width: 300px; max-width: 300px;">
               {% if rental.item.photos.all %}
-                  <img src="{{ rental.item.photos.all.0.photo.url }}" alt="{{ rental.item.name }}" class="card-img-top">
+                  <img src="{{ rental.item.photos.first.photo }}" alt="{{ rental.item.name }}" class="card-img-top">
               {% else %}
                   <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
                       No Image
@@ -66,7 +66,7 @@
               <div class="d-flex overflow-auto flex-row gap-3 pb-3">
                   <div class="card shadow-sm" style="min-width: 300px; max-width:300px;">
                       {% if request.item.photos.all %}
-                          <img src="{{ request.item.photos.all.0.photo.url }}" alt="{{ request.item.name }}" class="card-img-top">
+                          <img src="{{ request.item.photos.first.photo }}" alt="{{ request.item.name }}" class="card-img-top">
                       {% else %}
                           <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
                               No Image
@@ -74,7 +74,7 @@
                       {% endif %}
                       <div class="card-body">
                           <h5 class="card-title">{{ request.item.name }}</h5>
-                          <p class="card-text">Status: {{ request.status }}</p>
+                          <p class="card-text">Status: {{ request.get_status_display }}</p>
                       </div>
                       <a href="{% url 'item_detail' request.item.pk %}" class="stretched-link"></a>
                   </div>
