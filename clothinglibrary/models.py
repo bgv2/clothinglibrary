@@ -58,9 +58,10 @@ class Item(models.Model):
     def is_available(self):
         now = timezone.now().date()
         return not self.rentals.filter(
-            end_date__gte=now
-        ).exclude(status__in=['approved', 'on_loan', 'overdue']).exists()
-    
+            end_date__gte=now,
+            status__in=['approved', 'on_loan', 'overdue']
+        ).exists()
+
     # Source: Chat GPT
     # Prompt: "how do i make that property appear on the webpage with either a green dot (item available), yellow dot (item avaiable soon), or red dot (item rented out)"
     # Date: April 17, 2025
