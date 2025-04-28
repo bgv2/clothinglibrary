@@ -12,6 +12,7 @@ from .forms import ItemForm, PromotePatronForm, UserProfileForm
 from .models import BorrowRequest, Item, PromotionRequest, Rental, UserProfile, ItemPhoto, Review, Collection, CollectionAccessRequest
 import boto3
 import uuid
+from django.db.models import Q
 
 def home(request):
     return render(request, '***REMOVED***/homepage.html')
@@ -47,9 +48,19 @@ def catalog_view(request):
     for rental in overdue_rentals:
         rental.status = 'returned'
         rental.save()
+
+    query = request.GET.get('q', '') #gets the search info from users
     
     # Get available items: we use the is_available property on Item 
     all_items = Item.objects.prefetch_related('photos').all()
+
+    #if the user searches, filter all items to what the user wants
+    if query:
+        all_items = all_items.filter(
+            Q(name__icontains=query) | 
+            Q(description__icontains=query) |
+            Q(category__icontains=query)
+        )
     available_items = [item for item in all_items if item.is_available]
     
     # Group available items by category using their display names
@@ -65,9 +76,14 @@ def catalog_view(request):
         else:
             items_by_category.setdefault("Other", []).append(item)
     
+    #for displaying the count of the search
+    num_results = len(available_items)
+    
     return render(request, '***REMOVED***/catalog.html', {
         "items_by_category": items_by_category,
         "user": request.user,
+        "query": query, 
+        "num_results": num_results, 
     })
 
 

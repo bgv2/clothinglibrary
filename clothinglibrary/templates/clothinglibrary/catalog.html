@@ -13,58 +13,105 @@
 
 <div class="container">
     <h1>Catalog</h1>
+
+    <form method="get" action="{% url 'catalog' %}" class="d-flex mb-2">
+        <input type="text" name="q" class="form-control me-2" placeholder="Search items..." value="{{ query }}">
+        <button class="btn btn-primary" type="submit">Search</button>
+    </form>
+
     <br>
+    {% if not query %}
     <ul class="nav nav-tabs mb-4" id="categoryTabs" role="tablist">
         {% for category, items in items_by_category.items %}
-            <li class="nav-item" role="presentation">
-                <button class="nav-link {% if forloop.first %}active{% endif %}" id="tab-{{ forloop.counter0 }}" data-bs-toggle="tab" data-bs-target="#pane-{{ forloop.counter0 }}" type="button" role="tab">
-                    {{ category }} ({{ items|length }})
-                </button>
-            </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link {% if forloop.first %}active{% endif %}" id="tab-{{ forloop.counter0 }}"
+                data-bs-toggle="tab" data-bs-target="#pane-{{ forloop.counter0 }}" type="button" role="tab">
+                {{ category }} ({{ items|length }})
+            </button>
+        </li>
         {% endfor %}
     </ul>
 
     <div class="tab-content" id="categoryTabsContent">
         {% for category, items in items_by_category.items %}
-            <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" id="pane-{{ forloop.counter0 }}" role="tabpanel">
-                <div class="row">
-                    {% if items %}
-                        {% for item in items %}
-                            <div class="col-md-4">
-                                <a href="{% url 'item_detail' item.id %}" class="card-link" style="text-decoration: none; color: inherit;">
-                                    <div class="card p-3 mb-3 h-100">
-                                        <h5 class="card-title">
-                                            {{ item.name }}
-                                        </h5>
-                                        {% if item.photos.first %}
-                                        <img src="{{ item.photos.first.photo|default_if_none:'#' }}" alt="{{ item.name }}" style="width:100%; height:auto;" />
-                                        {% else %}
-                                        <div class="w-100 bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
-                                            <p>No photo available</p>
-                                        </div>
-                                        {% endif %}
-
-                                        <p>Category: {{ item.get_category_display }}</p>
-                                        <p>Condition: {{ item.get_condition_display }}</p>
-                                        <p>Date Added: {{ item.created_at|date:"F j, Y" }}</p>
-                                        {% if user.is_authenticated and user.is_librarian %}
-                                        <div class="d-flex justify-content-center gap-4 mt-2">
-                                            <a href="{% url 'edit_item' item.id %}" class="btn btn-info px-3 mr-4">Edit</a>
-                                            <a href="{% url 'delete_item' item.id %}" class="btn btn-danger px-3">Delete</a>
-                                        </div>
-                                        {% endif %}
-                                    </div>
-                                </a>
+        <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" id="pane-{{ forloop.counter0 }}"
+            role="tabpanel">
+            <div class="row">
+                {% if items %}
+                {% for item in items %}
+                <div class="col-md-4">
+                    <a href="{% url 'item_detail' item.id %}" class="card-link"
+                        style="text-decoration: none; color: inherit;">
+                        <div class="card p-3 mb-3 h-100">
+                            <h5 class="card-title">
+                                {{ item.name }}
+                            </h5>
+                            {% if item.photos.first %}
+                            <img src="{{ item.photos.first.photo|default_if_none:'#' }}" alt="{{ item.name }}"
+                                style="width:100%; height:auto;" />
+                            {% else %}
+                            <div class="w-100 bg-secondary text-white d-flex align-items-center justify-content-center"
+                                style="height: 200px;">
+                                <p>No photo available</p>
                             </div>
-                        {% endfor %}
-                    {% else %}
-                        <div class="col">
-                            <p class="text-muted">No items available.</p>
+                            {% endif %}
+
+                            <p>Category: {{ item.get_category_display }}</p>
+                            <p>Condition: {{ item.get_condition_display }}</p>
+                            <p>Date Added: {{ item.created_at|date:"F j, Y" }}</p>
+                            {% if user.is_authenticated and user.is_librarian %}
+                            <div class="d-flex justify-content-center gap-4 mt-2">
+                                <a href="{% url 'edit_item' item.id %}" class="btn btn-info px-3 mr-4">Edit</a>
+                                <a href="{% url 'delete_item' item.id %}" class="btn btn-danger px-3">Delete</a>
+                            </div>
+                            {% endif %}
                         </div>
-                    {% endif %}
+                    </a>
                 </div>
+                {% endfor %}
+                {% else %}
+                <div class="col">
+                    <p class="text-muted">No items available.</p>
+                </div>
+                {% endif %}
             </div>
+        </div>
         {% endfor %}
-    </div> 
+    </div>
 </div>
+{% else %}
+<h2 class="">Showing {{ num_results }} results for "{{ query }}"</h2>
+<div class="row mt-4">
+    {% for category, items in items_by_category.items %}
+    {% for item in items %}
+    <div class="col-md-4">
+        <a href="{% url 'item_detail' item.id %}" class="card-link" style="text-decoration: none; color: inherit;">
+            <div class="card p-3 mb-3 h-100">
+                <h5 class="card-title">
+                    {{ item.name }}
+                </h5>
+                {% if item.photos.first %}
+                <img src="{{ item.photos.first.photo|default_if_none:'#' }}" alt="{{ item.name }}"
+                    style="width:100%; height:auto;" />
+                {% else %}
+                <div class="w-100 bg-secondary text-white d-flex align-items-center justify-content-center"
+                    style="height: 200px;">
+                    <p>No photo available</p>
+                </div>
+                {% endif %}
+                <p>Category: {{ item.get_category_display }}</p>
+                <p>Condition: {{ item.get_condition_display }}</p>
+                <p>Date Added: {{ item.created_at|date:"F j, Y" }}</p>
+            </div>
+        </a>
+    </div>
+    {% endfor %}
+    {% empty %}
+    <div class="col">
+        <p class="text-muted">No matching items found.</p>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
 {% endblock %}
