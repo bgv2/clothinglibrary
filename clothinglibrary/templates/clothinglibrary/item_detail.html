@@ -87,7 +87,7 @@
                 {% else %}
                     <button class="btn btn-secondary" disabled>Sign in to borrow this item</button>
                 {% endif %}
-                <p class="mt-4"> Date Added: {{ item.created_at|date:"F j, Y" }} </p>
+                <p class="mt-4"> Date Added: <span class="date">{{ item.created_at|date:"Y-m-d H:i:s" }}</span></p>
                 <p class="mb-4"> Max Rental Duration: {{ item.max_rental_duration }} days </p>
                 <p class="mt-4 text-muted small"> ↓ More product details below </p>
             </div>

@@ -4,7 +4,7 @@
 {% block content %}
 <div class="container mt-4">
   <h1 class="mb-4">{{ user.get_full_name|default:user.username }}'s Profile</h1>
-  <div class="row align-items-stretch">
+  <div class="row align-items-stretch mb-4">
     
     <!-- Profile Picture Column -->
     <div class="col-md-4">
@@ -67,10 +67,9 @@
             <button type="button" id="cancel-description-edit" class="btn btn-secondary btn-sm">Cancel</button>
           </form>
         </div>
-        <p><strong>Date Joined:</strong> {{ user.date_joined }}</p>
+        <p><strong>Date Joined:</strong> <span class="date"> {{ user.date_joined|date:'Y-m-d H:i:s' }}</span></p></p>
       </div>
     </div>
-    
   </div>
 </div>
 
