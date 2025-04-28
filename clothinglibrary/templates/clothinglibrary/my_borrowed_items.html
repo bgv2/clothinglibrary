@@ -4,32 +4,6 @@
 <div class="container mt-4">
   <h2>My Borrowed Items</h2>
 
-  <!-- Past Rentals Section -->
-  <h3 class="mt-4">Past Rentals</h3>
-  <div class="d-flex overflow-auto flex-row gap-3 pb-3">
-      {% for rental in past_rentals %}
-          <div class="card shadow-sm" style="min-width: 300px; max-width: 300px;">
-              {# Assuming the ItemPhoto for the item is available as the first photo #}
-              {% if rental.item.photos.all %}
-                  <img src="{{ rental.item.photos.all.0.photo.url }}" alt="{{ rental.item.name }}" class="card-img-top">
-              {% else %}
-                  <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
-                      No Image
-                  </div>
-              {% endif %}
-              <div class="card-body">
-                  <h5 class="card-title">{{ rental.item.name }}</h5>
-                  <p class="card-text">
-                    {{ rental.start_date|date:"n/j/y" }} - {{ rental.end_date|date:"n/j/y" }}
-                  </p>
-              </div>
-              <a href="{% url 'item_detail' rental.item.pk %}" class="stretched-link"></a>
-          </div>
-      {% empty %}
-          <p class="text-muted">No past rentals.</p>
-      {% endfor %}
-  </div>
-
   <!-- Current Rentals Section -->
   <h3 class="mt-4">Current Rentals</h3>
   <div class="d-flex overflow-auto flex-row gap-3 pb-3">
@@ -45,10 +19,8 @@
               <div class="card-body">
                   <h5 class="card-title">{{ rental.item.name }}</h5>
                   <p class="card-text">
-                    {% with days_left=rental.end_date|date:"U"|add:"-now"|divisibleby:"86400" %}
-                      {% comment %}You can also create a custom template filter for days left{% endcomment %}
-                      Days left: {{ rental.end_date|timeuntil }}
-                    {% endwith %}
+                    <!-- Display days left until due -->
+                    Days left: {{ rental.end_date|timeuntil }}
                   </p>
               </div>
               <a href="{% url 'item_detail' rental.item.pk %}" class="stretched-link"></a>
@@ -60,29 +32,28 @@
 
   <!-- Borrow Requests Section -->
   <h3 class="mt-4">Borrow Requests</h3>
-  <div>
-      {% for request in borrow_requests %}
-          <div class="mb-3">
-              <div class="d-flex overflow-auto flex-row gap-3 pb-3">
-                  <div class="card shadow-sm" style="min-width: 300px; max-width:300px;">
-                      {% if request.item.photos.all %}
-                          <img src="{{ request.item.photos.first.photo }}" alt="{{ request.item.name }}" class="card-img-top">
-                      {% else %}
-                          <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
-                              No Image
-                          </div>
-                      {% endif %}
-                      <div class="card-body">
-                          <h5 class="card-title">{{ request.item.name }}</h5>
-                          <p class="card-text">Status: {{ request.get_status_display }}</p>
+  <!-- Each borrow request gets its own horizontal scroll row -->
+  {% for request in borrow_requests %}
+      <div class="mb-3">
+          <div class="d-flex overflow-auto flex-row gap-3 pb-3">
+              <div class="card shadow-sm" style="min-width: 300px; max-width: 300px;">
+                  {% if request.item.photos.all %}
+                      <img src="{{ request.item.photos.first.photo }}" alt="{{ request.item.name }}" class="card-img-top">
+                  {% else %}
+                      <div class="bg-secondary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                          No Image
                       </div>
-                      <a href="{% url 'item_detail' request.item.pk %}" class="stretched-link"></a>
+                  {% endif %}
+                  <div class="card-body">
+                      <h5 class="card-title">{{ request.item.name }}</h5>
+                      <p class="card-text">Status: {{ request.get_status_display }}</p>
                   </div>
+                  <a href="{% url 'item_detail' request.item.pk %}" class="stretched-link"></a>
               </div>
           </div>
-      {% empty %}
-          <p class="text-muted">No borrow requests.</p>
-      {% endfor %}
-  </div>
+      </div>
+  {% empty %}
+      <p class="text-muted">No borrow requests.</p>
+  {% endfor %}
 </div>
 {% endblock %}
