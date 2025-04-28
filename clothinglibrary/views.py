@@ -100,6 +100,8 @@ def catalog_view(request):
 
 
 def collections_view(request):
+    query = request.GET.get('q', '')
+
     all_collections = Collection.objects.all()
 
     if request.user.is_authenticated:
@@ -118,9 +120,26 @@ def collections_view(request):
     else:
         collections_with_access = [c for c in all_collections if c.is_public]
 
+    #if the user searches something
+    if query:
+        query_lower = query.lower()
+        filtered_collections = []
+        for collection in collections_with_access:
+            if (query_lower in (collection.title or '').lower() or
+                query_lower in (collection.description or '').lower()):
+                filtered_collections.append(collection)
+                continue
+            
+            #search items in each collection
+            if any(query_lower in (item.name or '').lower() for item in collection.items.all()):
+                filtered_collections.append(collection)
+        
+        collections_with_access = filtered_collections
+
     return render(request, '***REMOVED***/collections.html', {
         "collections": collections_with_access,
         "user": request.user,
+        "query": query,
     })
 
 @method_decorator(login_required, name='dispatch')

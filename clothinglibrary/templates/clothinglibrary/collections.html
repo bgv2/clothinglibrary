@@ -3,6 +3,10 @@
 
 {% block content %}
 <h1>Collections</h1>
+    <form method="get" action="{% url 'collections' %}" class="d-flex mb-4 mt-3">
+        <input type="text" name="q" class="form-control me-2" placeholder="Search collections..." value="{{ query }}">
+        <button class="btn btn-primary" type="submit">Search</button>
+    </form>
 
     {% if user.is_authenticated %}
     <a href="{% url 'create_collection' %}" class="btn btn-primary mb-4 mt-4">New collection</a>
