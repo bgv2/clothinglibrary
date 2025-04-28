@@ -127,6 +127,13 @@
                 return false;
             }
         })
+        function localizeDate(dateString) {
+            const date = new Date(dateString + "+0000");
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+        document.querySelectorAll('.date').forEach(element => {
+            element.innerText = localizeDate(element.innerText);
+        });
     </script>
 </body>
 </html>

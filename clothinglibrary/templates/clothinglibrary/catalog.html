@@ -109,9 +109,9 @@
                     {% if not item.is_available %}
                         <span class="badge bg-secondary" style="position: absolute; top: 10px; left: 10px;">Unavailable</span>
                     {% endif %}
-                    <p>Category: {{ item.get_category_display }}</p>
+                    {% comment %} <p>Category: {{ item.get_category_display }}</p> {% endcomment %}
                     <p>Condition: {{ item.get_condition_display }}</p>
-                    <p>Date Added: {{ item.created_at|date:"F j, Y" }}</p>
+                    <p>Date Added: <span class="date">{{ item.created_at|date:"Y-m-d H:i:s" }}</span></p>
                 </div>
             </div>
         </a>
