@@ -27,7 +27,8 @@
                         {% endfor %}
                         <div class="mb-3">
                             <label for="photo" class="form-label">Upload Image</label>
-                            <input type="file" name="photo" class="form-control-file" id="photo">
+                            {% comment %} accept only browser-compatible photos {% endcomment %}
+                            <input type="file" name="photo" class="form-control-file" id="photo" accept=".jpg,.jpeg,.png">
                         </div>
                         <button type="submit" class="btn btn-primary mt-3">Submit</button>
                     </form>

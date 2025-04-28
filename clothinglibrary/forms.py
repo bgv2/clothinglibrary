@@ -46,6 +46,8 @@ class ItemForm(ModelForm):
         for field in self.fields.values():
             if not isinstance(field.widget, CheckboxSelectMultiple):
                 field.widget.attrs.update({'class': 'form-control'})
+        # make max_rental_duration greater than 0
+        self.fields['max_rental_duration'].widget.attrs.update({'min': '1'})
 
 class UserProfileForm(ModelForm):
     class Meta:
