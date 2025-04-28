@@ -327,7 +327,7 @@ def delete_review(request, review_id):
 class PromotePatronsFormView(FormView):
     template_name = '***REMOVED***/promote_patrons.html'
     form_class = PromotePatronForm
-    success_url = '/manage_requests/'
+    success_url = reverse_lazy('home')
     def form_valid(self, form):
         if not self.request.user.is_librarian():
             form.add_error(None, 'You must be a librarian to promote other users.')
