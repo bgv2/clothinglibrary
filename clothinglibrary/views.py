@@ -130,16 +130,19 @@ def collections_view(request):
                 filtered_collections.append(collection)
                 continue
             
-            #search items in each collection
+            #search items by name in each collection
             if any(query_lower in (item.name or '').lower() for item in collection.items.all()):
                 filtered_collections.append(collection)
         
         collections_with_access = filtered_collections
 
+    num_results = len(collections_with_access)
+
     return render(request, '***REMOVED***/collections.html', {
         "collections": collections_with_access,
         "user": request.user,
         "query": query,
+        "num_results": num_results,
     })
 
 @method_decorator(login_required, name='dispatch')
