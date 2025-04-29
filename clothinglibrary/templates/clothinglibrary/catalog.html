@@ -137,6 +137,13 @@
                                             <h5 class="mb-2">{{ item.name }}</h5>
                                             <p class="text-muted small">{{ item.get_category_display }}</p>
                                         </div>
+
+                                        {% if user.is_authenticated and user.is_librarian %}
+                                            <div class="pb-3 d-flex justify-content-center">
+                                                <a href="{% url 'edit_item' item.id %}" class="btn btn-light border btn-sm shadow-sm mr-2">Edit</a>
+                                                <a href="{% url 'delete_item' item.id %}" class="btn btn-light border text-danger btn-sm shadow-sm ml-2">Delete</a>
+                                            </div>                        
+                                        {% endif %}
                                     </div>
                                 </a>
                             </div>
