@@ -61,10 +61,13 @@
         opacity: 0.9;
     }
 </style>
-<div class="container mt-5">
-    <h1 class="text-center mb-4">{{ collection.title }}</h1>
+<div class="container py-4">
+    <h1 class="text-center mb-3">{{ collection.title }}</h1>
+    <p class="text-center mb-3"><em>{{ collection.description }}</em></p>
+    <p class="text-center mb-4"><strong>Created by:</strong> <a href="{% url 'profile' collection.creator.username %}"> {{ collection.creator.username }} </a></p>
 
-    <form method="get" action="{% url 'collection_detail' collection.id %}" class="mb-4 d-flex justify-content-center align-items-center" style="gap: 10px;">
+
+    <form method="get" action="{% url 'collection_detail' collection.id %}" class="mb-5 d-flex justify-content-center align-items-center" style="gap: 10px;">
         <button type="submit" class="btn btn-link p-0 m-0" style="text-decoration: none;">
             <i class="bi bi-search" style="font-size: 1.5rem;"></i>
         </button>
@@ -75,13 +78,6 @@
     {% if query %}
         <h4 class="mt-3 mb-4">Showing {{ num_results }} result{% if num_results != 1 %}s{% endif %} for "{{ query }}"</h4>
     {% endif %}
-
-    <p>{{ collection.description }}</p>
-    <p>Created by: 
-        <a href="{% url 'profile' collection.creator.username %}">
-        {{ collection.creator.username }}
-        </a>
-    </p>
     {% if not collection.is_public %}
         <p class="text-muted">This collection is private.</p>
     {% endif %}
