@@ -1,14 +1,16 @@
 {% extends "base.html" %}
 {% block title %}My Lent Items{% endblock %}
 {% block content %}
-<h1>My Lent Items</h1>
+<h1 class="text-center">My Lent Items</h1>
 
 <h2>Borrowed Items</h2>
 {% if borrowed_items %}
   <ul>
     {% for item in borrowed_items %}
     <li>
-      <strong>{{ item.name }}</strong> <span class="badge bg-danger">Borrowed</span>
+      <a href="{% url 'item_detail' item.pk %}" style="text-decoration: none; color: inherit;">
+        <strong>{{ item.name }}</strong>
+      </a> <span class="badge bg-danger">Borrowed</span>
     </li>
     {% endfor %}
   </ul>
@@ -22,8 +24,11 @@
 {% if available_items %}
   <ul>
     {% for item in available_items %}
-    <li>
-      <strong>{{ item.name }}</strong> <span class="badge bg-success">Available</span>
+    <li class="mb-2">
+      <a href="{% url 'item_detail' item.pk %}" style="text-decoration: none; color: inherit;">
+      <strong>{{ item.name }}</strong>
+      </a> 
+      <span class="badge bg-success">Available</span>
       <a href="{% url 'delete_item' item.pk %}" class="btn btn-sm btn-danger">Delete</a>
     </li>
     {% endfor %}
