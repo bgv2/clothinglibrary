@@ -164,7 +164,7 @@
               Size & Condition
             </button>
           </h2>
-          <div id="collapseSize" class="accordion-collapse collapse show" aria-labelledby="headingSize" data-bs-parent="#productDetailsAccordion">
+          <div id="collapseSize" class="accordion-collapse collapse" aria-labelledby="headingSize" data-bs-parent="#productDetailsAccordion">
             <div class="accordion-body">
               <p><strong>Size:</strong> {{ item.size }}</p>
               <p><strong>Measurements:</strong> {{ item.measurements|default:"None provided"|safe }}</p>
@@ -243,7 +243,6 @@
         {% endfor %}
     </div>
     <h3 class="my-3">Add a Review</h3>
-    <h3>Add a Review</h3>
   {% if user.is_authenticated %}
       <form id="reviewForm" method="POST" action="{% url 'add_review' item.id %}">
           {% csrf_token %}
