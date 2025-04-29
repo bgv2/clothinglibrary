@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Manage Requests{% endblock %}
 {% block content %}
-<div class="container py-4">
+<div class="container py-4" style="width: 85%;">
     <h1 class="text-center mb-5">Manage Requests</h1>
 
      <!-- Borrow requests card -->
@@ -87,7 +87,7 @@
                 {% for promo_request in pending_promotion_requests %}
                     <li class="list-group-item d-flex justify-content-between align-items-center mb-2">
                         <div>
-                            <em>{{ promo_request.user.username }}</em> has requested to become a librarian.
+                            <em>{{ promo_request.user.username }}</em> has requested to become a librarian
                         </div>
                         <form method="POST" class="d-flex gap-2 mb-0">
                             {% csrf_token %}
