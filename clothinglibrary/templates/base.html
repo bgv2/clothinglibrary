@@ -148,41 +148,38 @@
                     {% endif %}
 
                 </ul>
-
-                {% if user.is_authenticated and not user.is_librarian %}
-                <li class="nav-item dropdown list-unstyled">
-                    <a class="nav-link text-dark" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
-                        <i class="bi bi-bell"></i>
-                        {% if unread_notifications_count > 0 %}
-                            <span class="badge rounded-pill bg-danger">{{ unread_notifications_count }}</span>
-                        {% endif %}
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown" style="min-width: 300px;">
-                        {% if notifications %}
-                            {% for notification in notifications %}
-                                <li>
-                                    <span class="dropdown-item-text">
-                                        {{ notification.message }}
-                                    </span>
-                                    <small class="d-block text-muted">{{ notification.created_at|date:"M d, Y H:i" }}</small>
-                                </li>
-                            {% endfor %}
-                        {% else %}
-                            <li><span class="dropdown-item-text">No notifications.</span></li>
-                        {% endif %}
-                    </ul>
-                </li>
-                {% endif %}
-
                 <!-- Profile dropdown -->
                 <ul class="navbar-nav ms-auto">
+                    {% if user.is_authenticated and not user.is_librarian %}
+                    <li class="nav-item dropdown list-unstyled">
+                        <a class="nav-link text-dark" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
+                            <i class="bi bi-bell"></i>
+                            {% if unread_notifications_count > 0 %}
+                                <span class="badge rounded-pill bg-danger">{{ unread_notifications_count }}</span>
+                            {% endif %}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown" style="min-width: 300px;">
+                            {% if notifications %}
+                                {% for notification in notifications %}
+                                    <li>
+                                        <span class="dropdown-item-text">
+                                            {{ notification.message }}
+                                        </span>
+                                    </li>
+                                {% endfor %}
+                            {% else %}
+                                <li><span class="dropdown-item-text">No notifications.</span></li>
+                            {% endif %}
+                        </ul>
+                    </li>
+                    {% endif %}
                     {% if user.is_authenticated %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle text-dark" href="#" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-person"></i> {{ user.get_full_name }} ({{ user.username }})
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownUser">
-                                <li><a class="dropdown-item" href="{% url 'profile' %}">View Profile</a></li>
+                                <li><a class="dropdown-item" href="{% url 'profile' user.username %}">View Profile</a></li>
                                 {% if not user.is_librarian %}
                                 <li> <a class="dropdown-item" href="{% url 'request_librarian' %}">Request Librarian Promotion</a></li>
                                 {% endif %}

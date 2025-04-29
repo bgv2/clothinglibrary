@@ -214,8 +214,9 @@ class CollectionDeleteView(DeleteView):
             return Collection.objects.all()
         return self.model.objects.filter(creator=self.request.user)
 
-def profile(request):
-    return render(request, '***REMOVED***/profile.html')
+def profile(request, username):
+    user = get_object_or_404(User, username=username)
+    return render(request, '***REMOVED***/profile.html', {'user': user, 'is_current_user': username == request.user.username})
 
 @login_required
 def add_item(request):
@@ -334,7 +335,7 @@ def update_description(request):
         messages.success(request, "Description updated successfully.")
     else:
         messages.error(request, "Invalid request method.")
-    return redirect('profile')
+    return redirect('profile', username=request.user.username)
 
 @login_required
 def update_profile_picture(request):
@@ -348,7 +349,7 @@ def update_profile_picture(request):
             messages.error(request, "No photo uploaded.")
     else:
         messages.error(request, "Invalid request method.")
-    return redirect('profile')
+    return redirect('profile', username=request.user.username)
 
 @login_required
 def remove_profile_picture(request):
@@ -356,7 +357,7 @@ def remove_profile_picture(request):
     user_profile.photo = None
     user_profile.save()
     messages.success(request, "Profile picture removed.")
-    return redirect('profile')
+    return redirect('profile', username=request.user.username)
 
 @login_required
 def add_review(request, item_id):
@@ -366,6 +367,7 @@ def add_review(request, item_id):
         rating = request.POST.get('rating')
         if not comment or not rating:
             messages.error(request, "Comment and rating are required.")
+
         else: 
             Review.objects.create(
                 item=item,
@@ -374,13 +376,14 @@ def add_review(request, item_id):
                 rating=rating
             )
             messages.success(request, "Review added successfully.")
-        return redirect('item_detail', item_id=item_id)
+            return redirect('item_detail', item_id=item_id)
     return redirect('item_detail', item_id=item_id)
 
 @login_required
 def delete_review(request, review_id):
     review = get_object_or_404(Review, pk=review_id)
     if review.user == request.user:  # Ensure the logged-in user is the author
+        messages.success(request, "Review deleted successfully.")
         review.delete()
     return redirect('item_detail', item_id=review.item.id)
 
