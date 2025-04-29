@@ -589,15 +589,13 @@ def request_librarian(request):
     
     return redirect(redirect_url)
 
-@login_required
-@user_passes_test(lambda u: u.is_librarian())
 def lender_items(request):
     all_items = Item.objects.filter(lender=request.user)
     borrowed_items = [item for item in all_items if not item.is_available]
     available_items = [item for item in all_items if item.is_available]
     
     # Pass the borrowed items first, then available ones.
-    return render(request, '***REMOVED***/lender_items.html', {
+    return render(request, '***REMOVED***/profile.html', {
         'borrowed_items': borrowed_items,
         'available_items': available_items,
     })

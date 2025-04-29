@@ -71,7 +71,35 @@
       </div>
     </div>
   </div>
+    <div class="container mt-5 px-5">
+        <h1>My Borrowed Items</h1>
+        {% if borrowed_items %}
+          <ul>
+            {% for item in borrowed_items %}
+            <li>
+              <strong>{{ item.name }}</strong> <span class="badge bg-danger">Borrowed</span>
+            </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>None</p>
+        {% endif %}
+        <h1>Items I've Lent Out</h1>
+        {% if available_items %}
+          <ul>
+            {% for item in available_items %}
+            <li>
+              <strong>{{ item.name }}</strong> <span class="badge bg-success">Available</span>
+              <a href="{% url 'delete_item' item.pk %}" class="btn btn-sm btn-danger">Delete</a>
+            </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p>None</p>
+        {% endif %}
+    </div>
 </div>
+
 
 <script>
   // Toggle description edit form
