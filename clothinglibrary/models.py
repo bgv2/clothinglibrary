@@ -207,6 +207,18 @@ class BorrowRequest(models.Model):
 
     desired_duration = models.PositiveIntegerField(default=7)
 
+    def save(self, *args, **kwargs):
+        if self.pk:
+            old_status = BorrowRequest.objects.get(pk=self.pk).status
+            if old_status != self.status and self.status in ['APPROVED', 'DENIED']:
+                message = f"Your borrow request for '{self.item.name}' has been {self.status.lower()}."
+                Notification.objects.create(
+                    recipient=self.user,
+                    notification_type='borrow',
+                    message=message
+                )
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.item.name} - {self.user.username} - {self.status}"
 
@@ -223,6 +235,18 @@ class CollectionAccessRequest(models.Model):
     date_requested = models.DateTimeField(auto_now_add=True)
     date_approved = models.DateTimeField(null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        if self.pk:
+            old_status = CollectionAccessRequest.objects.get(pk=self.pk).status
+            if old_status != self.status and self.status in ['APPROVED', 'DENIED']:
+                message = f"Your access request for the collection '{self.collection.title}' has been {self.status.lower()}."
+                Notification.objects.create(
+                    recipient=self.user,
+                    notification_type='access',
+                    message=message
+                )
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"Request for {self.collection.title} by {self.user.username} - {self.status}"
     
@@ -237,5 +261,34 @@ class PromotionRequest(models.Model):
     status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')
     date_requested = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        if self.pk:
+            old_status = PromotionRequest.objects.get(pk=self.pk).status
+            if old_status != self.status and self.status in ['APPROVED', 'DENIED']:
+                message = f"Your promotion request has been {self.status.lower()}."
+                Notification.objects.create(
+                    recipient=self.user,
+                    notification_type='promotion',
+                    message=message
+                )
+        super().save(*args, **kwargs)
+
+
     def __str__(self):
         return f"{self.user.username} - Promotion Request"
+    
+
+class Notification(models.Model):
+    NOTIFICATION_TYPE_CHOICES = (
+        ('borrow', 'Borrow Request'),
+        ('access', 'Private Collection Access Request'),
+        ('promotion', 'Promotion Request'),
+    )
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPE_CHOICES)
+    message = models.CharField(max_length=255)
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.get_notification_type_display()}: {self.message}"

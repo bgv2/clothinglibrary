@@ -2,6 +2,7 @@ from django import forms
 from django.utils import timezone
 from datetime import datetime
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -9,10 +10,14 @@ from django.utils.decorators import method_decorator
 from django.urls import reverse_lazy
 from ***REMOVED*** import settings
 from .forms import ItemForm, PromotePatronForm, UserProfileForm
-from .models import BorrowRequest, Item, PromotionRequest, Rental, UserProfile, ItemPhoto, Review, Collection, CollectionAccessRequest
+from .models import BorrowRequest, Item, PromotionRequest, Rental, UserProfile, ItemPhoto, Review, Collection, CollectionAccessRequest, Notification
 import boto3
 import uuid
 from django.db.models import Q
+from django.http import HttpResponse
+from django.views.decorators.http import require_POST
+
+
 
 def home(request):
     return render(request, '***REMOVED***/homepage.html')
@@ -360,6 +365,7 @@ def add_review(request, item_id):
         comment = request.POST.get('comment')
         rating = request.POST.get('rating')
         if not comment or not rating:
+            messages.error(request, "Comment and rating are required.")
             return redirect('item_detail', item_id=item_id)
         Review.objects.create(
             item=item,
@@ -589,15 +595,21 @@ def request_librarian(request):
     
     return redirect(redirect_url)
 
-@login_required
-@user_passes_test(lambda u: u.is_librarian())
 def lender_items(request):
     all_items = Item.objects.filter(lender=request.user)
     borrowed_items = [item for item in all_items if not item.is_available]
     available_items = [item for item in all_items if item.is_available]
     
     # Pass the borrowed items first, then available ones.
-    return render(request, '***REMOVED***/lender_items.html', {
+    return render(request, '***REMOVED***/profile.html', {
         'borrowed_items': borrowed_items,
         'available_items': available_items,
     })
+
+@require_POST
+@login_required
+def mark_notifications_read(request):
+    notifications = request.user.notifications.filter(is_read=False)
+    notifications.update(is_read=True)
+    notifications.delete()
+    return HttpResponse("OK")

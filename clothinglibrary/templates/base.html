@@ -89,6 +89,7 @@
         }, 5000);
       });
       </script>
+      
 
     <header class="sticky-top">
         <nav class="navbar navbar-expand-sm sticky-top custom-navbar">
@@ -142,14 +143,36 @@
                                         {% endif %}
                                     </a>
                                 </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" href="{% url 'lender_items' %}">View Lent Items</a>
-                                </li>
                             </ul>
                         </li>
                     {% endif %}
 
                 </ul>
+
+                {% if user.is_authenticated and not user.is_librarian %}
+                <li class="nav-item dropdown list-unstyled">
+                    <a class="nav-link text-dark" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" title="Notifications">
+                        <i class="bi bi-bell"></i>
+                        {% if unread_notifications_count > 0 %}
+                            <span class="badge rounded-pill bg-danger">{{ unread_notifications_count }}</span>
+                        {% endif %}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown" style="min-width: 300px;">
+                        {% if notifications %}
+                            {% for notification in notifications %}
+                                <li>
+                                    <span class="dropdown-item-text">
+                                        {{ notification.message }}
+                                    </span>
+                                    <small class="d-block text-muted">{{ notification.created_at|date:"M d, Y H:i" }}</small>
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <li><span class="dropdown-item-text">No notifications.</span></li>
+                        {% endif %}
+                    </ul>
+                </li>
+                {% endif %}
 
                 <!-- Profile dropdown -->
                 <ul class="navbar-nav ms-auto">
@@ -203,5 +226,15 @@
             element.innerText = localizeDate(element.innerText);
         });
     </script>
+    <script>
+        document.getElementById('notificationDropdown').addEventListener('click', function(){
+            fetch("{% url 'mark_notifications_read' %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            });
+        });
+        </script>
 </body>
 </html>

@@ -47,4 +47,5 @@ urlpatterns = [
     path('item/<int:pk>/delete', views.ItemDeleteView.as_view(), name='delete_item'),
     path('items/<int:item_id>/edit/', views.edit_item, name='edit_item'),
     path('collections/', views.collections_view, name='collections'),
+    path('notifications/mark_read/', views.mark_notifications_read, name='mark_notifications_read'),
 ]

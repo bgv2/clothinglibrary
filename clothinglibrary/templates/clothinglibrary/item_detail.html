@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load review_stars %}
+{% block title %}{{ item.name }}{% endblock %}
 
 {% block content %}
     <style>
@@ -13,6 +14,24 @@
         .dot-available { background-color: green; }
         .dot-soon { background-color: goldenrod; }
         .dot-unavailable { background-color: red; }
+        .btn-light {
+            font-weight: 500;
+            border-radius: 30px;
+            padding: 6px 18px;
+        }
+    
+        .btn-light:hover {
+            background-color: #f8f9fa;
+            box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
+        }
+    
+        .text-danger {
+            color: #dc3545 !important;
+        }
+    
+        .text-danger:hover {
+            color: #bb2d3b !important;
+        }
     </style>
     <div class="container py-4">
         <div class="row align-items-stretch min-vh-75 gx-4">
@@ -84,6 +103,12 @@
                         <button class="btn btn-secondary" disabled>This item is currently unavailable</button>
                     {% endif %}
                 {% endwith %}
+                {% if user.is_librarian %}
+                    <div class="pb-3 d-flex justify-content-center mt-4">
+                    <a href="{% url 'edit_item' item.id %}" class="btn btn-light border btn-sm shadow-sm mr-2">Edit</a>
+                    <a href="{% url 'delete_item' item.id %}" class="btn btn-light border text-danger btn-sm shadow-sm ml-2">Delete</a>
+                    </div>
+                {% endif %}
                 {% else %}
                     <button class="btn btn-secondary" disabled>Sign in to borrow this item</button>
                 {% endif %}

@@ -8,14 +8,14 @@
             height: 100vh;
             margin: 0;">
        <div class="container-fluid">
-           <h1 class="display-2">Clothing Library</h1>
-                {% if user.is_librarian %}
-                    <p>Welcome, Librarian! Ready to lend a new item?</p>
-                {% elif user.is_authenticated %}
-                    <p>Welcome, Patron! Ready to borrow an item?</p>
-                {% else %}
-                    <p>Rent UVA formal/event-wear for free!</p>
-                {% endif %}
+           <h1 class="display-2 fw-semibold">Clothing Library</h1>
+           {% if user.is_librarian %}
+                <p class="display-6 mt-3">Welcome, Librarian! Ready to lend a new item?</p>
+           {% elif user.is_authenticated %}
+                <p class="display-6 mt-3">Welcome, Patron! Ready to borrow an item?</p>
+           {% else %}
+                <p class="display-6 mt-3">Rent UVA formal/event-wear for free!</p>
+           {% endif %}
            <div class="mt-4">
                <a href="{% url 'catalog' %}" class="btn btn-lg text-light" style="background-color: #000000;">Go to Catalog</a>
            </div>
