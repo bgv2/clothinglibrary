@@ -51,13 +51,13 @@
             color: #bb2d3b !important;
         }
     </style>
-    <div class="container-fluid py-5 px-3 px-md-4 px-lg-5 mb-1" style="max-width: 1600px; margin: auto;">
+    <div class="container-fluid py-5 px-lg-5 mb-0 pb-0" style="max-width: 1600px; margin: auto;">
         <div class="row gx-5">
 
             <!-- Item photo -->
-            <div class="col-lg-7 mb-4">
+            <div class="col-lg-7 mb-4 d-flex justify-content-center">
                 {% if item.photos.first %}
-                    <div class="bg-light rounded overflow-hidden w-100" style="transform: scale(0.8); transform-origin: top right;">
+                    <div class="bg-light rounded overflow-hidden w-100 shadow-sm" style="max-width: 80%">
                         <img src="{{ item.photos.first.photo }}" alt="{{ item.name }}"
                             class="img-fluid w-100 h-100 object-fit-contain" style="object-fit: contain;">
                     </div>
@@ -72,7 +72,7 @@
             <div class="col-lg-5 d-flex flex-column gap-4">
 
                 <!-- Card 1: Item name and details -->
-                <div class="bg-white rounded shadow-sm p-4">
+                <div class="bg-white rounded shadow-sm border-2 p-4">
                     <h2 class="mb-2 text-center"> {{ item.name }} </h2>
                     <p class="mb-3 text-center"><em>{{ item.description }}</em></p>
                     <div class="text-center">
@@ -157,7 +157,7 @@
     </div>
 
     <!-- Accordian for more item details -->
-    <div class="container-fluid py-5 px-3 px-md-4 px-lg-5 accordion" id="productDetailsAccordion" style="max-width: 1600px; margin: auto;">
+    <div class="container-fluid py-5 px-3 px-md-4 px-lg-5 accordion pb-0" id="productDetailsAccordion" style="max-width: 1600px; margin: auto;">
         <div class="accordion-item">
           <h2 class="accordion-header" id="headingSize">
             <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseSize" aria-expanded="true" aria-controls="collapseSize">
@@ -212,8 +212,8 @@
     
 <hr style="margin-top: 80px; margin-bottom: 40px;">
 
-<div class="container-fluid py-5 px-3 px-md-4 px-lg-5" style="max-width: 1600px; margin: auto;">
-    <h2>Reviews</h2>
+<div class="container-fluid py-5 px-3 px-md-4 px-lg-5 pt-2" style="max-width: 1600px; margin: auto;">
+    <h2 class="mb-3">Reviews</h2>
     <div class="row">
         {% for review in item.reviews.all %}
         <div class="col-md-4">
@@ -242,7 +242,7 @@
         <p class="ml-3">No reviews yet.</p>
         {% endfor %}
     </div>
-    <h3>Add a Review</h3>
+    <h3 class="my-3">Add a Review</h3>
     {% if user.is_authenticated %}
         <form method="POST" action="{% url 'add_review' item.id %}">
             {% csrf_token %}
