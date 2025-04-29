@@ -110,13 +110,14 @@ def collections_view(request):
 
         collections_with_access = []
         for collection in all_collections:
-            is_approved = request.user.is_librarian or collection.id in approved_collections
+            is_approved = request.user.is_librarian() or collection.id in approved_collections
             if collection.is_public or is_approved:
                 collection.is_approved = is_approved
                 collection.has_pending_request = CollectionAccessRequest.objects.filter(
                     collection=collection, user=request.user, status='PENDING'
                 ).exists()
-                collections_with_access.append(collection)
+            collections_with_access.append(collection)
+                
     else:
         collections_with_access = [c for c in all_collections if c.is_public]
 
