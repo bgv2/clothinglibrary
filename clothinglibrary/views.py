@@ -2,6 +2,7 @@ from django import forms
 from django.utils import timezone
 from datetime import datetime
 from django.contrib import messages
+from django.contrib.auth.models import User
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.contrib.auth.decorators import login_required, user_passes_test
@@ -9,7 +10,7 @@ from django.utils.decorators import method_decorator
 from django.urls import reverse_lazy
 from ***REMOVED*** import settings
 from .forms import ItemForm, PromotePatronForm, UserProfileForm
-from .models import BorrowRequest, Item, PromotionRequest, Rental, UserProfile, ItemPhoto, Review, Collection, CollectionAccessRequest
+from .models import BorrowRequest, Item, PromotionRequest, Rental, UserProfile, ItemPhoto, Review, Collection, CollectionAccessRequest, Notification
 import boto3
 import uuid
 from django.db.models import Q
@@ -607,5 +608,7 @@ def lender_items(request):
 @require_POST
 @login_required
 def mark_notifications_read(request):
-    request.user.notifications.filter(is_read=False).update(is_read=True)
+    notifications = request.user.notifications.filter(is_read=False)
+    notifications.update(is_read=True)
+    notifications.delete()
     return HttpResponse("OK")
