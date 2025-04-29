@@ -179,7 +179,7 @@
                                 <i class="bi bi-person"></i> {{ user.get_full_name }} ({{ user.username }})
                             </a>
                             <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownUser">
-                                <li><a class="dropdown-item" href="{% url 'profile' %}">View Profile</a></li>
+                                <li><a class="dropdown-item" href="{% url 'profile' user.username %}">View Profile</a></li>
                                 {% if not user.is_librarian %}
                                 <li> <a class="dropdown-item" href="{% url 'request_librarian' %}">Request Librarian Promotion</a></li>
                                 {% endif %}

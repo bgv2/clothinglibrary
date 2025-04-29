@@ -214,8 +214,9 @@ class CollectionDeleteView(DeleteView):
             return Collection.objects.all()
         return self.model.objects.filter(creator=self.request.user)
 
-def profile(request):
-    return render(request, '***REMOVED***/profile.html')
+def profile(request, username):
+    user = get_object_or_404(User, username=username)
+    return render(request, '***REMOVED***/profile.html', {'user': user, 'is_current_user': request.user == user})
 
 @login_required
 def add_item(request):
@@ -334,7 +335,7 @@ def update_description(request):
         messages.success(request, "Description updated successfully.")
     else:
         messages.error(request, "Invalid request method.")
-    return redirect('profile')
+    return redirect('profile', username=request.user.username)
 
 @login_required
 def update_profile_picture(request):
@@ -348,7 +349,7 @@ def update_profile_picture(request):
             messages.error(request, "No photo uploaded.")
     else:
         messages.error(request, "Invalid request method.")
-    return redirect('profile')
+    return redirect('profile', username=request.user.username)
 
 @login_required
 def remove_profile_picture(request):
@@ -356,7 +357,7 @@ def remove_profile_picture(request):
     user_profile.photo = None
     user_profile.save()
     messages.success(request, "Profile picture removed.")
-    return redirect('profile')
+    return redirect('profile', username=request.user.username)
 
 @login_required
 def add_review(request, item_id):
