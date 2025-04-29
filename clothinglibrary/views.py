@@ -365,6 +365,7 @@ def add_review(request, item_id):
         comment = request.POST.get('comment')
         rating = request.POST.get('rating')
         if not comment or not rating:
+            messages.error(request, "Comment and rating are required.")
             return redirect('item_detail', item_id=item_id)
         Review.objects.create(
             item=item,
