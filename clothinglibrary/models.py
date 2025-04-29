@@ -239,3 +239,19 @@ class PromotionRequest(models.Model):
 
     def __str__(self):
         return f"{self.user.username} - Promotion Request"
+    
+
+class Notification(models.Model):
+    NOTIFICATION_TYPE_CHOICES = (
+        ('borrow', 'Borrow Request'),
+        ('access', 'Private Collection Access Request'),
+        ('promotion', 'Promotion Request'),
+    )
+    recipient = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPE_CHOICES)
+    message = models.CharField(max_length=255)
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.get_notification_type_display()}: {self.message}"

@@ -13,6 +13,10 @@ from .models import BorrowRequest, Item, PromotionRequest, Rental, UserProfile, 
 import boto3
 import uuid
 from django.db.models import Q
+from django.http import HttpResponse
+from django.views.decorators.http import require_POST
+
+
 
 def home(request):
     return render(request, '***REMOVED***/homepage.html')
@@ -599,3 +603,9 @@ def lender_items(request):
         'borrowed_items': borrowed_items,
         'available_items': available_items,
     })
+
+@require_POST
+@login_required
+def mark_notifications_read(request):
+    request.user.notifications.filter(is_read=False).update(is_read=True)
+    return HttpResponse("OK")

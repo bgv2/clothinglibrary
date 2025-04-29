@@ -1,4 +1,4 @@
-from .models import BorrowRequest, CollectionAccessRequest, PromotionRequest
+from .models import BorrowRequest, CollectionAccessRequest, PromotionRequest, Notification
 
 def pending_requests_count(request):
     if request.user.is_authenticated and getattr(request.user, 'is_librarian', False):
@@ -9,3 +9,15 @@ def pending_requests_count(request):
         return {'total_pending_requests': total_pending}
     else:
         return {'total_pending_requests': 0}
+    
+def notifications_processor(request):
+    if request.user.is_authenticated:
+        notifications = Notification.objects.filter(recipient=request.user).order_by('-created_at')
+        unread_count = notifications.filter(is_read=False).count()
+    else:
+        notifications = []
+        unread_count = 0
+    return {
+        'notifications': notifications,
+        'unread_notifications_count': unread_count,
+    }

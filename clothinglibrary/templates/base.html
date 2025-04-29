@@ -89,6 +89,16 @@
         }, 5000);
       });
       </script>
+      <script>
+        document.getElementById('notificationDropdown').addEventListener('click', function(){
+            fetch("{% url 'mark_notifications_read' %}", {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            });
+        });
+        </script>
 
     <header class="sticky-top">
         <nav class="navbar navbar-expand-sm sticky-top custom-navbar">
@@ -147,6 +157,31 @@
                     {% endif %}
 
                 </ul>
+
+                {% if user.is_authenticated and not user.is_librarian %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link text-dark" href="#" id="notificationDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-bell"></i>
+                        {% if unread_notifications_count > 0 %}
+                            <span class="badge rounded-pill bg-danger">{{ unread_notifications_count }}</span>
+                        {% endif %}
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown" style="min-width: 300px;">
+                        {% if notifications %}
+                            {% for notification in notifications %}
+                                <li>
+                                    <span class="dropdown-item-text">
+                                        {{ notification.message }} ({{ notification.get_notification_type_display }})
+                                    </span>
+                                    <small class="d-block text-muted">{{ notification.created_at|date:"M d, Y H:i" }}</small>
+                                </li>
+                            {% endfor %}
+                        {% else %}
+                            <li><span class="dropdown-item-text">No notifications.</span></li>
+                        {% endif %}
+                    </ul>
+                </li>
+                {% endif %}
 
                 <!-- Profile dropdown -->
                 <ul class="navbar-nav ms-auto">
