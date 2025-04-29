@@ -131,7 +131,7 @@
                 <p> Protection Info: {{ item.protection_info|default:"None provided"|safe }} </p>
                 <p> Number of Past Rentals: {{ item.number_of_past_rentals }}</p>
                 {% if item.last_borrowed_date %}
-                    <p>Last Rented: {{ item.last_borrowed_date|timesince }} ago</p>
+                    <p>Last Rented: {{ item.last_borrowed_date|date:"F j, Y" }}</p>
                 {% else %}
                     <p>Last Rented: Never</p>
                 {% endif %}
@@ -172,9 +172,9 @@
 </div>
 <h3>Add a Review</h3>
 {% if user.is_authenticated %}
-    <form method="POST" action="{% url 'add_review' item.id %}">
+    <form id="reviewForm" method="POST" action="{% url 'add_review' item.id %}">
         {% csrf_token %}
-        <textarea name="comment" rows="4" cols="60" class="form-control" required placeholder="Write your review here..."></textarea>
+        <textarea name="comment" rows="4" cols="60" class="form-control" placeholder="Write your review here..."></textarea>
         <label for="rating">Rating:</label>
         <div class="star-rating">
             <input type="radio" id="star5" name="rating" value="5">
@@ -189,11 +189,8 @@
             <input type="radio" id="star2" name="rating" value="2">
             <label for="star2" title="2 stars">&#9733;</label>
         
-            <input type="radio" id="star1" name="rating" value="1" required>
+            <input type="radio" id="star1" name="rating" value="1">
             <label for="star1" title="1 star">&#9733;</label>
-        </div>
-        <div id="ratingWarning" class="text-danger mt-2" style="display: none;">
-            Please select a rating.
         </div>
         <br><br>
         <button type="submit" class="btn btn-primary">Submit</button>
@@ -203,12 +200,25 @@
 {% endif %}
 {% endblock %}
 <script>
-    document.getElementById('reviewForm').addEventListener('submit', function(e){
-        // Check if any rating radio is selected
-        var ratingSelected = document.querySelector('input[name="rating"]:checked');
-        if (!ratingSelected) {
-            e.preventDefault();  // Prevent form submission
-            document.getElementById('ratingWarning').style.display = "block";
-        }
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('reviewFormContainer');
+      const form = document.getElementById('reviewForm');
+    
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+    
+        // send form via AJAX
+        const resp = await fetch(form.action, {
+          method: form.method,
+          headers: { 'X-Requested-With': 'XMLHttpRequest' },
+          body: new FormData(form)
+        });
+    
+        // get the returned HTML (your view should render the form snippet with errors)
+        const html = await resp.text();
+    
+        // replace the old form with the new HTML
+        container.innerHTML = html;
+      });
     });
-    </script>
+</script>
