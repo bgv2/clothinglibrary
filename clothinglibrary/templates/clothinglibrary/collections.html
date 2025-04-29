@@ -13,20 +13,29 @@
     }
 
     .collection-card {
-        border: 1px solid #eee;
-        border-radius: 12px;
-        transition: all 0.3s ease;
+        border: 1px solid #ddd;
+        border-radius: 16px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
         overflow: hidden;
-        box-shadow: 0px 2px 8px rgba(0,0,0,0.05);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+        background-color: #fff;
         text-align: center;
+        margin-bottom: 1rem;
+        min-height: 275px;
+        min-width: 306px;
+        height: 100%;
+        width: 100%;
         display: flex;
         flex-direction: column;
-        height: 100%;
+        justify-content: center;
+        align-items: center;
+        position: relative;
     }
     .collection-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0px 6px 20px rgba(0,0,0,0.1);
+        transform: translateY(-4px);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.12);
     }
+
     .collection-image {
         width: 100%;
         height: 200px;
@@ -38,6 +47,7 @@
         font-size: 1.2rem;
         font-weight: 500;
     }
+
     .collection-footer {
         padding: 1rem;
     }
@@ -61,6 +71,18 @@
     .row.g-4 {
         row-gap: 2.5rem;
     }
+
+    .badge-private {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        background-color: #0d6efd;
+        color: white;
+        font-size: 0.75rem;
+        padding: 5px 10px;
+        border-radius: 50px;
+        opacity: 0.9;
+    }
 </style>
 <div class="container py-4">
     <h1 class="mb-4 text-center">Collections</h1>
@@ -82,52 +104,82 @@
         </div>
     {% endif %}
 
-    <div class="row g-4 justify-content-center">
+    <div class="row g-4">
         {% if collections %}
             {% for collection in collections %}
-            <div class="col-md-4 d-flex">
-                <div class="collection-card w-100">
-                    <div class="collection-image">
-                        No Image
-                    </div>
-                    <div class="p-3 d-flex flex-column flex-grow-1 justify-content-between">
-                        <div>
-                            <h5 class="mb-2">
-                                {% if collection.is_public %}
-                                    <a href="{% url 'collection_detail' collection.id %}" class="text-decoration-none">{{ collection.title }}</a>
-                                {% else %}
-                                    {% if collection.is_approved %}
-                                        <a href="{% url 'collection_detail' collection.id %}" class="text-decoration-none">{{ collection.title }}</a>
-                                    {% else %}
-                                        {{ collection.title }}
+                <div class="col-sm-6 col-md-4 col-lg-3 d-flex">  
+                    {% if user.is_authenticated %}
+
+                        <!-- They are a librarian or the collection is public or approved -->
+                        {% if user.is_librarian or collection.is_public or collection.is_approved %}
+                            <a href="{% url 'collection_detail' collection.id %}" style="text-decoration: none; color: inherit; width: 100%;">
+                                <div class="collection-card position-relative">
+                                    {% if not collection.is_public %}
+                                        <span class="badge-private">Private</span>
                                     {% endif %}
-                                {% endif %}
-                            </h5>
-                            {% if not collection.is_public %}
-                                <p class="text-muted small mb-2">Private Collection</p>
-                                {% if collection.is_approved %}
-                                {% elif collection.has_pending_request %}
-                                    <p class="text-muted small mb-2">Your request is pending.</p>
-                                {% else %}
-                                    <a href="{% url 'request_access' collection.id %}" class="btn btn-primary btn-sm mb-2">Request Access</a>
-                                {% endif %}
-                            {% endif %}
-                            <p class="text-muted small">Created by: {{ collection.creator.username }}</p>
-                            <p class="text-muted small">{{ collection.description }}</p>
-                        </div>
-                        {% if user.is_authenticated and user.is_librarian or collection.creator == user %}
-                        <div class="d-flex justify-content-center gap-2 mt-3">
-                            <a href="{% url 'edit_collection' collection.id %}" class="btn btn-light border btn-sm shadow-sm">Edit</a>
-                            <a href="{% url 'delete_collection' collection.id %}" class="btn btn-light border text-danger btn-sm shadow-sm">Delete</a>
-                        </div>
+                                    <div class="p-3 d-flex flex-column justify-content-between">
+                                        <div>
+                                            <h5 class="mb-2">{{ collection.title }}</h5>
+                                            <p class="text-muted small">Creator: {{ collection.creator.username }}</p>
+                                        </div>
+                                        {% if user.is_librarian or collection.creator == user %}
+                                        <div class="d-flex justify-content-center gap-2 mt-3">
+                                            <a href="{% url 'edit_collection' collection.id %}" class="btn btn-light border btn-sm shadow-sm">Edit</a>
+                                            <a href="{% url 'delete_collection' collection.id %}" class="btn btn-light border text-danger btn-sm shadow-sm">Delete</a>
+                                        </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </a>
+
+                        <!-- They are a patron and the collection is private & unapproved -->
+                        {% else %}
+                            <div class="collection-card position-relative">
+                                <span class="badge-private">Private</span>
+                                <div class="p-3 d-flex flex-column justify-content-between">
+                                    <div>
+                                        <h5 class="mb-2">{{ collection.title }}</h5>
+                                        {% if collection.has_pending_request %}
+                                            <p class="text-muted small mb-2">Your request is pending.</p>
+                                        {% else %}
+                                            <a href="{% url 'request_access' collection.id %}" class="btn btn-primary btn-sm mb-2">Request Access</a>
+                                        {% endif %}
+                                        <p class="text-muted small">Creator: {{ collection.creator.username }}</p>
+                                    </div>
+                                    {% if collection.creator == user %}
+                                    <div class="d-flex justify-content-center gap-2 mt-3">
+                                        <a href="{% url 'edit_collection' collection.id %}" class="btn btn-light border btn-sm shadow-sm">Edit</a>
+                                        <a href="{% url 'delete_collection' collection.id %}" class="btn btn-light border text-danger btn-sm shadow-sm">Delete</a>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
                         {% endif %}
-                    </div>
+
+                    <!-- They are an anonymous user -->
+                    {% else %}
+                                
+                        <!-- Only show collections if they are public -->
+                        {% if collection.is_public %}
+                            <a href="{% url 'collection_detail' collection.id %}" style="text-decoration: none; color: inherit; width: 100%;">
+                                <div class="collection-card position-relative">
+                                    <div class="p-3 d-flex flex-column justify-content-between">
+                                        <div>
+                                            <h5 class="mb-2">{{ collection.title }}</h5>
+                                            <p class="text-muted small">Creator: {{ collection.creator.username }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        {% endif %}
+                    {% endif %}
                 </div>
-            </div>
             {% endfor %}
+        
+        <!-- No collections -->
         {% else %}
             <div class="col-12 text-center">
-                <p class="text-muted">No collections available.</p>
+              <p class="text-muted">No collections available.</p>
             </div>
         {% endif %}
     </div>
