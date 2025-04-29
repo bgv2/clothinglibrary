@@ -97,6 +97,11 @@
         </button>
         <input type="text" name="q" class="form-control search-bar" placeholder="Search for an item..." value="{{ query }}">
     </form>
+    {% if user.is_authenticated and user.is_librarian %}
+        <div class="text-center mb-4">
+            <a href="{% url 'add_item' %}" class="btn btn-primary">New Item</a>
+        </div>
+    {% endif %}
 
     {% if not query %}
         <div class="row">
@@ -147,6 +152,8 @@
                                     </div>
                                 </a>
                             </div>
+                            {% empty %}
+                            <p class="text-muted">No items in this category.</h1>
                             {% endfor %}
                         </div>
                     </div>

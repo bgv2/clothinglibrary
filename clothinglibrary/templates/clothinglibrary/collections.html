@@ -112,7 +112,7 @@
                     {% if user.is_authenticated %}
                         <!-- They are a librarian or the collection is public or approved -->
                         {% if user.is_librarian or collection.is_public or collection.is_approved %}
-                            <a href="{% url 'collection_detail' collection.id %}" style="text-decoration: none; color: inherit; width: 100%;">
+                            <a href="{% url 'collection_detail' collection.id %}" style="text-decoration: none; color: inherit;">
                                 <div class="collection-card position-relative">
                                     {% if not collection.is_public %}
                                         <span class="badge-private">Private</span>
