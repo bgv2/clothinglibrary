@@ -65,7 +65,7 @@
                     {% endif %}
                 {% endwith %}
 
-                <p class="mb-4 text-muted" style="font-size: 0.9rem;"> Lender: {{ item.lender.get_full_name }} </p>
+                <p class="mb-4 text-muted" style="font-size: 0.9rem;"> Lender: <a href="{% url 'profile' item.lender.username %}">{{ item.lender.get_full_name|default:item.lender.username }}</a></p>
                 <p class="mb-4"> Category: {{ item.get_category_display }} </p>
                 <p class="mb-0">{{ item.description }}</p>
                 <hr class="my-3">
@@ -147,14 +147,14 @@
         <div class="card p-3 mb-3">
             <h6 class="card-title review-title">
                 <span>{{ review.rating|stars }}</span>
-                <span>
+                <a href="{% url 'profile' review.user.username %}" style="text-decoration: none; color: inherit;">
                     {% if review.user.userprofile.photo %}
                         <img src="{{ review.user.userprofile.photo.url }}" alt="Profile Photo" class="small-profile-image" />
                     {% else %}
                         <i class="bi bi-person-circle"></i>
                     {% endif %}
                     {{ review.user.get_full_name|default:review.user.username }}
-                </span>
+                </a>
             </h6>
             <p>{{ review.comment }}</p>
             {% if review.user == user %}

@@ -77,7 +77,11 @@
     {% endif %}
 
     <p>{{ collection.description }}</p>
-    <p>Created by: {{ collection.creator.username }}</p>
+    <p>Created by: 
+        <a href="{% url 'profile' collection.creator.username %}">
+        {{ collection.creator.username }}
+        </a>
+    </p>
     {% if not collection.is_public %}
         <p class="text-muted">This collection is private.</p>
     {% endif %}
