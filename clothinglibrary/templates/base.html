@@ -227,7 +227,15 @@
         });
     </script>
     <script>
-        document.getElementById('notificationDropdown').addEventListener('click', function(){
+        var notificationDropdownEl = document.getElementById('notificationDropdown');
+        if(notificationDropdownEl){
+            notificationDropdownEl.addEventListener('hide.bs.dropdown', function () {
+                // Refresh the page once the dropdown is closed
+                location.reload();
+            });
+        }
+        // Also mark notifications as read when the dropdown is opened.
+        notificationDropdownEl.addEventListener('click', function(){
             fetch("{% url 'mark_notifications_read' %}", {
                 method: 'POST',
                 headers: {
@@ -235,6 +243,6 @@
                 }
             });
         });
-        </script>
+    </script>
 </body>
 </html>

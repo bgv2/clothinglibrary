@@ -366,13 +366,14 @@ def add_review(request, item_id):
         rating = request.POST.get('rating')
         if not comment or not rating:
             messages.error(request, "Comment and rating are required.")
-            return redirect('item_detail', item_id=item_id)
-        Review.objects.create(
-            item=item,
-            user=request.user,
-            comment=comment,
-            rating=rating
-        )
+        else: 
+            Review.objects.create(
+                item=item,
+                user=request.user,
+                comment=comment,
+                rating=rating
+            )
+            messages.success(request, "Review added successfully.")
         return redirect('item_detail', item_id=item_id)
     return redirect('item_detail', item_id=item_id)
 
@@ -609,7 +610,5 @@ def lender_items(request):
 @require_POST
 @login_required
 def mark_notifications_read(request):
-    notifications = request.user.notifications.filter(is_read=False)
-    notifications.update(is_read=True)
-    notifications.delete()
+    request.user.notifications.all().delete()
     return HttpResponse("OK")
