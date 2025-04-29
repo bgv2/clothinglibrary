@@ -191,7 +191,9 @@
         
             <input type="radio" id="star1" name="rating" value="1" required>
             <label for="star1" title="1 star">&#9733;</label>
-            {% comment %} TODO: display warning message when rating not selected {% endcomment %}
+        </div>
+        <div id="ratingWarning" class="text-danger mt-2" style="display: none;">
+            Please select a rating.
         </div>
         <br><br>
         <button type="submit" class="btn btn-primary">Submit</button>
@@ -200,3 +202,13 @@
     <p>You must log in to add a review.</p>
 {% endif %}
 {% endblock %}
+<script>
+    document.getElementById('reviewForm').addEventListener('submit', function(e){
+        // Check if any rating radio is selected
+        var ratingSelected = document.querySelector('input[name="rating"]:checked');
+        if (!ratingSelected) {
+            e.preventDefault();  // Prevent form submission
+            document.getElementById('ratingWarning').style.display = "block";
+        }
+    });
+    </script>
