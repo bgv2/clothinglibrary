@@ -76,7 +76,7 @@
         position: absolute;
         top: 10px;
         left: 10px;
-        background-color: #0d6efd;
+        background-color: #62b6cb;
         color: white;
         font-size: 0.75rem;
         padding: 5px 10px;
@@ -100,7 +100,7 @@
 
     {% if user.is_authenticated %}
         <div class="d-flex justify-content-center mb-5">
-            <a href="{% url 'create_collection' %}" class="btn btn-primary">New Collection</a>
+            <a href="{% url 'create_collection' %}" class="btn btn-primary" style="background-color: #1b4965;">New Collection</a>
         </div>
     {% endif %}
 

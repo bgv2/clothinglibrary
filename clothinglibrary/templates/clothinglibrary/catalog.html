@@ -16,19 +16,7 @@
         color: #333; /* Makes the search icon darker */
     }
     .btn-link:hover {
-        color: #0d6efd; /* Makes it turn blue on hover */
-    }
-    .category-tabs .nav-link {
-        border-radius: 40px;
-        padding: 8px 20px;
-        margin: 5px;
-        font-weight: 400;
-        background-color: #f8f9fa;
-        color: #333;
-    }
-    .category-tabs .nav-link.active {
-        background-color: #0d6efd;
-        color: white;
+        color: #5fa8d3; /* Makes it turn blue on hover */
     }
     .card-custom {
         border: 1px solid #eee;
@@ -82,10 +70,16 @@
     }
 
     .row.g-4 {
-        row-gap: 2.5rem; /* control vertical spacing between rows */
+        row-gap: 2.5rem; 
     }
     .list-group-item {
-        font-weight: 500; /* Medium */
+        font-weight: 500;
+    }
+
+    .list-group-item.active {
+        background-color: #5fa8d3;
+        border-color: #5fa8d3;
+        color: white;
     }
 </style>
 
@@ -100,7 +94,7 @@
     </form>
     {% if user.is_authenticated and user.is_librarian %}
         <div class="text-center mb-4">
-            <a href="{% url 'add_item' %}" class="btn btn-primary">New Item</a>
+            <a href="{% url 'add_item' %}" class="btn btn-primary" style="background-color: #1b4965">New Item</a>
         </div>
     {% endif %}
 

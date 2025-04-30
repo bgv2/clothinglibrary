@@ -1,6 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
+
+    <!-- Main picture -->
    <section class="welcome-message d-flex flex-column justify-content-center align-items-center text-center text-white bg-light py-5"
             style="background-image: url('https://***REMOVED***.s3.amazonaws.com/static/landing_bg.jpg');
             background-size: cover;
@@ -17,7 +19,7 @@
                 <p class="display-6 mt-3">Rent UVA formal/event-wear for free!</p>
            {% endif %}
            <div class="mt-4">
-               <a href="{% url 'catalog' %}" class="btn btn-lg text-light" style="background-color: #000000;">Go to Catalog</a>
+               <a href="{% url 'catalog' %}" class="btn btn-lg text-light" style="background-color: #1b4965;">Go to Catalog</a>
            </div>
        </div>
     </section>
