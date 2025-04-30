@@ -220,7 +220,8 @@ class CollectionDeleteView(DeleteView):
 
 def profile(request, username):
     user = get_object_or_404(User, username=username)
-    return render(request, '***REMOVED***/profile.html', {'user': user, 'is_current_user': username == request.user.username})
+    return render(request, '***REMOVED***/profile.html', {'user': user, 'is_current_user': request.user.is_authenticated and
+                                                            username == request.user.username, 'uname': request.user.username if request.user.is_authenticated else ""})
 
 @login_required
 def add_item(request):
