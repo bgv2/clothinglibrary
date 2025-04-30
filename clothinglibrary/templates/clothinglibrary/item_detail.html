@@ -199,7 +199,7 @@
                 <p><strong>Date Added:</strong> <span class="date">{{ item.created_at|date:"Y-m-d H:i:s" }}</span></p>
                 <p><strong>Number of Past Rentals:</strong> {{ item.number_of_past_rentals }}</p>
                 {% if item.last_borrowed_date %}
-                    <p>Last Rented: {{ item.last_borrowed_date|date:"F j, Y" }}</p>
+                    <p><strong>Last Rented:</strong> {{ item.last_borrowed_date|date:"F j, Y" }}</p>
                 {% else %}
                     <p><strong>Last Rented:</strong> Never</p>
                 {% endif %}
