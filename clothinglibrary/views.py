@@ -85,15 +85,19 @@ def catalog_view(request):
         "Formal Wear", "Casual Wear", "Sportswear", "Vintage", "Streetwear",
         "Activewear", "Denim", "Outerwear", "Accessories", "Other"
     ]
-    items_by_category = {cat: [] for cat in category_order}
+    items_by_category = {"All": all_items.copy()}  # <-- Add "All" tab first
+    for cat in category_order:
+        items_by_category[cat] = []
+
     for item in all_items:
         cat = item.get_category_display()
         if cat in items_by_category:
             items_by_category[cat].append(item)
         else:
-            items_by_category.setdefault("Other", []).append(item)
-    
-    #for displaying the count of the search
+            items_by_category["Other"].append(item)
+
+
+#for displaying the count of the search
     num_results = len(all_items)
     
     return render(request, '***REMOVED***/catalog.html', {

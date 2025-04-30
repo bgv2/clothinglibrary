@@ -13,10 +13,10 @@
     }
 
     .btn-link {
-        color: #333; /* Makes the search icon darker */
+        color: #333;
     }
     .btn-link:hover {
-        color: #5fa8d3; /* Makes it turn blue on hover */
+        color: #5fa8d3;
     }
     .card-custom {
         border: 1px solid #eee;
@@ -25,7 +25,7 @@
         overflow: hidden;
         box-shadow: 0px 2px 8px rgba(0,0,0,0.05);
         text-align: center;
-        margin-bottom: 0; 
+        margin-bottom: 0;
         min-height: 450px;
     }
     .card-custom:hover {
@@ -70,7 +70,7 @@
     }
 
     .row.g-4 {
-        row-gap: 2.5rem; 
+        row-gap: 2.5rem;
     }
     .list-group-item {
         font-weight: 500;
@@ -92,111 +92,114 @@
         </button>
         <input type="text" name="q" class="form-control search-bar" placeholder="Search for an item..." value="{{ query }}">
     </form>
+
     {% if user.is_authenticated and user.is_librarian %}
-        <div class="text-center mb-4">
-            <a href="{% url 'add_item' %}" class="btn btn-primary" style="background-color: #1b4965">New Item</a>
-        </div>
+    <div class="text-center mb-4">
+        <a href="{% url 'add_item' %}" class="btn btn-primary" style="background-color: #1b4965">New Item</a>
+    </div>
     {% endif %}
 
     {% if not query %}
-        <div class="row">
-            <div class="me-4" style="width: 200px;">
-                <div class="list-group">
-                    {% for category, items in items_by_category.items %}
-                        <a class="list-group-item list-group-item-action {% if forloop.first %}active{% endif %}"
-                           id="tab-{{ forloop.counter0 }}"
-                           data-bs-toggle="tab" 
-                           data-bs-target="#pane-{{ forloop.counter0 }}" 
-                           role="tab">
-                            {{ category }} ({{ items|length }})
-                        </a>
-                    {% endfor %}
-                </div>
-            </div>
-
-            <div class="col-md-9">
-                <div class="tab-content">
-                    {% for category, items in items_by_category.items %}
-                    <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" id="pane-{{ forloop.counter0 }}" role="tabpanel">
-                        <div class="row g-4">
-                            {% for item in items %}
-                            <div class="col-md-4">
-                                <a href="{% url 'item_detail' item.id %}" style="text-decoration: none; color: inherit;">
-                                    <div class="card-custom position-relative d-flex flex-column justify-content-between h-100">
-                                        {% if not item.is_available %}
-                                        <span class="badge-unavailable">Unavailable</span>
-                                        {% endif %}
-                                        {% if item.photos.first %}
-                                        <img src="{{ item.photos.first.photo|default_if_none:'#' }}" class="item-image" alt="{{ item.name }}">
-                                        {% else %}
-                                        <div class="item-image d-flex align-items-center justify-content-center bg-light">
-                                            <p class="text-muted">No photo</p>
-                                        </div>
-                                        {% endif %}
-                                        <div class="p-3">
-                                            <h5 class="mb-2">{{ item.name }}</h5>
-                                            <p class="text-muted small">{{ item.get_category_display }}</p>
-                                        </div>
-
-                                        {% if user.is_authenticated and user.is_librarian %}
-                                            <div class="pb-3 d-flex justify-content-center">
-                                                <a href="{% url 'edit_item' item.id %}" class="btn btn-light border btn-sm shadow-sm mr-2">Edit</a>
-                                                <a href="{% url 'delete_item' item.id %}" class="btn btn-light border text-danger btn-sm shadow-sm ml-2">Delete</a>
-                                            </div>                        
-                                        {% endif %}
-                                    </div>
-                                </a>
-                            </div>
-                            {% empty %}
-                            <p class="text-muted">No items in this category.</h1>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    {% endfor %}
-                </div>
-            </div>
-        </div>
-    {% else %}
-        <h2 class="text-center mb-4">Showing {{ num_results }} results for "{{ query }}"</h2>
-        <div class="row g-4">
-            {% for category, items in items_by_category.items %}
-            {% for item in items %}
-            <div class="col-md-4">
-                <a href="{% url 'item_detail' item.id %}" style="text-decoration: none; color: inherit;">
-                    <div class="card-custom position-relative d-flex flex-column justify-content-between h-100">
-                        {% if not item.is_available %}
-                        <span class="badge-unavailable">Unavailable</span>
-                        {% endif %}
-                    
-                        {% if item.photos.first %}
-                            <img src="{{ item.photos.first.photo|default_if_none:'#' }}" class="item-image" alt="{{ item.name }}">
-                        {% else %}
-                            <div class="item-image d-flex align-items-center justify-content-center bg-light">
-                                <p class="text-muted">No photo</p>
-                            </div>
-                        {% endif %}
-                    
-                        <div class="p-3">
-                            <h5 class="mb-2">{{ item.name }}</h5>
-                            <p class="text-muted small">{{ item.get_category_display }}</p>
-                        </div>
-                    
-                        {% if user.is_authenticated and user.is_librarian %}
-                        <div class="pb-3 d-flex justify-content-center">
-                            <a href="{% url 'edit_item' item.id %}" class="btn btn-light border btn-sm shadow-sm mr-2">Edit</a>
-                            <a href="{% url 'delete_item' item.id %}" class="btn btn-light border text-danger btn-sm shadow-sm ml-2">Delete</a>
-                        </div>                        
-                        {% endif %}
-                    </div>                    
+    <div class="row">
+        <div class="me-4" style="width: 200px;">
+            <div class="list-group">
+                {% for category, items in items_by_category.items %}
+                <a class="list-group-item list-group-item-action {% if forloop.first %}active{% endif %}"
+                   id="tab-{{ forloop.counter0 }}"
+                   data-bs-toggle="tab"
+                   data-bs-target="#pane-{{ forloop.counter0 }}"
+                   role="tab">
+                    {{ category }} ({{ items|length }})
                 </a>
+                {% endfor %}
             </div>
-            {% endfor %}
-            {% empty %}
-            <div class="col-12 text-center">
-                <p class="text-muted">No matching items found.</p>
-            </div>
-            {% endfor %}
         </div>
+
+        <div class="col-md-9">
+            <div class="tab-content">
+                {% for category, items in items_by_category.items %}
+                <div class="tab-pane fade {% if forloop.first %}show active{% endif %}" id="pane-{{ forloop.counter0 }}" role="tabpanel">
+                    <div class="row g-4">
+                        {% for item in items %}
+                        <div class="col-md-4">
+                            <a href="{% url 'item_detail' item.id %}" style="text-decoration: none; color: inherit;">
+                                <div class="card-custom position-relative d-flex flex-column justify-content-between h-100">
+                                    {% if not item.is_available %}
+                                    <span class="badge-unavailable">Unavailable</span>
+                                    {% endif %}
+                                    {% if item.photos.first %}
+                                    <img src="{{ item.photos.first.photo|default_if_none:'#' }}" class="item-image" alt="{{ item.name }}">
+                                    {% else %}
+                                    <div class="item-image d-flex align-items-center justify-content-center bg-light">
+                                        <p class="text-muted">No photo</p>
+                                    </div>
+                                    {% endif %}
+                                    <div class="p-3">
+                                        <h5 class="mb-2">{{ item.name }}</h5>
+                                        <p class="text-muted small">{{ item.get_category_display }}</p>
+                                    </div>
+
+                                    {% if user.is_authenticated and user.is_librarian %}
+                                    <div class="pb-3 d-flex justify-content-center">
+                                        <a href="{% url 'edit_item' item.id %}" class="btn btn-light border btn-sm shadow-sm mr-2">Edit</a>
+                                        <a href="{% url 'delete_item' item.id %}" class="btn btn-light border text-danger btn-sm shadow-sm ml-2">Delete</a>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </a>
+                        </div>
+                        {% empty %}
+                        <p class="text-muted">No items in this category.</p>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <h2 class="text-center mb-4">Showing {{ num_results }} results for "{{ query }}"</h2>
+    <div class="row g-4">
+        {% for category, items in items_by_category.items %}
+        {% if category != "All" %}
+        {% for item in items %}
+        <div class="col-md-4">
+            <a href="{% url 'item_detail' item.id %}" style="text-decoration: none; color: inherit;">
+                <div class="card-custom position-relative d-flex flex-column justify-content-between h-100">
+                    {% if not item.is_available %}
+                    <span class="badge-unavailable">Unavailable</span>
+                    {% endif %}
+
+                    {% if item.photos.first %}
+                    <img src="{{ item.photos.first.photo|default_if_none:'#' }}" class="item-image" alt="{{ item.name }}">
+                    {% else %}
+                    <div class="item-image d-flex align-items-center justify-content-center bg-light">
+                        <p class="text-muted">No photo</p>
+                    </div>
+                    {% endif %}
+
+                    <div class="p-3">
+                        <h5 class="mb-2">{{ item.name }}</h5>
+                        <p class="text-muted small">{{ item.get_category_display }}</p>
+                    </div>
+
+                    {% if user.is_authenticated and user.is_librarian %}
+                    <div class="pb-3 d-flex justify-content-center">
+                        <a href="{% url 'edit_item' item.id %}" class="btn btn-light border btn-sm shadow-sm mr-2">Edit</a>
+                        <a href="{% url 'delete_item' item.id %}" class="btn btn-light border text-danger btn-sm shadow-sm ml-2">Delete</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </a>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% empty %}
+        <div class="col-12 text-center">
+            <p class="text-muted">No matching items found.</p>
+        </div>
+        {% endfor %}
+    </div>
     {% endif %}
 </div>
 {% endblock %}
