@@ -136,7 +136,7 @@
                                                        class="form-control w-auto" style="width: 100px;">
                                             </div>
                                             <p class="mb-4 text-muted"><small><em>Max Rental Duration: {{ item.max_rental_duration }} days</em></small></p>
-                                            <button type="submit" class="btn btn-primary">Request to Borrow</button>
+                                            <button type="submit" class="btn btn-primary" style="background-color: 1b4965;">Request to Borrow</button>
                                         </form>
                                     {% endif %}
                                 {% elif borrow_request and borrow_request.status == 'APPROVED' %}
@@ -265,7 +265,7 @@
               <label for="star1" title="1 star">&#9733;</label>
           </div>
           <br><br>
-          <button type="submit" class="btn btn-primary">Submit</button>
+          <button type="submit" class="btn btn-primary" style="background-color: 1b4965;">Submit</button>
       </form>
   {% else %}
       <p>You must log in to add a review.</p>
