@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
@@ -125,6 +126,12 @@ class Rental(models.Model):
     end_date = models.DateField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='requested')
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def clean(self):
+        rental_duration = (self.end_date - self.start_date).days
+        max_duration = self.item.max_rental_duration
+        if rental_duration > max_duration:
+            raise ValidationError(f"Rental duration cannot exceed {max_duration} days.")
 
     def save(self, *args, **kwargs):
         if self.status == 'returned':
