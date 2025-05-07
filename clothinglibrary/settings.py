@@ -23,7 +23,7 @@ IS_HEROKU_APP = "DYNO" in os.environ and "CI" not in os.environ
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '***REMOVED***'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'your-default-secret-key')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 if IS_HEROKU_APP and not 'DJ_DEBUG' in os.environ:
@@ -57,9 +57,9 @@ INSTALLED_APPS = [
 ]
 
 # AWS S3 BUCKET
-AWS_ACCESS_KEY_ID = '***REMOVED***'
-AWS_SECRET_ACCESS_KEY = '***REMOVED***'
-AWS_STORAGE_BUCKET_NAME = '***REMOVED***'
+AWS_ACCESS_KEY_ID = os.getenv('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = os.getenv('AWS_SECRET_ACCESS_KEY')
+AWS_STORAGE_BUCKET_NAME = os.getenv('AWS_STORAGE_BUCKET_NAME')
 AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 AWS_S3_FILE_OVERWRITE = False
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
@@ -79,8 +79,8 @@ STORAGES = {
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'APP': {
-            'client_id': '***REMOVED***',
-            'secret': '***REMOVED***',
+            'client_id': os.getenv('GOOGLE_CLIENT_ID'),
+            'secret': os.getenv('GOOGLE_CLIENT_SECRET'),
             'key': ''
         },
         'SCOPE': [
