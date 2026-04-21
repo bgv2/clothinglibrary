@@ -1,5 +1,6 @@
 # Clothing Library
 Peer-to-peer clothing lending app built in Django
+<br><br>
 <img width="3390" height="2216" alt="image" src="https://github.com/user-attachments/assets/979cd0d0-b471-44c1-9638-3173589c5dd4" />
 
 
